@@ -21,6 +21,7 @@ STORAGE_DATA: Storage = Storage(SYSTEM_CONFIG)
 
 LAST_OPEN_TOOLBELT_TAB_NAME_TIME = {}
 
+SHORTCUT_HTML2_NAME = 'Shortcut html2'
 SHOW_TOOLBELT_IDENTIFIER = 'Show Toolbelt'
 TOOLBELT_SHORTCUT_HTML1_IDENTIFIER = 'com.iterm2.toolbelt.shortcut-html2'
 
@@ -29,7 +30,7 @@ async def main(connection: Connection):
     app = await iterm2.async_get_app(connection)
 
     @iterm2.RPC
-    async def onclick2(session_id):
+    async def shortcut_html2_onclick(session_id):
         window_width = 950
         window_height = 480
         try:
@@ -43,40 +44,27 @@ async def main(connection: Connection):
             "<html style='background-color: rgb(38, 37, 37);'><script>window.location.href='http://localhost:9998/'</script><body style='background-color: rgb(38, 37, 37);'></body></html>",
             iterm2.util.Size(window_width or 950, window_height or 480)
         )
-        # This function gets called whenever any of the paths named in defaults (below) changes
-        # or its configuration changes.
 
     @iterm2.StatusBarRPC
-    async def coro2(knobs):
+    async def shortcut_html2_coro(knobs):
         return ">>> 🖥 <<<"
 
     component = iterm2.StatusBarComponent(
-        short_description="Shortcut html2",
-        detailed_description="Shortcut html2",
+        short_description=SHORTCUT_HTML2_NAME,
+        detailed_description=SHORTCUT_HTML2_NAME,
         knobs=[],
-        exemplar="Shortcut html2",
+        exemplar=SHORTCUT_HTML2_NAME,
         update_cadence=None,
         identifier="com.iterm2.shortcut-html2"
     )
+    # 注册状态栏按钮
+    await component.async_register(connection, shortcut_html2_coro, onclick=shortcut_html2_onclick)
 
-    # Register the component.
-    await component.async_register(connection, coro2, onclick=onclick2)
-
-    # Register a custom toolbelt tool that shows the web pages served by the server in this script.
+    # 注册toolbelt
     await iterm2.tool.async_register_web_view_tool(
-        connection, 'Shortcut html2', TOOLBELT_SHORTCUT_HTML1_IDENTIFIER, False,
+        connection, SHORTCUT_HTML2_NAME, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER, False,
         "http://localhost:9998/"
     )
-
-    # @iterm2.StatusBarRPC
-    # async def init_user_variable():
-    #     session = app.current_terminal_window.current_tab.current_session
-    #     session_json = await STORAGE.get_storage()
-    #     for variable in session_json.get('user_variable', []):
-    #         await session.async_set_variable(
-    #             f'user.{variable.get("name")}',
-    #             variable.get('value').replace('\r', '').replace('\n', '').replace('%0a', '')
-    #         )
 
     async def event_name_text(event_name, params: Optional[List[str]] = None):
         try:
@@ -94,7 +82,9 @@ async def main(connection: Connection):
             })
             return eval_results['event'] if 'event' in eval_results else ''
         except Exception as e:
-            print(f"event_name_text 获取失败，{event_name:},{e}\n,{traceback.format_exc()}")
+            print("event_name_text 获取失败，event_name：{},{}\n,{}".format(
+                event_name, e, traceback.format_exc()
+            ))
             return ''
 
     @iterm2.RPC
@@ -156,38 +146,8 @@ async def main(connection: Connection):
             connection, 'Shortcut html2', TOOLBELT_SHORTCUT_HTML1_IDENTIFIER, False,
             f"http://localhost:9998?toolbelt_tab_name={tab_name}&time={int(time.time() * 1000)}"
         )
-        # toolbelt_shortcut_html1_menu_item_state = await iterm2.MainMenu.async_get_menu_item_state(
-        #     connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER
-        # )
-        # toolbelt_shortcut_html2_name_menu_item_state = await iterm2.MainMenu.async_get_menu_item_state(
-        #     connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER
-        # )
-        # if not toolbelt_shortcut_html1_menu_item_state and not toolbelt_shortcut_html2_name_menu_item_state:
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
-        # elif toolbelt_shortcut_html1_menu_item_state and toolbelt_shortcut_html2_name_menu_item_state:
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER)
-        # elif toolbelt_shortcut_html1_menu_item_state:
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER)
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
-        # elif toolbelt_shortcut_html2_name_menu_item_state:
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
-        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER)
 
     await shortcut_html_open_toolbelt.async_register(connection)
-
-    #
-    # @iterm2.RPC
-    # async def vim_mode():
-    #     send_text = await event_name_text('vim_mode')
-    #     if send_text:
-    #         session = app.current_terminal_window.current_tab.current_session
-    #         await session.async_send_text(send_text.replace('|==f==h==|', '"'))
-    #
-    #     await open_tool_belt(o=1, key='vim')
-    #
-    # await vim_mode.async_register(connection)
 
     # 注册web
     from html_api import api_register

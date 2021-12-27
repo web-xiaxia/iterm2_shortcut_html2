@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from iterm2.connection import Connection
+
 import re
-from aiohttp.connector import Connection
 
 import sqlite3
 from iterm2.app import App
@@ -17,12 +18,12 @@ import subprocess
 
 CONTEXT_INCLUDE_PATTERN = re.compile(r'''(<context-include src=["|'](.*?)["|']/>)''')
 HTML_INCLUDE_PATTERN = re.compile(r'''(<html-include src=["|'](.*?)["|']/>)''')
-BLOCK_STYLE_PATTERN = re.compile(r'''\{% block style %\}(.*?)\{% endblock %\}''', re.DOTALL)
-BLOCK_SCRIPT_PATTERN = re.compile(r'''\{% block script %\}(.*?)\{% endblock %\}''', re.DOTALL)
-BLOCK_CONTEXT_PATTERN = re.compile(r'''\{% block context %\}(.*?)\{% endblock %\}''', re.DOTALL)
+BLOCK_STYLE_PATTERN = re.compile(r'''{% block style %}(.*?){% endblock %}''', re.DOTALL)
+BLOCK_SCRIPT_PATTERN = re.compile(r'''{% block script %}(.*?){% endblock %}''', re.DOTALL)
+BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}''', re.DOTALL)
 
 
-async def api_register(connection: Connection, app: App, SYSTEM_CONFIG_DATA: SystemStorage, STORAGE_DATA: Storage,
+async def api_register(connection: Connection, app: App, system_config_data: SystemStorage, storage_data: Storage,
                        main_home: str, html_home: str):
     async def my_send_text(send_text=''):
         session = app.current_terminal_window.current_tab.current_session
@@ -81,7 +82,7 @@ async def api_register(connection: Connection, app: App, SYSTEM_CONFIG_DATA: Sys
 
     async def get_storage_api(request):
         try:
-            return await send_html(json.dumps(await STORAGE_DATA.get_storage(), sort_keys=True, indent=4), request)
+            return await send_html(json.dumps(await storage_data.get_storage(), sort_keys=True, indent=4), request)
         except Exception:
             return await send_html("{}", request)
 
@@ -93,54 +94,50 @@ async def api_register(connection: Connection, app: App, SYSTEM_CONFIG_DATA: Sys
         if bak:
             print(f"{new_storage.get('storage_data_version_id')} , {storage_data_version_id}")
 
-        storage = await STORAGE_DATA.get_storage()
+        storage = await storage_data.get_storage()
         if storage_data_version_id != storage.get('storage_data_version_id'):
             return await send_error(request, "保存失败，请刷新或重新打开页面")
 
-        await STORAGE_DATA.set_storage(new_storage, bak=bak)
+        await storage_data.set_storage(new_storage, bak=bak)
         return await send_ok(request)
 
     async def delete_storage_api(request):
-        await STORAGE_DATA.delete_storage()
+        await storage_data.delete_storage()
         return await send_ok(request)
 
     async def reload_storage_api(request):
         data = await request.json()
         path = data.get('path')
-        await STORAGE_DATA.reload_storage(path)
+        await storage_data.reload_storage(path)
         return await send_ok(request)
 
     async def get_system_storage_api(request):
-        return await send_html(json.dumps(await SYSTEM_CONFIG_DATA.get_storage(), sort_keys=True, indent=4), request)
+        return await send_html(json.dumps(await system_config_data.get_storage(), sort_keys=True, indent=4), request)
 
     async def save_store_path_api(request):
         data = await request.json()
         storage_path = data.get('storage_path')
         storage_history_path = data.get('storage_history_path')
         reload = bool(data.get('reload'))
-        await SYSTEM_CONFIG_DATA.set_storage_path(storage_path, storage_history_path)
+        await system_config_data.set_storage_path(storage_path, storage_history_path)
         if storage_path:
             if reload:
-                await STORAGE_DATA.reload_storage(storage_path + "/storage.json")
+                await storage_data.reload_storage(storage_path + "/storage.json")
             else:
-                await STORAGE_DATA.set_storage(None, bak=True)
+                await storage_data.set_storage(None, bak=True)
         return await send_ok(request)
 
     async def storage_reset_event_send_map_api(request):
-        await STORAGE_DATA.reset_event_send_map()
+        await storage_data.reset_event_send_map()
         return await send_ok(request)
 
     async def storage_reset_custom_variable_map_api(request):
-        await STORAGE_DATA.reset_custom_variable_map()
+        await storage_data.reset_custom_variable_map()
         return await send_ok(request)
 
     async def storage_reset_py_method_api(request):
-        await STORAGE_DATA.reset_xpy_method()
+        await storage_data.reset_xpy_method()
         return await send_ok(request)
-
-    async def fetch(session, url):
-        async with session.get(url) as response:
-            return await response.text()
 
     async def proxy_api(request):
         request_data = await request.json()
@@ -280,13 +277,11 @@ async def api_register(connection: Connection, app: App, SYSTEM_CONFIG_DATA: Sys
             'status': await alert.async_run(connection)
         }), request)
 
-    async def restart_api(request):
-        # await site.stop()
-        # await runner.shutdown()
-        os.system("ps -ef | grep python | grep -v grep | grep shortcut_html2.py | awk '{print $2}' | xargs kill -9  "
+    async def restart_api(_):
+        os.system("ps -ef | grep python | grep -v grep | grep iterm2_shortcut_html2.py | awk '{print $2}' | xargs kill -9  "
                   "&& nohup /bin/bash /Applications/iTerm.app/Contents/Resources/it2_api_wrapper.sh "
-                  + main_home + "/../iterm2env/versions/3.7.9/bin/python3 "
-                  + main_home + "/shortcut_html2.py 2>&1 &")
+                  + os.path.join(main_home, '../iterm2env/versions/3.7.9/bin/python3 ')
+                  + main_home + "/iterm2_shortcut_html2.py 2>&1 &")
 
     async def command_history_api(request):
         status = True
