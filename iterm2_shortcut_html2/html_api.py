@@ -336,5 +336,5 @@ async def api_register(connection: Connection, app: App, SYSTEM_CONFIG_DATA: Sys
     await site.start()
 
     # Register a custom toolbelt tool that shows the web pages served by the server in this script.
-    await iterm2.tool.async_register_web_view_tool(connection, "Shortcut html2", "com.iterm2.targeted_input.shortcut_html2",
+    await iterm2.tool.async_register_web_view_tool(connection, "Shortcut html2", "com.iterm2.toolbelt.shortcut_html2",
                                                    False, "http://localhost:9998/")
