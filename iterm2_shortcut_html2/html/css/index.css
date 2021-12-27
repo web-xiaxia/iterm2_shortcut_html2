@@ -246,14 +246,15 @@ input[type="number"].button-color-blue {
     width: 100%;
     position: absolute;
     bottom: 0px;
-    z-index: 600;
+    z-index: 10;
 }
 
 .tab-setting-button-box {
-    position: absolute;
+    position: fixed;
     font-size: 10px;
     top: 1px;
     right: 0px;
+    z-index: 22;
     padding: 8px 5px 1px 5px;
     background-color: rgb(28, 25, 25);
 }
@@ -263,8 +264,8 @@ input[type="number"].button-color-blue {
 }
 
 .tab-select {
+    overflow: scroll;
     padding: 5px 0px 0px 0px;
-    width: 100%;
     white-space: nowrap;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -282,6 +283,10 @@ input[type="number"].button-color-blue {
 }
 
 .tab-select > span {
+    max-width: 300px;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    vertical-align: bottom;
     display: inline-block;
     padding: 2px 12px;
     cursor: pointer;
@@ -299,7 +304,7 @@ input[type="number"].button-color-blue {
     position: relative;
     border: 1px solid rgb(143, 143, 143);
     border-bottom: 1px solid rgb(38, 37, 37);
-    z-index: 601;
+    z-index: 21;
     background: rgb(38, 37, 37);
 }
 

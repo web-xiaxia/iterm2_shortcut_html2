@@ -327,9 +327,11 @@
         if (index !== STORAGE.setting_tab_index && STORAGE.tabs[index].tab_id !== STORAGE.foot_box_id) {
             STORAGE.setting_tab_index = index
         }
-        const selectList = $("#setting-tab-select>span")
+        const tabSelectBox = $("#setting-tab-select")
+        const selectList = tabSelectBox.find('>span')
         selectList.removeClass('activity')
-        selectList.eq(index).addClass('activity')
+        const selectSpanDom = selectList.eq(index)
+        selectSpanDom.addClass('activity')
 
         const tabTypeInfo = TAB_TYPE_MAPPING[tab.type || 'default']
         if (tabTypeInfo) {
@@ -344,6 +346,10 @@
         if (ACTIV_TAB_INFO.drag_width) {
             initDragWidth('#setting-tab-button-box')
         }
+        const windowWidth = STORAGE.window_width || 950
+        const tabSelectBoxDom = tabSelectBox[0]
+        const selectSpanDomRect = selectSpanDom[0].getBoundingClientRect()
+        tabSelectBoxDom.scrollLeft = tabSelectBoxDom.scrollLeft - (windowWidth - 180 - selectSpanDomRect.width) / 2 + selectSpanDomRect.left
     }
 
     function settingEditWindowWindow() {

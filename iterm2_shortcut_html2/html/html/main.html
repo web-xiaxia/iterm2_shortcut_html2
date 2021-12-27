@@ -254,9 +254,11 @@
         }
 
         ACTIV_TAB_INFO['name'] = tab.name
-        const selectList = $("#main-tab-select>span")
+        const tabSelectBox = $("#main-tab-select")
+        const selectList = tabSelectBox.find(">span")
         selectList.removeClass('activity')
-        selectList.eq(index).addClass('activity')
+        const selectSpanDom = selectList.eq(index)
+        selectSpanDom.addClass('activity')
 
         const tabTypeInfo = TAB_TYPE_MAPPING[tab.type || 'default']
         if (tabTypeInfo) {
@@ -267,6 +269,10 @@
                 'button_type_list': BUTTON_TYPE_LIST
             }))
         }
+        const windowWidth = STORAGE.window_width || 950
+        const tabSelectBoxDom = tabSelectBox[0]
+        const selectSpanDomRect = selectSpanDom[0].getBoundingClientRect()
+        tabSelectBoxDom.scrollLeft = tabSelectBoxDom.scrollLeft - (windowWidth - 70 - selectSpanDomRect.width) / 2 + selectSpanDomRect.left
     }
 
     $(function () {
