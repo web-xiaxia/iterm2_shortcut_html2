@@ -46,7 +46,7 @@ ls -Al /Users | awk '{print $1,$9}'
                         </td>
                         <td>
                             {{if select_mode=='dir' || select_mode=='all'}}
-                            <a href="javascript:pathFileSelect('{{file_window_id}}','{{up_file}}',true)">选择</a>
+                            <a href="javascript:pathFileSelect('{{file_window_id}}','{{file_up_file}}',true)">选择</a>
                             {{else}}
                             <a href="#" style="color: #535355">选择</a>
                             {{/if}}
