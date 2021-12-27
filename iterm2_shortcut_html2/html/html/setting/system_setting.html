@@ -244,8 +244,9 @@ JS.install('to_int', to_int)
 
     function changeVariable(variable_type, value_name, value) {
         const variableData = inputGetVariableData(variable_type, value_name)
-        if (variableData) {
+        if (variableData && variableData.value !== value) {
             variableData.value = value
+            storageResetCustomVariableMap()
         }
     }
 
