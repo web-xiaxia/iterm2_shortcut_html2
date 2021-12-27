@@ -21,6 +21,9 @@ STORAGE_DATA: Storage = Storage(SYSTEM_CONFIG)
 
 LAST_OPEN_TOOLBELT_TAB_NAME_TIME = {}
 
+SHOW_TOOLBELT_IDENTIFIER = 'Show Toolbelt'
+TOOLBELT_SHORTCUT_HTML1_IDENTIFIER = 'com.iterm2.toolbelt.shortcut-html2'
+
 
 async def main(connection: Connection):
     app = await iterm2.async_get_app(connection)
@@ -53,10 +56,17 @@ async def main(connection: Connection):
         knobs=[],
         exemplar="Shortcut html2",
         update_cadence=None,
-        identifier="com.iterm2.shortcut-html2")
+        identifier="com.iterm2.shortcut-html2"
+    )
 
     # Register the component.
     await component.async_register(connection, coro2, onclick=onclick2)
+
+    # Register a custom toolbelt tool that shows the web pages served by the server in this script.
+    await iterm2.tool.async_register_web_view_tool(
+        connection, 'Shortcut html2', TOOLBELT_SHORTCUT_HTML1_IDENTIFIER, False,
+        "http://localhost:9998/"
+    )
 
     # @iterm2.StatusBarRPC
     # async def init_user_variable():
@@ -122,11 +132,6 @@ async def main(connection: Connection):
             return
         LAST_OPEN_TOOLBELT_TAB_NAME_TIME[tab_name] = now_time
 
-        print(f"触发打开Toolbelt,{tab_name:}")
-        menu_item_name = 'Show Toolbelt'
-        menu_item_state = await iterm2.MainMenu.async_get_menu_item_state(connection, menu_item_name)
-        menu_item_state_checked = menu_item_state.checked
-
         selected_tab = None
         selected_tab_index = None
         storage = await STORAGE_DATA.get_storage()
@@ -135,16 +140,40 @@ async def main(connection: Connection):
                 selected_tab = tab
                 selected_tab_index = tab_index
                 break
-        print(f'打开Toolbelt，index:{selected_tab_index}')
+
         if not selected_tab:
             return
 
         await STORAGE_DATA.set_tab_index(selected_tab_index)
+        print(f'触发打开Toolbelt，index:{selected_tab_index}, tab_name:{tab_name}')
 
-        await iterm2.MainMenu.async_select_menu_item(connection, menu_item_name)
-        if menu_item_state_checked:
-            print(f"二次触发打开Toolbelt,{tab_name:}")
-            await iterm2.MainMenu.async_select_menu_item(connection, menu_item_name)
+        # 打开 Toolbelt
+        menu_item_state = await iterm2.MainMenu.async_get_menu_item_state(connection, SHOW_TOOLBELT_IDENTIFIER)
+        if not menu_item_state.checked:
+            await iterm2.MainMenu.async_select_menu_item(connection, SHOW_TOOLBELT_IDENTIFIER)
+
+        await iterm2.tool.async_register_web_view_tool(
+            connection, 'Shortcut html2', TOOLBELT_SHORTCUT_HTML1_IDENTIFIER, False,
+            f"http://localhost:9998?toolbelt_tab_name={tab_name}&time={int(time.time() * 1000)}"
+        )
+        # toolbelt_shortcut_html1_menu_item_state = await iterm2.MainMenu.async_get_menu_item_state(
+        #     connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER
+        # )
+        # toolbelt_shortcut_html2_name_menu_item_state = await iterm2.MainMenu.async_get_menu_item_state(
+        #     connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER
+        # )
+        # if not toolbelt_shortcut_html1_menu_item_state and not toolbelt_shortcut_html2_name_menu_item_state:
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
+        # elif toolbelt_shortcut_html1_menu_item_state and toolbelt_shortcut_html2_name_menu_item_state:
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER)
+        # elif toolbelt_shortcut_html1_menu_item_state:
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER)
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
+        # elif toolbelt_shortcut_html2_name_menu_item_state:
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML1_IDENTIFIER)
+        #     await iterm2.MainMenu.async_select_menu_item(connection, TOOLBELT_SHORTCUT_HTML2_IDENTIFIER)
 
     await shortcut_html_open_toolbelt.async_register(connection)
 
