@@ -1,0 +1,301 @@
+{% block style %}
+<style>
+    .setting-button-type-group-checkbox-list {
+        background-color: #2e2e2e;
+        border-radius: 5px;
+        padding: 5px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-show-variable-checkbox-template" type="text/html">
+    <div class="input-send-text-group-box">
+        {{if tab_button.margin_left}}
+        <div class="input-send-text-margin-box"
+             style="width:{{tab_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if tab_button.title}}
+            <span class="title-span"
+                  style="{{if tab_button.title_width}}width: {{tab_button.title_width}}px;{{/if}} ">
+            {{tab_button.title}}
+            </span>
+            {{/if}}
+
+            {{each tab_button.checkbox_list checkbox checkbox_index}}
+            <label class="title-label {{if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                   style="{{if checkbox.title_width}}width: {{checkbox.title_width}}px;{{/if}}">
+                {{if checkbox.selected_value == template_data.get_value(tab_button.variable_type,checkbox.value_name) }}
+                <input type="checkbox" checked
+                       onclick="changeVariable('{{tab_button.variable_type}}','{{checkbox.value_name}}',this.checked ? '{{checkbox.selected_value}}':'{{checkbox.unselected_value}}' )">
+                {{else}}
+                <input type="checkbox"
+                       onclick="changeVariable('{{tab_button.variable_type}}','{{checkbox.value_name}}',this.checked ?'{{checkbox.selected_value}}':'{{checkbox.unselected_value}}')">
+                {{/if}}
+                {{checkbox.title}}
+            </label>
+            {{/each}}
+        </div>
+        {{if tab_button.margin_right}}
+        <div class="input-send-text-margin-box"
+             style="width:{{tab_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-show-variable-checkbox-template" type="text/html">
+    <div class="input-send-text-group-box"
+         draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
+         onclick="settingEditVariableCheckboxWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
+        {{if tab_button.margin_left}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'margin_left','width')"
+             style="width:{{tab_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if tab_button.title}}
+            <span class="title-span drag-width"
+                  drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'title_width','width')"
+                  style="{{if tab_button.title_width}}width: {{tab_button.title_width}}px;{{/if}} ">
+            {{tab_button.title}}
+            </span>
+            {{/if}}
+
+            {{each tab_button.checkbox_list checkbox checkbox_index}}
+            <label class="title-label drag-width {{if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                   drag-width="dragWidthButtonCheckboxData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{checkbox_index}},'title_width','width')"
+                   style="{{if checkbox.title_width}}width: {{checkbox.title_width}}px;{{/if}}">
+                {{if checkbox.selected_value == template_data.get_value(tab_button.variable_type,checkbox.value_name) }}
+                <input type="checkbox" checked>
+                {{else}}
+                <input type="checkbox">
+                {{/if}}
+                {{checkbox.title}}
+            </label>
+            {{/each}}
+        </div>
+        {{if tab_button.margin_right}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'margin_right','width')"
+             style="width:{{tab_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+
+<script id="setting-button-type-variable-checkbox-group-template" type="text/html">
+    <div class="setting-button-type-group-checkbox-list setting-button-input-send-text-box-group">
+        <table>
+            <tr>
+                <td>标题</td>
+                <td><input type="text" class="setting-button-type-group-checkbox-list-title"
+                           value="{{checkbox.title}}"></td>
+                <td>标题宽度</td>
+                <td><input type="number" class="setting-button-type-group-checkbox-list-title_width"
+                           value="{{checkbox.title_width}}"></td>
+            </tr>
+            <tr>
+                <td> 变量名称：</td>
+                <td colspan="3"><input class="setting-button-type-group-checkbox-list-value_name" type="text"
+                                       value="{{checkbox.value_name}}">
+                </td>
+            </tr>
+            <tr>
+                <td>选中值</td>
+                <td><input type="text" class="setting-button-type-group-checkbox-list-selected_value"
+                           value="{{checkbox.selected_value}}"></td>
+                <td>非选中值</td>
+                <td><input type="text" class="setting-button-type-group-checkbox-list-unselected_value"
+                           value="{{checkbox.unselected_value}}"></td>
+            </tr>
+        </table>
+        {{include "setting-button-type-show-input-send-text-operation-template"}}
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-variable-checkbox-template" type="text/html">
+    <div>
+        <p>
+            按钮类型：多选框(修改变量)
+        </p>
+        <table>
+            <tr>
+                <td>变量类型：</td>
+                <td>
+                    <select class="setting-button-variable_type">
+                        {{each variable_type_list variable_type}}
+                        {{if variable_type.type == button_info.variable_type}}
+                        <option value="{{variable_type.type}}" selected>{{variable_type.name}}</option>
+                        {{else}}
+                        <option value="{{variable_type.type}}">{{variable_type.name}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+                <td>按钮颜色：</td>
+                <td>
+                    <select class="setting-button-style {{if button_info.style}}button-color-{{button_info.style}}{{/if}}"
+                            onchange="settingButtonStyleSelect(this)">
+                        {{each button_style_list button_style }}
+                        {{if button_info.style==button_style }}
+                        <option value="{{button_style}}" selected> {{button_style}}</option>
+                        {{else}}
+                        <option value="{{button_style}}"> {{button_style}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td> 变量信息：</td>
+                <td colspan="3">
+                    <div  class="setting-button-type-input-send-text-show-input-group-box-main">
+                        <div class="setting-button-type-input-send-text-show-input-group-box">
+                            {{each button_info.checkbox_list checkbox checkbox_index}}
+                            <% include('setting-button-type-variable-checkbox-group-template',
+                            {
+                            'button_input':button_input,
+                            'checkbox':checkbox,
+                            }
+                            ) %>
+                            {{/each}}
+
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <button onclick="settingEditVariableCheckboxGroupAdd(this)">
+                                新增多选项
+                            </button>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td>标题：</td>
+                <td><input class="setting-button-title" type="text"
+                           value="{{button_info.title}}">
+                </td>
+                <td>标题宽度：</td>
+                <td><input class="setting-button-title_width" type="number"
+                           value="{{button_info.title_width}}"></td>
+            </tr>
+            <tr>
+                <td> 前间距</td>
+                <td><input class="setting-button-margin_left" type="number"
+                           value="{{button_info.margin_left}}"></td>
+                <td> 后间距：</td>
+                <td><input class="setting-button-margin_right" type="number"
+                           value="{{button_info.margin_right}}"></td>
+            </tr>
+        </table>
+        <button onclick="settingEditVariableCheckbox(this,{{tab_index}},{{group_index}},{{button_index}})">保存</button>
+        {{include 'setting-button-operation-template'}}
+    </div>
+</script>
+<script>
+    function settingEditVariableCheckboxWindowButtonInfo(tab_index, tab_group_index, button_index) {
+        if (button_index >= 0) {
+            return STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        }
+        return {
+            checkbox_list: [{}]
+        }
+    }
+
+    function settingEditVariableCheckboxWindow(tab_index, tab_group_index, button_index) {
+        const buttonInfo = settingEditVariableCheckboxWindowButtonInfo(tab_index, tab_group_index, button_index)
+        openFloatingWindow('setting-button-type-variable-checkbox-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_index": button_index,
+            "button_style_list": SETTING_BUTTON_STYLE,
+            "button_info": buttonInfo,
+            "variable_type_list": VARIABLE_TYPE_LIST
+        }, "多选框(修改变量)")
+    }
+
+    function settingEditVariableCheckboxGroupAdd(that) {
+        $(that).parents('.setting-button-type-input-send-text-show-input-group-box-main').find('.setting-button-type-input-send-text-show-input-group-box').append(template('setting-button-type-variable-checkbox-group-template', {
+            "checkbox": {},
+        }))
+    }
+
+    function settingEditVariableCheckbox(that, tab_index, tab_group_index, button_index) {
+        const floatContent = $(that).parents('.floating_window_float_content_box_content')
+        const buttonStyle = floatContent.find(".setting-button-style")[0].value
+        const title = floatContent.find(".setting-button-title")[0].value
+        const buttonMarginLeft = floatContent.find(".setting-button-margin_left")[0].value
+        const buttonMarginRight = floatContent.find(".setting-button-margin_right")[0].value
+        const variableType = floatContent.find(".setting-button-variable_type")[0].value
+        const titleWidth = floatContent.find(".setting-button-title_width")[0].value
+
+        const checkboxDomList = floatContent.find('.setting-button-type-input-send-text-show-input-group-box').find('.setting-button-type-group-checkbox-list')
+        if (checkboxDomList.length <= 0) {
+            return null
+        }
+
+        const checkbox_list = []
+        for (let i = 0; i < checkboxDomList.length; i++) {
+            const checkboxDom = checkboxDomList.eq(i)
+            const title = checkboxDom.find('.setting-button-type-group-checkbox-list-title')[0].value
+            const titleWidth = checkboxDom.find('.setting-button-type-group-checkbox-list-title_width')[0].value
+            const valueName = checkboxDom.find(".setting-button-type-group-checkbox-list-value_name")[0].value
+            const selectedValue = checkboxDom.find('.setting-button-type-group-checkbox-list-selected_value')[0].value
+            const unselectedValue = checkboxDom.find('.setting-button-type-group-checkbox-list-unselected_value')[0].value
+            checkbox_list.push({
+                'title': title,
+                'title_width': titleWidth,
+                'value_name': valueName,
+                'selected_value': selectedValue,
+                'unselected_value': unselectedValue,
+            })
+        }
+
+        if (button_index >= 0) {
+            const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+            button.variable_type = variableType
+            button.style = buttonStyle
+            button.checkbox_list = checkbox_list
+            button.title = title
+            button.title_width = titleWidth
+            button.margin_left = buttonMarginLeft
+            button.margin_right = buttonMarginRight
+
+        } else {
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons.push({
+                "type": "variable_checkbox",
+                "variable_type": variableType,
+                "style": buttonStyle,
+                "checkbox_list": checkbox_list,
+                "title": title,
+                "title_width": titleWidth,
+                "margin_left": buttonMarginLeft,
+                "margin_right": buttonMarginRight,
+                'uid': 'input-variable-checkbox-' + guid(),
+
+            })
+        }
+
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    //注册
+    button_type_register(
+        "variable_checkbox", "多选框(修改变量)", "用于修改事件变量，可以指定多个变量的选中和非选中的值进行快速更改。",
+        "main-button-type-show-variable-checkbox-template", "setting-button-type-show-variable-checkbox-template", {
+            'get_value': inputGetVariableValue
+        },
+        settingEditVariableCheckboxWindow
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

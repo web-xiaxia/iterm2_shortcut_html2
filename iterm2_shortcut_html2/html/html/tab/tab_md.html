@@ -1,0 +1,69 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="main-tab-button-group-md-template" type="text/html">
+    <div class="tab-button-main tab-button-main-md dom-select-text">
+        {{@$imports.marked_parse(tab.md||"")}}
+    </div>
+</script>
+<script id="setting-tab-button-group-md-template" type="text/html">
+    <div onclick="editMdWindow({{tab_index}})" class="tab-button-main tab-button-main-md dom-select-text"
+         style="height: 100%;width: 100%;">
+        {{@$imports.marked_parse(tab.md||"")}}
+    </div>
+</script>
+<script id="setting-edit-md-template" type="text/html">
+    <table class="setting-edit-md-table tab-button-main-md" style="height: 100%;   width: 100%;">
+        <tr style="height: 60%;">
+            <td style="height: 100%;">
+                <div class="setting-edit-md-show" style="vertical-align: top;width: 100%;height: 100%;">
+                    {{@md_html}}
+                </div>
+            </td>
+        </tr>
+        <tr style="height: 40%;">
+            <td style="height: 100%;">
+                <textarea class="setting-edit-md-text" rows="20" style="width: 100%;height: 100%;margin: 0px"
+                          oninput="settingEditMdInput(this)">{{md}}</textarea>
+                <div style="padding-top: 20px;">
+                    <button onclick="settingEditMd(this,{{tab_index}})">保存</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</script>
+
+
+<script>
+    function editMdWindow(tab_index) {
+        const md = STORAGE.tabs[tab_index].md || ""
+        openFloatingWindow('setting-edit-md-template', {
+            "tab_index": tab_index,
+            "md": md,
+            "md_html": marked.parse(md),
+        }, "md编辑")
+    }
+
+    function settingEditMdInput(that) {
+        $(that).parents('.setting-edit-md-table').find('.setting-edit-md-show').html(marked.parse(that.value))
+    }
+
+    function settingEditMd(that, tab_index) {
+        STORAGE.tabs[tab_index].md = $(that).parents('.setting-edit-md-table').find('.setting-edit-md-text').val()
+        closeFloatingWindow()
+        initSettingTabBox()
+    }
+
+    tab_type_register('md', 'markdown', 'markdown',
+        'main-tab-button-group-md-template', 'setting-tab-button-group-md-template',
+        'setting-tab-edit-template'
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

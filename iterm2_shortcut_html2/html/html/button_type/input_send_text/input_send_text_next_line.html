@@ -1,0 +1,75 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-input-send-text-show-input-group-next-line-template" type="text/html">
+    <div linkage="{{button_input.linkage}}"
+         style="height:{{button_input.height}}px; {{if tab_button.linkage && button_input.linkage&& button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}">
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-input-send-text-show-input-group-next-line-template" type="text/html">
+    <div class="drag-width"
+         style="height:{{button_input.height}}px; {{if tab_button.linkage && button_input.linkage&& button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}"
+         drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'height','height')">
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-input-send-text-input-group-next-line-template" type="text/html">
+    <div class="setting-button-input-send-text-box-group setting-button-input-send-text-input-group"
+         group-type="next_line">
+        <div>
+            <p class="setting-button-input-send-text-box-group-title">
+            <span class="setting-button-input-send-text-box-group-title-span">
+                换行
+                </span><button class="setting-button-input-send-text-box-group-title-button"
+                        onclick="settingButtonInputSendTextBoxGroupTitleButtonContext(this)">
+                    展开/收缩
+                </button>
+                {{include "setting-button-type-show-input-send-text-operation-button-template"}}
+            </p>
+            <table class="setting-button-input-send-text-box-group-context"
+                   style="{{if init_edit }}display: none;{{/if}}">
+                <tr>
+                    <td>联动</td>
+                    <td><input type="text" class="setting-button-input-send-text-input-group-value_linkage"
+                               value="{{button_input.linkage}}"></td>
+                    <td>高度</td>
+                    <td><input type="number" class="setting-button-input-send-text-input-group-height"
+                               value="{{button_input.height}}"></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</script>
+
+<script>
+    function input_send_text_input_group_next_line_input_data_fun(inputGroupDom) {
+        let linkage = inputGroupDom.find('.setting-button-input-send-text-input-group-value_linkage')[0].value
+        let height = parseInt(inputGroupDom.find('.setting-button-input-send-text-input-group-height')[0].value) || 3
+        if (height < 3) {
+            height = 3
+        }
+        return {
+            'type': 'next_line',
+            'linkage': linkage,
+            'height': height,
+        }
+    }
+
+    //注册
+    input_send_text_input_group_register("next_line", "换行",
+        "main-button-type-input-send-text-show-input-group-next-line-template",
+        "setting-button-type-input-send-text-show-input-group-next-line-template",
+        "setting-button-type-input-send-text-input-group-next-line-template",
+        input_send_text_input_group_next_line_input_data_fun
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

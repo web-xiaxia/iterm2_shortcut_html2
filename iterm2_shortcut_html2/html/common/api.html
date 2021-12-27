@@ -1,0 +1,215 @@
+{% block script %}
+<script>
+    function restartShortcut() {
+        $.ajax({
+            url: "/restart",
+            type: "GET",
+            async: false,
+            success: function (response_data) {
+
+            },
+            error: function (message) {
+
+            }
+        })
+        setTimeout(function () {
+            window.location.reload()
+        }, 1000)
+    }
+
+    function sendText(text) {
+        $.post("/send_text", {
+            "send_text": text
+        }, function (data) {
+            //pass
+        })
+    }
+
+    function sendHexCode(hxCode) {
+        $.post("/send_hex_code", {
+            "send_hex_code": "" + hxCode
+        }, function (data) {
+            //pass
+        })
+    }
+
+    function iterm2SelectedText() {
+        let selected_text = null
+        $.ajax({
+            url: "/selected_text",
+            type: "GET",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+                selected_text = response_data.selected_text
+            },
+            error: function (message) {
+                window.location.reload()
+            }
+        })
+        return selected_text
+    }
+
+    function execShell(shellText) {
+        let returnData = {}  // {'status': true, 'result': ["",""], }
+        $.ajax({
+            url: "/exec_shell",
+            type: "POST",
+            async: false,
+            data: {
+                "executable": "/bin/zsh",
+                "shell": shellText
+            },
+            success: function (response_data) {
+                returnData = response_data
+            },
+            error: function (message) {
+
+            }
+        })
+        return returnData
+    }
+
+    class HttpRequest {
+        constructor(url, method, headers, params, data, json) {
+            this.url = url
+            this.method = method
+            this.headers = headers
+            this.params = params
+            this.data = data
+            this.json = json
+        }
+
+        setUrl(url) {
+            this.url = url
+        }
+
+        setMethod(method) {
+            this.method = method
+        }
+
+        setHeaders(headers) {
+            this.headers = headers
+        }
+
+        setParams(params) {
+            this.params = params
+        }
+
+        setData(data) {
+            this.data = data
+        }
+
+        setJson(json) {
+            this.json = json
+        }
+    }
+
+    function sendHttp(httpRequest) {
+        let d = {"status": false, "message": "未成功"}
+        $.ajax({
+            url: "/proxy",
+            type: "POST",
+            async: false,
+            data: JSON.stringify(httpRequest),
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+                d = response_data
+            },
+            error: function (message) {
+
+            }
+        })
+        return d
+    }
+</script>
+<script>
+    function getInputButtonValueInputValue(inputButtonInput) {
+        const input_group_info = INPUT_SEND_TEXT_INPUT_GROUP_MAPPING[inputButtonInput.type]
+        if (!input_group_info) {
+            return null;
+        }
+        if (input_group_info.input_value_fun) {
+            return input_group_info.input_value_fun(inputButtonInput)
+        }
+        if (inputButtonInput.value_name) {
+            const v = {}
+            v[inputButtonInput.value_name] = inputButtonInput.value
+            return v
+        }
+        return null
+    }
+
+    function getInputButtonValue(inputButton) {
+        const inputButtonValue = {}
+        for (let index in inputButton.inputs) {
+            const input = inputButton.inputs[index]
+            const input_value = getInputButtonValueInputValue(input)
+            if (input_value) {
+                for (let key in input_value) {
+                    inputButtonValue[key] = input_value[key]
+                }
+                if (input.value_name && input.save_history) {
+                    const save_history_input_value = input_value[input.value_name]
+                    if (!input.quick || input.quick.split('||').indexOf(save_history_input_value) < 0) {
+                        let history_value = JSON.parse(input.history_value || "[]")
+                        let history_value_update = false
+                        if (history_value.indexOf(save_history_input_value) < 0) {
+                            history_value.unshift(save_history_input_value)
+                            history_value_update = true
+                        }
+                        if (history_value.length > 30) {
+                            history_value.splice(30)
+                            history_value_update = true
+                        }
+                        if (history_value_update) {
+                            input.history_value = JSON.stringify(history_value)
+                        }
+                    }
+                }
+            }
+        }
+        return inputButtonValue
+    }
+
+    function buttonSendText(tab_index, tab_group_index, tab_button_index) {
+        sendText(STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[tab_button_index].send_text)
+    }
+
+    function buttonJsButtonInputSendText(that, tab_index, tab_group_index, tab_button_index, one_button_index) {
+        const inputButton = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[tab_button_index]
+        const inputButtonValue = getInputButtonValue(inputButton)
+        const button = inputButton.buttons[one_button_index]
+        if (button.js) {
+            eval(`(function (data, user_variable) {
+                ${button.js}
+            })`)(inputButtonValue, getCustomVariableData())
+        }
+    }
+
+    function buttonInputEnterSendText(e, button_id) {
+        const sendTextBox = $(document.activeElement).parents('.button-type-input-send-text-box')
+        if (sendTextBox.length <= 0) {
+            return
+        }
+        const clickButtons = sendTextBox.find(`button.button-type-input-send-text-button[button-id=${button_id}]`)
+        if (clickButtons.length <= 0) {
+            return
+        }
+        for (let i = 0; i < clickButtons.length; i++) {
+            clickButtons[i].click()
+        }
+    }
+
+    function buttonInputSendText(that, tab_index, tab_group_index, tab_button_index, one_button_index) {
+        const inputButton = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[tab_button_index]
+        const inputButtonValue = getInputButtonValue(inputButton)
+        const button = inputButton.buttons[one_button_index]
+        let buttonSendText = button.send_text
+        for (let key in inputButtonValue) {
+            buttonSendText = buttonSendText.replace(eval("/\\[\\[" + key + "\]\]/g"), inputButtonValue[key])
+        }
+        sendText(buttonSendText)
+    }
+</script>
+{% endblock %}

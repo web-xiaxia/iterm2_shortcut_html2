@@ -1,0 +1,102 @@
+<html>
+<head>
+    <title>X</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <link rel="stylesheet" type="text/css" href="/css/index.css?x=3">
+    <link rel="stylesheet" type="text/css" href="/js/jquery.jsonview.css">
+    {% block style %}{% endblock %}
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/template.js"></script>
+    <script src="/js/jquery.jsonview.js"></script>
+    <script src="/js/marked.min.js"></script>
+    <script>
+        const ACTIV_TAB_INFO = {
+            'name': '',
+            'in_setting': false,
+            'has_floating_window': false,
+            'drag_width': false
+        }
+
+        function tabSetting() {
+            $("#main-tab-box").css({display: "none"})
+            $("#setting-tab-box").css({display: ""})
+            initSettingTabBox()
+            ACTIV_TAB_INFO.drag_width = false
+            ACTIV_TAB_INFO.in_setting = true
+        }
+
+        function tabSettingClose() {
+            $("#main-tab-box").css({display: ""})
+            $("#setting-tab-box").css({display: "none"})
+            dragWidthClose(true)
+            initMainTabBox()
+            ACTIV_TAB_INFO.in_setting = false
+        }
+
+        function dragWidthOpen() {
+            $('#setting-tab-box').addClass('drag-width-ing')
+            ACTIV_TAB_INFO.drag_width = true
+            initSettingTabBox()
+        }
+
+        function dragWidthClose(settingClose = false) {
+            $('#setting-tab-box').removeClass('drag-width-ing')
+            ACTIV_TAB_INFO.drag_width = false
+            if (!settingClose) {
+                initSettingTabBox()
+            }
+        }
+
+        $(function () {
+            $('body,#main-tab-foot-box-main').css({'min-width': (STORAGE.window_width || 950) + 'px'})
+            if (window.location.hash === '#setting') {
+                template.defaults.imports.marked_parse = marked.parse
+                tabSetting()
+            }
+        })
+    </script>
+    {% block script %}{% endblock %}
+</head>
+<body>
+{% block context %}{% endblock %}
+</body>
+</html>
+<html-include src="./common/utils.html"/>
+<html-include src="./common/storage.html"/>
+<html-include src="./common/draggable.html"/>
+<html-include src="./common/drag_width.html"/>
+<html-include src="./common/api.html"/>
+<html-include src="./common/item2.html"/>
+<html-include src="./common/floating_window.html"/>
+<html-include src="./common/floating_input_shell_text.html"/>
+<html-include src="./common/keyboard.html"/>
+<html-include src="./html/file_window.html"/>
+<html-include src="./html/main.html"/>
+<html-include src="./html/setting.html"/>
+<html-include src="./html/tab/tab_default.html"/>
+<html-include src="./html/tab/tab_md.html"/>
+<html-include src="./html/tab/tab_html.html"/>
+<html-include src="./html/setting_tab.html"/>
+<html-include src="./html/setting_button_group.html"/>
+<html-include src="./html/setting_button.html"/>
+<html-include src="./html/setting/system_setting/variable.html"/>
+<html-include src="./html/setting/system_setting.html"/>
+<html-include src="./html/button_type/setting_button_type_send_text.html"/>
+<html-include src="./html/button_type/setting_button_type_js_button.html"/>
+<html-include src="./html/button_type/setting_button_type_padding.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_button.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_js_button.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_input.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_select.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_shell_select.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_radio.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_checkbox.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_file.html"/>
+<html-include src="./html/button_type/input_send_text/input_send_text_next_line.html"/>
+<html-include src="./html/button_type/setting_button_type_next_line.html"/>
+<html-include src="./html/button_type/setting_button_type_input_send_text.html"/>
+<html-include src="./html/button_type/setting_button_type_variable_input.html"/>
+<html-include src="./html/button_type/setting_button_type_variable_radio.html"/>
+<html-include src="./html/button_type/setting_button_type_variable_checkbox.html"/>
+

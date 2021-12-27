@@ -1,0 +1,234 @@
+{% block style %}
+<style>
+    .floating_window {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 1500;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box; /* Firefox */
+        -webkit-box-sizing: border-box; /* Safari */
+    }
+
+    .floating_window .floating_window_background {
+        background: black;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        opacity: 0.5;
+        z-index: 998;
+        overflow: hidden;
+    }
+
+    .floating_window .floating_window_float {
+        border-radius: 7px;
+        width: 90%;
+        height: 90%;
+        z-index: 1501;
+        margin: 0 auto;
+        border: 3px solid #35373b;
+        background: #35373b;
+        overflow: hidden;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box; /* Firefox */
+        -webkit-box-sizing: border-box; /* Safari */
+        padding: 24px 0 0;
+    }
+
+    .floating_window .floating_window_float2 {
+        z-index: 1501;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .floating_window .floating_window_float .floating_window_float_title {
+        position: sticky;
+        margin: -24px 0 0;
+    }
+
+    .floating_window .floating_window_float .floating_window_float_title .content {
+        color: white;
+        height: 24px;
+        padding-left: 10px;
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .floating_window .floating_window_float .floating_window_float_title .floating_window_float_close {
+        color: white;
+        /*border: 1px solid white;*/
+        border-radius: 2px;
+        float: right;
+        display: inline-block;
+        line-height: 22px;
+        width: 22px;
+        height: 22px;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: center;
+    }
+
+    .floating_window .floating_window_float .floating_window_float_content_box {
+        border-radius: 7px;
+        background-color: rgb(38, 37, 37);
+        padding: 5px;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box; /* Firefox */
+        -webkit-box-sizing: border-box; /* Safari */
+    }
+
+    .floating_window .floating_window_float .floating_window_float_content_box .floating_window_float_content_box_content {
+        -webkit-overflow-scrolling: touch;
+        word-break: break-all;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box; /* Firefox */
+        -webkit-box-sizing: border-box; /* Safari */
+        border-radius: 5px;
+        -moz-user-select: text;
+        -webkit-user-select: text;
+        user-select: text;
+    }
+
+    .json-window-json-box {
+        margin: 10px 0 10px 0;
+    }
+
+    .json-window-tools {
+        position: sticky;
+        top: 0px;
+        background: rgb(28, 25, 25);
+        width: 100%;
+        z-index: 10000;
+        padding: 5px;
+        border-bottom: 1px solid rgb(105, 105, 105);
+    }
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="floating-window-template" type="text/html">
+    <div class="floating_window" style="z-index: {{floatingWindowIndex}}" window-index="{{floatingWindowIndex}}">
+        <div class="floating_window_background" onclick="closeFloatingWindow()">
+        </div>
+        <div class="floating_window_float">
+            <div class="floating_window_float_title"><span class="content">{{title}}</span><a
+                    class="floating_window_float_close iconfont" href="javascript:closeFloatingWindow()">X</a>
+            </div>
+            <div class="floating_window_float_content_box">
+                <div class="floating_window_float_content_box_content">
+                    {{if templateId}}
+                    <% include(templateId, templateValue) %>
+                    {{/if}}
+                    {{if html}}
+                    {{@html}}
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="floating-window-template2" type="text/html">
+    <div class="floating_window" style="z-index: {{floatingWindowIndex}}" window-index="{{floatingWindowIndex}}">
+        <div class="floating_window_background" onclick="closeFloatingWindow()">
+        </div>
+        <div class="floating_window_float2 floating_window_float_content_box2 floating_window_float_content_box_content2"
+             onclick="closeFloatingWindow()">
+            {{if templateId}}
+            <% include(templateId, templateValue) %>
+            {{/if}}
+            {{if html}}
+            {{@html}}
+            {{/if}}
+        </div>
+    </div>
+</script>
+
+<script id="floating-json-window-template" type="text/html">
+    <div id="json-window-{{floatingWindowIndex}}" class="json-window">
+        <div class="json-window-tools">
+            <button onClick="$('#json-window-json-box-{{floatingWindowIndex}}').JSONView('toggle');">toggle</button>
+            <button onClick="$('#json-window-json-box-{{floatingWindowIndex}}').JSONView('toggle',1);">toggle1</button>
+            <button onClick="$('#json-window-json-box-{{floatingWindowIndex}}').JSONView('toggle',2);">toggle2</button>
+            <button onClick="$('#json-window-json-box-{{floatingWindowIndex}}').JSONView('toggle',3);">toggle3</button>
+        </div>
+        <div id="json-window-json-box-{{floatingWindowIndex}}" class="json-window-json-box"></div>
+    </div>
+</script>
+<script>
+    let floatingWindowIndex = 1000
+    const FLOATING_WINDOW_DATA = {}
+
+    function openFloatingWindowFull(window_template_id, templateId, templateValue, html, title, closeCallback) {
+        const windowIndex = ++floatingWindowIndex
+        if (closeCallback != null) {
+            FLOATING_WINDOW_DATA['windowIndex' + windowIndex] = {
+                close_callback: closeCallback
+            }
+        }
+        templateValue.floatingWindowIndex = windowIndex
+        $("body").append(template(window_template_id, {
+            floatingWindowIndex: windowIndex,
+            title: title,
+            templateId: templateId,
+            templateValue: templateValue,
+            html: html
+        }))
+        ACTIV_TAB_INFO.has_floating_window = true
+        return windowIndex
+    }
+
+    function openFloatingWindow(templateId, templateValue, title, closeCallback) {
+        openFloatingWindowFull('floating-window-template', templateId, templateValue, '', title, closeCallback)
+    }
+
+    function openFloatingHtmlWindow(title, html) {
+        openFloatingWindowFull('floating-window-template', '', '', html, title, null)
+    }
+
+    function openJsonWindow(jsonStr) {
+        const tempWindowIndex = openFloatingWindowFull('floating-window-template', 'floating-json-window-template', {}, '', 'JSON', null)
+        try {
+            const v_json = JSON.parse(jsonStr)
+            $(`#json-window-json-box-${tempWindowIndex}`).JSONView(v_json)
+        } catch (e) {
+            $(`#json-window-json-box-${tempWindowIndex}`).text("解析失败: " + e + ", jsonStr: " + jsonStr)
+        }
+    }
+
+    function openFloatingWindow2(templateId, templateValue, title, closeCallback) {
+        openFloatingWindowFull('floating-window-template2', templateId, templateValue, '', title, closeCallback)
+    }
+
+    function closeFloatingWindow() {
+        const windowDom = $('.floating_window:last')
+        const windowIndex = 'windowIndex' + windowDom.attr('window-index')
+        const window_data = FLOATING_WINDOW_DATA[windowIndex]
+        if (!window_data || !window_data.close_callback || window_data.close_callback()) {
+            windowDom.remove()
+            delete FLOATING_WINDOW_DATA[windowIndex]
+        }
+        if ($('.floating_window:last').length === 0) {
+            ACTIV_TAB_INFO.has_floating_window = false
+        }
+    }
+
+
+</script>
+{% endblock %}
+{% block context %}
+{% endblock %}

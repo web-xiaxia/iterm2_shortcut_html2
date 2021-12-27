@@ -1,0 +1,111 @@
+{% block style %}
+{% endblock %}
+{% block script %}
+<script>
+    const DRAG_WIDTH_INFO = {
+        'drag_width_dom': null,
+        'drag_width_data': null,
+        'drag_width_tip_box': null
+    }
+
+    function initDragWidth(id) {
+        if (DRAG_WIDTH_INFO.drag_width_tip_box == null) {
+            DRAG_WIDTH_INFO.drag_width_tip_box = $("#drag-width-tip-box")
+        }
+        DRAG_WIDTH_INFO.drag_width_tip_box.css({"display": "block"})
+        const boxDom = $(id)
+        boxDom.find('[onclick]').removeAttr('onclick')
+        boxDom.find('.drag-width').hover(function (e) {
+            const dragWidthDom = $(this)
+            const dragWidthEval = dragWidthDom.attr('drag-width')
+            if (!dragWidthEval) {
+                return;
+            }
+            const dragWidthData = eval(dragWidthEval)
+            if (!dragWidthData) {
+                return;
+            }
+            DRAG_WIDTH_INFO.drag_width_dom = dragWidthDom
+            DRAG_WIDTH_INFO.drag_width_data = dragWidthData
+            DRAG_WIDTH_INFO.drag_width_tip_box.text(`按Q/W键进行调节：${dragWidthData.get(dragWidthDom)}px`)
+        }, function () {
+            DRAG_WIDTH_INFO.drag_width_dom = null
+            DRAG_WIDTH_INFO.drag_width_data = null
+            DRAG_WIDTH_INFO.drag_width_tip_box.text("鼠标移动到灰色背景区域")
+        })
+    }
+
+    function keyboardDragWidth(low) {
+        if (DRAG_WIDTH_INFO.drag_width_dom === null || DRAG_WIDTH_INFO.drag_width_data === null) {
+            return;
+        }
+
+        const dragWidthDom = DRAG_WIDTH_INFO.drag_width_dom
+        const dragWidthData = DRAG_WIDTH_INFO.drag_width_data
+
+        dragWidthData.set(dragWidthDom, low)
+    }
+
+    function dragWidthDataInfo(data, key, cssAttr) {
+        return {
+            get: function (that) {
+                const width = parseInt(data[key])
+                if (!isNaN(width)) {
+                    return width;
+                }
+                return parseInt($(that).css(cssAttr))
+            },
+            set: function (that, low) {
+                const nowWidth = this.get(that)
+                if (low && nowWidth < 3) {
+                    return;
+                }
+                const width = parseInt(nowWidth + (low ? -1 : 1))
+                data[key] = width
+                const x = {}
+                x[cssAttr] = `${width}px`
+                that.css(x)
+                DRAG_WIDTH_INFO.drag_width_tip_box.text(`按Q/W键进行调节：${width}px`)
+            }
+        }
+    }
+
+    function dragWidthButtonData(tab_index, tab_group_index, button_index, valueAttr, cssAttr) {
+        const buttonInfo = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        return dragWidthDataInfo(buttonInfo, valueAttr, cssAttr)
+    }
+
+    function dragWidthButtonCheckboxData(tab_index, tab_group_index, button_index, checkbox_index, valueAttr, cssAttr) {
+        const buttonInfo = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].checkbox_list[checkbox_index]
+        return dragWidthDataInfo(buttonInfo, valueAttr, cssAttr)
+    }
+
+    function dragWidthButtonRadioData(tab_index, tab_group_index, button_index, radio_index, valueAttr, cssAttr) {
+        const buttonInfo = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].radio_list[radio_index]
+        return dragWidthDataInfo(buttonInfo, valueAttr, cssAttr)
+    }
+
+    function dragWidthButtonInputButtonData(tab_index, tab_group_index, button_index, one_button_index, valueAttr, cssAttr) {
+        const buttonInfo = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].buttons[one_button_index]
+        return dragWidthDataInfo(buttonInfo, valueAttr, cssAttr)
+    }
+
+    function dragWidthButtonInputButtonInputData(tab_index, tab_group_index, button_index, input_button_index, valueAttr, cssAttr) {
+        const buttonInfo = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[input_button_index]
+        return dragWidthDataInfo(buttonInfo, valueAttr, cssAttr)
+    }
+
+    function dragWidthButtonInputButtonInputCheckboxData(tab_index, tab_group_index, button_index, input_button_index, checkbox_index, valueAttr, cssAttr) {
+        const buttonInfo = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[input_button_index].checkbox_list[checkbox_index]
+        return dragWidthDataInfo(buttonInfo, valueAttr, cssAttr)
+    }
+
+    function dragWidthButtonInputButtonInputRadioData(tab_index, tab_group_index, button_index, input_button_index, radio_index, valueAttr, cssAttr) {
+        const buttonInfo = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[input_button_index].radio_list[radio_index]
+        return dragWidthDataInfo(buttonInfo, valueAttr, cssAttr)
+    }
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

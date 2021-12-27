@@ -1,0 +1,126 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="setting-button-group-template" type="text/html">
+    <div>
+        <p>按钮大小：
+            <select class="setting-button-group-size">
+                {{each button_size_list index }}
+                {{if button_size == index}}
+                <option value="{{index}}" selected> {{index}}</option>
+                {{else}}
+                <option value="{{index}}"> {{index}}</option>
+                {{/if}}
+                {{/each}}
+            </select>
+            <button onclick="settingSaveButtonGroup(this,{{tab_index}},{{group_index}})">保存</button>
+        </p>
+        {{if group_index >= 0}}
+        <p>
+            <button onclick="settingMoveButtonGroup(this,{{tab_index}},{{group_index}}, -1)">前移</button>
+            <button onclick="settingMoveButtonGroup(this,{{tab_index}},{{group_index}}, 1)">后移</button>
+            <button style="margin-left: 20px;"
+                    ondblclick="settingDeleteButtonGroup(this,{{tab_index}},{{group_index}})">删除
+            </button>
+        </p>
+        {{/if}}
+    </div>
+    <div>
+        {{each button_size_list index }}
+        <div class="tab-button-group tab-button-group{{index}}">
+            <span class="title-span" style="width: 80px;">
+                大小{{index}}文字
+            </span>
+            <button>
+                大小{{index}}按钮
+            </button>
+        </div>
+        {{/each}}
+    </div>
+    <div class="move-button-group-tab-box">
+        <p>移动到新tab</p>
+        {{if tabs}}
+        <select class="move-button-group-tab-select">
+            {{each tabs tab temp_tab_index}}
+            {{if temp_tab_index!= tab_index && ( tab.type == 'default' || tab.type == '' || tab.type == null )}}
+            <option value="{{temp_tab_index}}">{{tab.name}}</option>
+            {{/if}}
+            {{/each}}
+        </select>
+        <button onclick="settingMoveButtonGroupTab(this,{{tab_index}},{{group_index}})">移动</button>
+        {{/if}}
+    </div>
+</script>
+<script>
+    function settingAddButtonGroupWindow(that, tab_index) {
+        openFloatingWindow('setting-button-group-template', {
+            "tab_index": tab_index,
+            "button_size_list": [1, 2, 3, 4, 5],
+            "button_size": 5,
+            "group_index": -1
+        }, "增加GROUP")
+    }
+
+    function settingEditButtonGroupWindow(that, tab_index, tab_group_index, button_size) {
+        openFloatingWindow('setting-button-group-template', {
+            "tab_index": tab_index,
+            "button_size_list": [1, 2, 3, 4, 5],
+            "button_size": button_size,
+            "group_index": tab_group_index,
+            "tabs": STORAGE.tabs
+        }, "编辑GROUP")
+    }
+
+    function settingDeleteButtonGroup(that, tab_index, tab_group_index) {
+        STORAGE.tabs[tab_index].tab_groups.splice(tab_group_index, 1)
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    function settingMoveButtonGroup(that, tab_index, index, move) {
+        const tabGroups = STORAGE.tabs[tab_index].tab_groups
+        if (index + move < 0 || index + move >= tabGroups.length) {
+            closeFloatingWindow()
+            return
+        }
+        [tabGroups[index], tabGroups[index + move]] = [tabGroups[index + move], tabGroups[index]];
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    function settingSaveButtonGroup(that, tab_index, tab_group_index) {
+        const groupSize = $(that).siblings(".setting-button-group-size")[0].value
+        if (tab_group_index >= 0) {
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].button_size = groupSize
+        } else {
+            STORAGE.tabs[tab_index].tab_groups.push({
+                'button_size': groupSize,
+                'buttons': []
+            })
+        }
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    function settingMoveButtonGroupTab(that, tab_index, tab_group_index) {
+        const newTabIndex = parseInt($(that).parents('.move-button-group-tab-box').find('.move-button-group-tab-select').val())
+        if (isNaN(newTabIndex)) {
+            return
+        }
+        const tabGroup = STORAGE.tabs[tab_index].tab_groups[tab_group_index]
+        if (tabGroup) {
+            STORAGE.tabs[newTabIndex].tab_groups.push(tabGroup)
+            STORAGE.tabs[tab_index].tab_groups.splice(tab_group_index, 1)
+            closeFloatingWindow()
+            initSettingTabBox()
+        }
+    }
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

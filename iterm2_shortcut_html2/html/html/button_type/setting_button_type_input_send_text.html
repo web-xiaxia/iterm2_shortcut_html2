@@ -1,0 +1,648 @@
+{% block style %}
+<style>
+    .setting-button-input-send-text-tab-top-button {
+        position: sticky;
+        top: 26px;
+        background-color: #161616;
+        padding: 10px 0px;
+        border-bottom: 1px solid #636363;
+        z-index: 20;
+    }
+
+    .setting-button-input-send-text-button-box, .setting-button-input-send-text-input-box {
+        padding-top: 10px;
+    }
+
+    .setting-button-input-send-text-input-box-main, .setting-button-input-send-text-button-box-main {
+        padding-left: 20px;
+    }
+
+    .setting-button-type-input-send-text-show-input-group-box {
+        padding: 5px 10px;
+    }
+
+    .setting-button-input-send-text-box-group {
+        background-color: #1d1d1d;
+        padding: 3px;
+        border-radius: 15px;
+        margin-top: 2px;
+    }
+
+    .setting-button-input-send-text-box-group:first-child {
+        margin-top: 0px;
+    }
+
+    .setting-button-input-send-text-box-group-title {
+        margin: 0;
+        padding: 3px 10px;
+        font-size: 12px;
+        border-bottom: 1px solid #757575;
+        background-color: #0d0d0d;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .setting-button-input-send-text-box-group-title button {
+        font-size: 12px;
+        padding: 2px 5px;
+    }
+
+    .setting-button-input-send-text-box-group-title-span {
+        min-width: 150px;
+        font-size: 12px;
+        display: inline-block;
+    }
+
+    .setting-button-input-send-text-box-group-title-button {
+        cursor: pointer;
+        margin: 0px 10px;
+        font-size: 12px;
+    }
+
+    .setting-button-input-send-text-box-group-context {
+        padding-top: 5px;
+    }
+
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-show-input-send-text-template" type="text/html">
+    <div class="input-send-text-group-box button-type-input-send-text-box">
+        {{if tab_button.margin_left}}
+        <div class="input-send-text-margin-box"
+             style="width:{{tab_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            <!--标题-->
+            {{if tab_button.title}}
+            <span class="title-span"
+                  style="{{if tab_button.title_width}}width: {{tab_button.title_width}}px;{{/if}} ">
+            {{tab_button.title}}
+            </span>
+            {{/if}}
+
+            <!--联动-->
+            {{if tab_button.linkage}}
+            <div class="input-send-text-group-box">
+                {{if tab_button.linkage_margin_left}}
+                <div class="input-send-text-margin-box"
+                     style="width:{{tab_button.linkage_margin_left}}px;">
+                </div>
+                {{/if}}
+                <div class="input-send-text-group-context-box">
+                    {{if tab_button.linkage_title}}
+                    <span class="title-span"
+                          style="{{if tab_button.linkage_title_width}}width: {{tab_button.linkage_title_width}}px;{{/if}} ">{{tab_button.linkage_title}}</span>
+                    {{/if}}
+                    <select class="input-send-text-input {{if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                            style="{{if tab_button.linkage_width}}width:{{tab_button.linkage_width}}px;{{/if}}"
+                            onchange="buttonLinkageChange(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}})"
+                    >
+                        {{each tab_button.linkage_option_list option }}
+                        {{if option == tab_button.linkage_value}}
+                        <option value="{{option}}" selected> {{option}}</option>
+                        {{else}}
+                        <option value="{{option}}"> {{option}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            {{if tab_button.linkage_margin_right}}
+            <div class="input-send-text-margin-box"
+                 style="width:{{tab_button.linkage_margin_right}}px;">
+            </div>
+            {{/if}}
+            {{/if}}
+
+            <!--输入框-->
+            {{each tab_button.inputs button_input button_input_index }}
+            {{each template_data.input_group_list input_group}}
+            {{if button_input.type == input_group.type}}
+            <% include(input_group.main_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'button_input_index':button_input_index,
+            'tab_button':tab_button,
+            'button_input':button_input
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/each}}
+
+            <!--按钮-->
+            {{each tab_button.buttons one_button one_button_index }}
+            {{each template_data.button_group_list button_group}}
+            {{if (button_group.type=='button' && one_button.type == null)|| one_button.type == button_group.type }}
+            <% include(button_group.main_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'one_button_index':one_button_index,
+            'tab_button':tab_button,
+            'one_button':one_button
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/each}}
+        </div>
+        {{if tab_button.margin_right}}
+        <div class="input-send-text-margin-box"
+             style="width:{{tab_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-show-input-send-text-template" type="text/html">
+    <div class="input-send-text-group-box"
+         draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
+         onclick="settingEditButtonInputSendTextWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
+        {{if tab_button.margin_left}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'margin_left','width')"
+             style="width:{{tab_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            <!--标题-->
+            {{if tab_button.title}}
+            <span class="title-span drag-width"
+                  drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'title_width','width')"
+                  style="{{if tab_button.title_width}}width: {{tab_button.title_width}}px;{{/if}} ">
+                {{tab_button.title}}
+            </span>
+            {{/if}}
+
+            <!--联动-->
+            {{if tab_button.linkage}}
+            <div class="input-send-text-group-box">
+                {{if tab_button.linkage_margin_left}}
+                <div class="input-send-text-margin-box drag-width"
+                     drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'linkage_margin_left','width')"
+                     style="width:{{tab_button.linkage_margin_left}}px;">
+                </div>
+                {{/if}}
+                <div class="input-send-text-group-context-box">
+                    {{if tab_button.linkage_title}}
+                    <span class="title-span drag-width"
+                          drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'linkage_title_width','width')"
+                          style="{{if tab_button.linkage_title_width}}width: {{tab_button.linkage_title_width}}px;{{/if}} ">{{tab_button.linkage_title}}</span>
+                    {{/if}}
+                    <select onclick="settingInputBlur(this)"
+                            class="input-send-text-input drag-width {{if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                            drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'linkage_width','width')"
+                            style="{{if tab_button.linkage_width}}width:{{tab_button.linkage_width}}px;{{/if}}">
+                        {{each tab_button.linkage_option_list option }}
+                        {{if option == tab_button.linkage_value}}
+                        <option value="{{option}}" selected> {{option}}</option>
+                        {{else}}
+                        <option value="{{option}}"> {{option}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </div>
+                {{if tab_button.linkage_margin_right}}
+                <div class="input-send-text-margin-box drag-width"
+                     drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'linkage_margin_right','width')"
+                     style="width:{{tab_button.linkage_margin_right}}px;">
+                </div>
+                {{/if}}
+            </div>
+            {{/if}}
+
+            <!--输入框-->
+            {{each tab_button.inputs button_input button_input_index }}
+            {{each template_data.input_group_list input_group}}
+            {{if button_input.type == input_group.type}}
+            <% include(input_group.setting_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'button_input_index':button_input_index,
+            'tab_button':tab_button,
+            'button_input':button_input
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/each}}
+
+            <!--按钮-->
+            {{each tab_button.buttons one_button one_button_index }}
+            {{each template_data.button_group_list button_group}}
+            {{if (button_group.type=='button' && one_button.type == null) || one_button.type == button_group.type }}
+            <% include(button_group.setting_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'button_input_index':button_input_index,
+            'one_button_index':one_button_index,
+            'tab_button':tab_button,
+            'one_button':one_button
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/each}}
+        </div>
+        {{if tab_button.margin_right}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'margin_right','width')"
+             style="width:{{tab_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-input-send-text-template" type="text/html">
+    <div class="tab-select-box">
+        <div id="input-send-setting-tab-select" class="tab-select">
+            <span class="activity"
+                  onclick="inputSendSettingTabChange(this,'#input-send-setting-tab-basics')">基础信息</span>
+            <span onclick="inputSendSettingTabChange(this,'#input-send-setting-tab-linkage')">联动信息</span>
+            <span onclick="inputSendSettingTabChange(this,'#input-send-setting-tab-input')">输入信息</span>
+            <span onclick="inputSendSettingTabChange(this,'#input-send-setting-tab-button')">按钮信息</span>
+        </div>
+        <div class="tab-select-box-border"></div>
+    </div>
+    <div id="input-send-setting-tab-context-box" class="tab-button-box">
+        <div id="input-send-setting-tab-basics" class="tab-button-main">
+            <p>
+                标题：
+                <input class="setting-button-input-send-text-title" type="text"
+                       value="{{button_info.title}}">
+                标题宽度：
+                <input class="setting-button-input-send-text-title_width" type="number"
+                       value="{{button_info.title_width}}">
+            </p>
+            <p>
+                颜色：
+                <select class="setting-button-input-send-text-style {{if button_info.style}}button-color-{{button_info.style}}{{/if}}"
+                        onchange="settingButtonStyleSelect(this)">
+                    {{each button_style_list button_style }}
+                    {{if button_info.style==button_style }}
+                    <option value="{{button_style}}" selected> {{button_style}}</option>
+                    {{else}}
+                    <option value="{{button_style}}"> {{button_style}}</option>
+                    {{/if}}
+                    {{/each}}
+                </select>
+            </p>
+            <p>
+                前间距：
+                <input class="setting-button-input-send-text-margin_left" type="number"
+                       value="{{button_info.margin_left}}">
+                后间距：
+                <input class="setting-button-input-send-text-margin_right" type="number"
+                       value="{{button_info.margin_right}}">
+            </p>
+            <button onclick="settingEditButtonInputSendText(this,{{tab_index}},{{group_index}},{{button_index}})">保存
+            </button>
+            {{include 'setting-button-operation-template'}}
+        </div>
+        <div id="input-send-setting-tab-linkage" class="tab-button-main" style="display: none;">
+            <p>
+                联动：{{if button_info.linkage}}
+                <label><input type="radio" name="setting-button-input-send-text-linkage" checked>开启</label>
+                <label><input name="setting-button-input-send-text-linkage" type="radio">关闭</label>
+                {{else}}
+                <label><input type="radio" name="setting-button-input-send-text-linkage">开启</label>
+                <label><input name="setting-button-input-send-text-linkage" type="radio" checked
+                >关闭</label>
+                {{/if}}
+            </p>
+            <table>
+                <tr>
+                    <td>选项值</td>
+                    <td colspan="3">
+                    <textarea class="setting-button-input-send-text-input-group-linkage_option" rows="5"
+                              style="width: 500px">{{button_info.linkage_option}}</textarea>
+                        <div class="bottom_edit_tips">使用 || 隔开</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>默认值</td>
+                    <td><input class="setting-button-input-send-text-linkage_value" type="text"
+                               value="{{button_info.linkage_value}}"></td>
+                    <td>选项宽度</td>
+                    <td><input class="setting-button-input-send-text-linkage_width" type="number"
+                               value="{{button_info.linkage_width}}"></td>
+                </tr>
+                <tr>
+                    <td>标题</td>
+                    <td><input class="setting-button-input-send-text-linkage_title" type="text"
+                               value="{{button_info.linkage_title}}">
+                    </td>
+                    <td>标题宽度</td>
+                    <td><input class="setting-button-input-send-text-linkage_title_width" type="number"
+                               value="{{button_info.linkage_title_width}}"></td>
+                </tr>
+                <tr>
+                    <td>前间距</td>
+                    <td><input class="setting-button-input-send-text-linkage_margin_left" type="number"
+                               value="{{button_info.linkage_margin_left}}"></td>
+                    <td>后间距</td>
+                    <td><input class="setting-button-input-send-text-linkage_margin_right" type="number"
+                               value="{{button_info.linkage_margin_right}}"></td>
+                </tr>
+
+            </table>
+        </div>
+        <div id="input-send-setting-tab-input" class="tab-button-main" style="display: none;">
+            <div class="setting-button-input-send-text-tab-top-button">
+                <select class="setting-button-input-send-text-input-type">
+                    {{each input_group_list as input_group}}
+                    <option value="{{input_group.type}}">{{input_group.name}}</option>
+                    {{/each}}
+                </select>
+                <button onclick="settingAddButtonInputSendTextInputGroup(this)" style="width: 100px;"> 增加输入框</button>
+
+                <button onclick="settingButtonInputSendTextBoxGroupTitleButtonContextAll(this,'#input-send-setting-tab-input','block')"
+                        style="margin-left: 30px">
+                    展开所有
+                </button>
+                <button onclick="settingButtonInputSendTextBoxGroupTitleButtonContextAll(this,'#input-send-setting-tab-input','none')">
+                    收缩所有
+                </button>
+            </div>
+            <div class="setting-button-input-send-text-input-box setting-add-button-input-send-text-button-box-main">
+                {{each button_info.inputs button_input }}
+                {{each input_group_list input_group}}
+                {{if button_input.type == input_group.type}}
+                <% include(input_group.edit_template_id,
+                {
+                'init_edit': button_info.inputs.length >2 ,
+                'button_input':button_input,
+                'button_style_list': button_style_list
+                }
+                ) %>
+                {{/if}}
+                {{/each}}
+                {{/each}}
+            </div>
+        </div>
+        <div id="input-send-setting-tab-button" class="tab-button-main" style="display: none;">
+            <div class="setting-button-input-send-text-tab-top-button">
+                <select class="setting-button-input-send-text-button-type">
+                    {{each button_group_list as button_group}}
+                    <option value="{{button_group.type}}">{{button_group.name}}</option>
+                    {{/each}}
+                </select>
+                <button onclick="settingAddButtonInputSendTextButtonBox(this)" style="width: 100px;">增加按钮</button>
+                <button onclick="settingButtonInputSendTextBoxGroupTitleButtonContextAll(this,'#input-send-setting-tab-button','block')"
+                        style="margin-left: 30px">
+                    展开所有
+                </button>
+                <button onclick="settingButtonInputSendTextBoxGroupTitleButtonContextAll(this,'#input-send-setting-tab-button','none')">
+                    收缩所有
+                </button>
+            </div>
+            <div class="setting-button-input-send-text-button-box setting-add-button-input-send-text-button-box-main">
+                {{each button_info.buttons one_button}}
+                {{each button_group_list button_group}}
+                {{if (button_group.type=='button' && one_button.type == null) || one_button.type ==
+                button_group.type }}
+                <% include(button_group.edit_template_id,
+                {
+                'init_edit': button_info.buttons.length >2,
+                'one_button':one_button,
+                'button_style_list': button_style_list
+                }
+                ) %>
+                {{/if}}
+                {{/each}}
+                {{/each}}
+
+            </div>
+
+
+        </div>
+    </div>
+</script>
+<!--js-->
+<script>
+
+    function inputSendSettingTabChange(that, id) {
+        $('#input-send-setting-tab-select>span').removeClass('activity')
+        $(that).addClass('activity')
+        $("#input-send-setting-tab-context-box>.tab-button-main").css({'display': 'none'})
+        $(id).css({'display': 'block'})
+    }
+
+    function settingAddButtonInputSendTextButtonBox(that) {
+        const buttonType = $(that).siblings('.setting-button-input-send-text-button-type')[0].value
+        const buttonGroupTypeData = INPUT_SEND_TEXT_BUTTON_GROUP_MAPPING[buttonType]
+        if (buttonGroupTypeData) {
+            const tabButtonBox = $('#input-send-setting-tab-button')
+            const oldHeight = tabButtonBox.css('height')
+            const buttonBox = tabButtonBox.find(".setting-button-input-send-text-button-box")
+            buttonBox.append(template(buttonGroupTypeData.edit_template_id, {
+                "one_button": {},
+                "button_style_list": SETTING_BUTTON_STYLE,
+            }))
+
+            $('.floating_window_float_content_box_content').scrollTop(parseInt(oldHeight) - 40)
+        }
+
+    }
+
+    function settingAddButtonInputSendTextInputGroup(that) {
+        const inputType = $(that).siblings(".setting-button-input-send-text-input-type")[0].value
+        const inputGroupTypeData = INPUT_SEND_TEXT_INPUT_GROUP_MAPPING[inputType]
+        if (inputGroupTypeData) {
+            const tabInputBox = $('#input-send-setting-tab-input')
+            const oldHeight = tabInputBox.css('height')
+            const inputBoxDom = tabInputBox.find('.setting-button-input-send-text-input-box')
+            inputBoxDom.append(template(inputGroupTypeData.edit_template_id, {
+                    'button_input': {
+                        'radio_list': [{}],
+                        'checkbox_list': [{}]
+                    },
+                    "button_style_list": SETTING_BUTTON_STYLE,
+                })
+            )
+            $('.floating_window_float_content_box_content').scrollTop(parseInt(oldHeight) - 40)
+        }
+    }
+
+    function inputSendTextInputChange(that, tab_index, tab_group_index, button_index, button_input_index) {
+        STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[button_input_index].value = $(that).val()
+    }
+
+    function buttonLinkageChange(that, tab_index, tab_group_index, button_index) {
+        const inputButton = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        const selectedValue = $(that).val()
+        inputButton.linkage_value = selectedValue
+        const linkageList = $(that).parents('.input-send-text-box').find("[linkage]")
+        for (let i = 0; i < linkageList.length; i++) {
+            const linkageDom = linkageList.eq(i)
+            const linkageValue = linkageDom.attr('linkage')
+            linkageDom.css({'display': linkageValue === '' || linkageValue === selectedValue ? '' : 'none'})
+        }
+    }
+
+    function settingEditButtonInputSendTextWindowButtonInfo(tab_index, tab_group_index, button_index) {
+        if (button_index >= 0) {
+            return STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        }
+
+        return {
+            "inputs": [{"type": INPUT_SEND_TEXT_INPUT_GROUP_LIST[0].type}],
+            "buttons": [{"type": INPUT_SEND_TEXT_BUTTON_GROUP_LIST[0].type}]
+        }
+    }
+
+    function settingButtonInputSendTextBoxGroupTitleButtonContextAll(that, mainId, display) {
+        const contextDom = $(that).parents(mainId).find('.setting-button-input-send-text-box-group-context')
+        contextDom.css({'display': display})
+    }
+
+    function settingButtonInputSendTextBoxGroupTitleButtonContext(that) {
+        const contextDom = $(that).parents('.setting-button-input-send-text-box-group').find('.setting-button-input-send-text-box-group-context')
+        contextDom.css({'display': contextDom.css('display') === 'none' ? 'block' : 'none'})
+    }
+
+    function settingEditButtonInputSendTextWindow(tab_index, tab_group_index, button_index) {
+        const buttonInfo = settingEditButtonInputSendTextWindowButtonInfo(tab_index, tab_group_index, button_index)
+        openFloatingWindow('setting-button-type-input-send-text-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_index": button_index,
+            "button_style_list": SETTING_BUTTON_STYLE,
+            "button_info": buttonInfo,
+            "input_group_list": INPUT_SEND_TEXT_INPUT_GROUP_LIST,
+            "button_group_list": INPUT_SEND_TEXT_BUTTON_GROUP_LIST
+        }, "BUTTON(输入发送文字)")
+    }
+
+    function settingEditButtonInputSendText(that, tab_index, tab_group_index, button_index) {
+        const floatContent = $(that).parents('.floating_window_float_content_box_content')
+        const linkage = floatContent.find("[name=setting-button-input-send-text-linkage]")[0].checked
+        const linkageOption = floatContent.find(".setting-button-input-send-text-input-group-linkage_option")[0].value
+        let linkageValue = floatContent.find(".setting-button-input-send-text-linkage_value")[0].value
+        const linkageWidth = floatContent.find(".setting-button-input-send-text-linkage_width")[0].value
+        const linkageTitle = floatContent.find(".setting-button-input-send-text-linkage_title")[0].value
+        const linkageTitleWidth = floatContent.find(".setting-button-input-send-text-linkage_title_width")[0].value
+        const linkageMarginLeft = floatContent.find(".setting-button-input-send-text-linkage_margin_left")[0].value
+        const linkageMarginRight = floatContent.find(".setting-button-input-send-text-linkage_margin_right")[0].value
+        const inputGroupDomList = floatContent.find(".setting-button-input-send-text-input-group")
+        const buttonGroupDomList = floatContent.find(".setting-button-input-send-text-button-group")
+        const title = floatContent.find(".setting-button-input-send-text-title")[0].value
+        const titleWidth = floatContent.find(".setting-button-input-send-text-title_width")[0].value
+        const buttonStyle = floatContent.find(".setting-button-input-send-text-style")[0].value
+        const marginLeft = floatContent.find(".setting-button-input-send-text-margin_left")[0].value
+        const marginRight = floatContent.find(".setting-button-input-send-text-margin_right")[0].value
+
+        if (linkage) {
+            if (linkageOption.length === 0) {
+                alert("联动选项未输入")
+                return;
+            }
+        }
+
+        const linkageOptionList = linkageOption.split("||")
+        if (inputGroupDomList.length <= 0 || buttonGroupDomList.length <= 0) {
+            alert("未找到输入框，请选择输入框")
+            return
+        }
+        if (!linkageValue || !linkageOptionList.reduce((s, val, i) => {
+            s.add(val)
+            return s;
+        }, new Set()).has(linkageValue)) {
+            linkageValue = linkageOptionList[0]
+        }
+
+        const inputs = []
+        for (let index = 0; index < inputGroupDomList.length; index++) {
+            const inputGroupDom = inputGroupDomList.eq(index)
+            const groupType = inputGroupDom.attr('group-type')
+            const inputGroupTypeData = INPUT_SEND_TEXT_INPUT_GROUP_MAPPING[groupType]
+            if (inputGroupTypeData) {
+                const input = inputGroupTypeData.input_data_fun(inputGroupDom)
+                if (!input) {
+                    return;
+                }
+                inputs.push(input)
+            }
+        }
+        const buttons = []
+        for (let index = 0; index < buttonGroupDomList.length; index++) {
+            const buttonGroupDom = buttonGroupDomList.eq(index)
+            const groupType = buttonGroupDom.attr('group-type')
+            const buttonGroupTypeData = INPUT_SEND_TEXT_BUTTON_GROUP_MAPPING[groupType]
+            if (buttonGroupTypeData) {
+                const button = buttonGroupTypeData.input_data_fun(buttonGroupDom)
+                if (button) {
+                    buttons.push(button)
+                }
+            }
+        }
+
+        if (button_index >= 0) {
+            const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+            button.linkage = linkage
+            button.linkage_option = linkageOption
+            button.linkage_option_list = linkageOptionList
+            button.linkage_value = linkageValue
+            button.linkage_title = linkageTitle
+            button.linkage_title_width = linkageTitleWidth
+            button.linkage_width = linkageWidth
+            button.linkage_margin_left = linkageMarginLeft
+            button.linkage_margin_right = linkageMarginRight
+            button.buttons = buttons
+            button.inputs = inputs
+            button.title = title
+            button.title_width = titleWidth
+            button.style = buttonStyle
+            button.margin_left = marginLeft
+            button.margin_right = marginRight
+        } else {
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons.push({
+                "type": "input_send_text",
+                "linkage": linkage,
+                "linkage_option": linkageOption,
+                "linkage_option_list": linkageOptionList,
+                "linkage_value": linkageValue,
+                "linkage_title": linkageTitle,
+                "linkage_title_width": linkageTitleWidth,
+                "linkage_width": linkageWidth,
+                "linkage_margin_left": linkageMarginLeft,
+                "linkage_margin_right": linkageMarginRight,
+                "buttons": buttons,
+                "inputs": inputs,
+                "title ": title,
+                "title_width": titleWidth,
+                "style": buttonStyle,
+                "margin_left": marginLeft,
+                "margin_right": marginRight
+            })
+        }
+
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    //注册
+    button_type_register(
+        "input_send_text", "输入发送文本", "可以预设输入框，多选框等变量，点击按钮使用变量拼接发送文本到窗口。",
+        "main-button-type-show-input-send-text-template", "setting-button-type-show-input-send-text-template", {
+            "input_group_list": INPUT_SEND_TEXT_INPUT_GROUP_LIST,
+            "button_group_list": INPUT_SEND_TEXT_BUTTON_GROUP_LIST,
+        },
+        settingEditButtonInputSendTextWindow
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

@@ -1,0 +1,250 @@
+{% block style %}
+<style>
+    #save_storage_loading {
+        width: 10px;
+        position: fixed;
+        top: 11px;
+        left: 7px;
+        z-index: 20;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<script>
+    const SYNC_STORAGE_INFO = {
+        'ignore_guid': true,
+        'bak': false
+    }
+    const STORAGE_HANDLER = {
+        get: function (target, key) {
+            if (key === "__isProxy") {
+                return true;
+            }
+            const v = Reflect.get(...arguments);
+            if (v === undefined || v === null || key === 'prototype') {
+                return v;
+            }
+            if (v.__isProxy) {
+                return v;
+            }
+            if (v instanceof Object) {
+                const v2 = new Proxy(v, STORAGE_HANDLER)
+                target[key] = v2
+                return v2;
+            }
+            return v;
+        },
+        set: function (target, key, value) {
+            if (key === 'storage_data_version_id') {
+                Reflect.set(...arguments);
+                return true
+            }
+            const value_type_map = {
+                'boolean': 1,
+                'number': 1,
+                'string': 1
+            }
+            if (value_type_map[typeof (value)]) {
+                if (target[key] === value) {
+                    return true
+                }
+            }
+            Reflect.set(...arguments);
+
+            const ignore_guid_map = {
+                'foot_box_id': 1,
+                'tab_index': 1,
+                'setting_tab_index': 1,
+                'system_setting_tba_index': 1,
+                'input_shell_text': 1,
+                'foot_box_close': 1,
+                'storage_data_version_id': 1,
+            }
+            const ignore_bak_map = {
+                'value': 1,
+                'checked': 1,
+            }
+            syncStorage(ignore_guid_map[key], ignore_guid_map[key] || ignore_bak_map[key])
+            return true
+        },
+        apply: function (target, ctx, args) {
+            const ret = Reflect.apply(target, ctx, args)
+            if (target.name === 'push' || target.name === 'unshift' || target.name === 'splice') {
+                syncStorage()
+            }
+            return ret
+        },
+        deleteProperty: function (target, key) {
+            Reflect.deleteProperty(...arguments);
+            syncStorage()
+            return true;
+        }
+    }
+</script>
+<script>
+    const STORAGE = storageAjax()
+    const JS = {}
+    JS.install = function (key, value) {
+        JS[key] = value
+    }
+    if (STORAGE.user_js) {
+        for (let i in STORAGE.user_js) {
+            const user_js = STORAGE.user_js[i]
+            try {
+                Function(`
+                    ${user_js.value}
+
+                    try {
+                        JS.install('${user_js.name}', ${user_js.name})
+                    } catch (e) {
+
+                    }
+                `)()
+            } catch (e) {
+                console.log(`初始化自定js错误，name：${user_js.name}，error：${e}`)
+            }
+        }
+    }
+    deleteStorageAjax()
+    const STORAGE_CUSTOM_VARIABLE = (function () {
+        if (STORAGE.custom_variable == null) {
+            STORAGE.custom_variable = []
+        }
+        return STORAGE.custom_variable
+    })()
+    const STORAGE_USER_VARIABLE = (function () {
+        if (STORAGE.user_variable == null) {
+            STORAGE.user_variable = []
+        }
+        return STORAGE.user_variable
+    })()
+
+    function storageAjax() {
+        let storage = null
+        $.ajax({
+            url: "/storage",
+            type: "GET",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+                storage = new Proxy(response_data, STORAGE_HANDLER)
+            },
+            error: function (message) {
+                window.location.reload()
+            }
+        })
+        return storage
+    }
+
+    function deleteStorageAjax() {
+        $.ajax({
+            url: "/storage",
+            type: "delete",
+            success: function (response_data) {
+
+            },
+            error: function (message) {
+
+            }
+        })
+    }
+
+
+    function syncStorage(ignore_guid, ignore_bak) {
+        if (!ignore_guid) {
+            SYNC_STORAGE_INFO.ignore_guid = false
+        }
+        if (!ignore_bak) {
+            SYNC_STORAGE_INFO.bak = true
+        }
+        if (SYNC_STORAGE_INFO.set_timeout) {
+            clearTimeout(SYNC_STORAGE_INFO.set_timeout)
+        }
+        $('#save_storage_loading').css({'display': ""})
+
+        let saveStorageTimeout = parseInt(STORAGE.save_storage_timeout)
+        if (isNaN(saveStorageTimeout)) {
+            STORAGE.save_storage_timeout = saveStorageTimeout = 1000
+        }
+        SYNC_STORAGE_INFO.set_timeout = setTimeout(syncStorageAjax, saveStorageTimeout)
+    }
+
+
+    function syncStorageAjax() {
+        if (SYNC_STORAGE_INFO.set_timeout) {
+            clearTimeout(SYNC_STORAGE_INFO.set_timeout)
+        }
+        const bak = SYNC_STORAGE_INFO.bak
+        if (bak) {
+            SYNC_STORAGE_INFO.bak = false
+        }
+        const old_storage_data_version_id = STORAGE.storage_data_version_id
+        if (!SYNC_STORAGE_INFO.ignore_guid) {
+            SYNC_STORAGE_INFO.ignore_guid = true
+            STORAGE.storage_data_version_id = guid()
+        }
+
+        $.ajax({
+            url: "/storage",
+            type: "POST",
+            async: false,
+            data: JSON.stringify({
+                'storage_data_version_id': old_storage_data_version_id,
+                'storage': STORAGE,
+                'bak': bak,
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $('#save_storage_loading').css({'display': "none"})
+                if (!data.status) {
+                    alert(data.message)
+                }
+            }
+        })
+    }
+
+    function storageResetEventSendMap() {
+        setTimeout(function () {
+            $.ajax({
+                url: "/storage_reset_event_send_map",
+                type: "POST",
+                data: JSON.stringify({}),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                }
+            })
+        }, STORAGE.save_storage_timeout + 300)
+
+    }
+
+    function storageResetCustomVariableMap() {
+        setTimeout(function () {
+            $.ajax({
+                url: "/storage_reset_custom_variable_map",
+                type: "POST",
+                data: JSON.stringify({}),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                }
+            })
+        }, STORAGE.save_storage_timeout + 300)
+    }
+
+    function storageResetPyMethod() {
+        setTimeout(function () {
+            $.ajax({
+                url: "/storage_reset_py_method",
+                type: "POST",
+                data: JSON.stringify({}),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                }
+            })
+        }, STORAGE.save_storage_timeout + 300)
+    }
+
+</script>
+{% endblock %}
+{% block context %}
+<img id="save_storage_loading" style="display: none;" src="/image/loading.gif"/>
+{% endblock %}

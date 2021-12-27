@@ -1,0 +1,213 @@
+{% block style %}
+<style>
+    .input-shell-text-window-box {
+        height: 100%;
+        width: 80%;
+        margin: 0 auto;
+        max-width: 800px;
+        text-align: center;
+    }
+
+    .input-shell-text-input-tips {
+        width: 100%;
+        margin: 0 3px;
+        padding: 5px 3px;
+        text-align: left;
+        font-size: 12px;
+        color: #797979;
+    }
+
+    .input-shell-text-input-mode-change {
+        cursor: pointer;
+        color: #9a9a9a;
+        margin-right: 10px;
+    }
+    .input-shell-text-input-tips:hover {
+        background: black;
+        color: #f1f1f1;
+    }
+    .input-shell-text-input-tips:hover .input-shell-text-input-mode-change{
+        color: #4e9fff;
+    }
+
+    .shell-text-input-command-history-box {
+        width: 100%;
+        margin: 0 3px;
+        padding: 5px 0px 0px;
+        overflow: scroll;
+        height: 40%;
+        min-height: 160px;
+        border: 0;
+        border-radius: 0px;
+        background-color: rgba(30, 30, 30, 0.55);
+    }
+
+    .shell-text-input-command-history-box option:hover {
+        background-color: #535355;
+    }
+
+</style>
+{% endblock %}
+
+{% block script %}
+<script id="floating-input-shell-text-window-template" type="text/html">
+    <div style="padding-top: {{padding_top}}px;" class="input-shell-text-window-box" onclick="closeFloatingWindow()">
+        <div class="input-shell-text-input-tips" onclick="event.stopPropagation();">
+            <span class="input-shell-text-input-mode-change" onclick="openInputShellText2(true)">切换多行</span>
+            enter发送，方向下键选择历史
+        </div>
+        <input class="input-shell-text-input" style="width: 100%;" type="text"
+               on-enter="openInputShellTextEnter(e)"
+               on-key-down="inputShellTextKeyboard(e)"
+               oninput="saveInputShellText(this)"
+               onclick="event.stopPropagation();">
+        <select multiple class="shell-text-input-command-history-box"
+                on-enter="shellTextHistoryBoxEnter(e)"
+                onclick="event.stopPropagation();">
+        </select>
+    </div>
+</script>
+<script id="floating-input-shell-text-window2-template" type="text/html">
+    <div style="padding-top: {{padding_top}}px" class="input-shell-text-window-box" onclick="closeFloatingWindow()">
+        <div class="input-shell-text-input-tips" onclick="event.stopPropagation();">
+            <span class="input-shell-text-input-mode-change" onclick="openInputShellText(true)">切换单行</span>
+            command+enter发送，command+option+方向下键选择历史
+        </div>
+        <textarea class="input-shell-text-input" style="width: 100%;" rows="8"
+                  on-ctrl-enter="openInputShellTextEnter(e)"
+                  on-key-down="inputShellTextKeyboard(e)"
+                  oninput="saveInputShellText(this)"
+                  onclick="event.stopPropagation()"></textarea>
+        <select multiple class="shell-text-input-command-history-box"
+                on-enter="shellTextHistoryBoxEnter(e)"
+                onclick="event.stopPropagation();">
+        </select>
+    </div>
+</script>
+<script id="shell-text-input-command-history-template" type="text/html">
+    {{each command_list command command_index}}
+    <option value="{{command_index}}">
+        {{command}}
+    </option>
+    {{/each}}
+</script>
+<script>
+    const INPUT_SHELL_TEXT_INFO = {}
+
+    function saveInputShellText(that) {
+        STORAGE.input_shell_text = that.value
+    }
+
+    function openInputShellTextEnter(e) {
+        const nowElement = document.activeElement
+        const nowElementTagName = nowElement.tagName.toUpperCase()
+        if (nowElementTagName === 'INPUT' || nowElementTagName === 'TEXTAREA') {
+            sendText(`${nowElement.value}\n`)
+            nowElement.value = ""
+            STORAGE.input_shell_text = ""
+            initInputShellTextCommandHistory()
+            setTimeout(initInputShellTextCommandHistory, 300)
+        }
+    }
+
+    function inputShellTextKeyboard(e) {
+        if (e.key !== 'ArrowDown') {
+            return
+        }
+        if (STORAGE.floating_input_shell_mode !== 'input') {
+            if (!e.ctrlKey && !e.metaKey) {
+                return;
+            }
+        }
+        const nowElement = document.activeElement
+        const nowElementTagName = nowElement.tagName.toUpperCase()
+        if (nowElementTagName !== 'INPUT' && nowElementTagName !== 'TEXTAREA') {
+            return;
+        }
+        const historyBox = $(nowElement).parents('.input-shell-text-window-box').find('.shell-text-input-command-history-box')
+        if (historyBox.length <= 0) {
+            return;
+        }
+        const historyBoxDom = historyBox[0]
+        const historyBoxDomOptions = historyBoxDom.options
+        if (historyBoxDomOptions.length <= 0) {
+            return;
+        }
+        historyBoxDom.value = historyBoxDomOptions[0].value
+        historyBoxDom.focus()
+        historyBoxDomOptions[0].focus()
+        setTimeout(function () {
+            historyBoxDom.scrollTop = 0
+        }, 40)
+    }
+
+    function shellTextHistoryInShellText(nowDom) {
+        const shellTextInput = nowDom.parents('.input-shell-text-window-box').find('.input-shell-text-input')
+        const shellTextInputText = INPUT_SHELL_TEXT_INFO.command_history_list[parseInt(nowDom[0].value[0])]
+        setInputShellText(shellTextInput[0], shellTextInputText)
+        nowDom.val("")
+    }
+
+    function shellTextHistoryBoxEnter(e) {
+        const nowDom = $(document.activeElement).parents('.input-shell-text-window-box').find('.shell-text-input-command-history-box')
+        const shellTextInputText = INPUT_SHELL_TEXT_INFO.command_history_list[parseInt(nowDom.val()[0])]
+        setInputShellText(nowDom.parents('.input-shell-text-window-box').find('.input-shell-text-input')[0], shellTextInputText)
+        nowDom.val("")
+    }
+
+    function setInputShellText(dom, text) {
+        STORAGE.input_shell_text = text
+        dom.value = text
+        dom.setRangeText("", text.length, text.length, 'end')
+        dom.focus()
+    }
+
+    function openInputShellTextFull(templateID, paddingTop) {
+        openFloatingWindow2(templateID, {
+            'padding_top': paddingTop
+        })
+        const textInputDom = $('.input-shell-text-input')[0]
+        setInputShellText(textInputDom, STORAGE.input_shell_text)
+        initInputShellTextCommandHistory()
+    }
+
+    function openInputShellText(t) {
+        if (t) {
+            event.stopPropagation()
+            closeFloatingWindow()
+            STORAGE.floating_input_shell_mode = 'input'
+        }
+        openInputShellTextFull('floating-input-shell-text-window-template', STORAGE.window_height / 5.5)
+    }
+
+    function openInputShellText2(t = false) {
+        if (t) {
+            event.stopPropagation()
+            closeFloatingWindow()
+            STORAGE.floating_input_shell_mode = 'textarea'
+        }
+        openInputShellTextFull('floating-input-shell-text-window2-template', STORAGE.window_height / 5.5)
+    }
+
+    function initInputShellTextCommandHistory() {
+        const historyBox = $('.shell-text-input-command-history-box')
+        historyBox.empty()
+        $.get("/command_history", function (data) {
+            if (!data.status) {
+                console.log(`获取历史命令失败：${data.message}`)
+            } else {
+                INPUT_SHELL_TEXT_INFO.command_history_list = data.command_list
+                historyBox.html(template('shell-text-input-command-history-template', {
+                    'command_list': data.command_list
+                }))
+                historyBox.find('option').click(function () {
+                    const shellTextInputText = INPUT_SHELL_TEXT_INFO.command_history_list[parseInt($(this).val())]
+                    setInputShellText(historyBox.parents('.input-shell-text-window-box').find('.input-shell-text-input')[0], shellTextInputText)
+                    historyBox.val("")
+                })
+            }
+        })
+    }
+
+</script>
+{% endblock %}

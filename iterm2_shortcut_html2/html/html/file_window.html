@@ -1,0 +1,288 @@
+{% block style %}
+<!--
+ls -Al /Users | awk '{print $1,$9}'
+-->
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="file-window-template" type="text/html">
+    <div id="{{file_window_id}}">
+
+    </div>
+</script>
+<script id="file-window-table" type="text/html">
+    <div>
+        {{if file_quick_list.length>0}}
+        <div><span style="font-size: 13px;">收藏文件夹</span><span
+                style="color: #767676;    font-size: 12px;    margin-left: 10px;">按住ctrl或command点击可以删除</span></div>
+        {{/if}}
+        <div class="file-quick-box" drag-data="file_quick_list">
+            {{each file_quick_list file_quick file_quick_index}}
+            <button class="a file_quick_button"
+                    draggable="true" _index="{{file_quick_index}}"
+                    onclick="quickPathFile(this,'{{file_window_id}}','{{file_quick.path}}','{{select_mode}}',{{file_quick_index}})">
+                {{file_quick.name}}
+            </button>
+            {{/each}}
+        </div>
+    </div>
+    <table style="width: 100%">
+        <tr>
+            <td>
+                <p>{{file_up_file}}</p>
+                <table>
+                    <thead>
+                    <tr>
+                        <td>名字</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{if up_file}}
+                    <tr>
+                        <td><a href="javascript:pathFile('{{file_window_id}}','{{up_file}}','{{select_mode}}')">..</a>
+                        </td>
+                        <td>
+                            {{if select_mode=='dir' || select_mode=='all'}}
+                            <a href="javascript:pathFileSelect('{{file_window_id}}','{{up_file}}',true)">选择</a>
+                            {{else}}
+                            <a href="#" style="color: #535355">选择</a>
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/if}}
+
+                    {{each file_list file_info}}
+                    <tr>
+                        <td>
+                            {{if file_info.isdir}}
+                            <a href="javascript:pathFile('{{file_window_id}}','{{file_up_file}}/{{file_info.name}}','{{select_mode}}')">{{file_info.name}}</a>
+                            {{else}}
+                            {{file_info.name}}
+                            {{/if}}
+                        </td>
+                        <td>
+                            {{if !file_info.isdir || select_mode=='dir' || select_mode=='all'}}
+                            <a href="javascript:pathFileSelect('{{file_window_id}}','{{file_up_file}}/{{file_info.name}}',{{file_info.isdir}})">选择</a>
+                            {{else}}
+                            <a href="#" style="color: #535355">选择</a>
+                            {{/if}}
+                            {{if file_info.isdir}}
+                            {{if has_file_quick[file_up_file+'/'+file_info.name]}}
+                            <a href="#" style="color: #535355">收藏</a>
+                            {{else}}
+                            <a href="javascript:pathFileQuickSave('{{file_window_id}}','{{file_up_file}}/{{file_info.name}}','{{select_mode}}','{{file_info.name}}')">收藏</a>
+                            {{/if}}
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </td>
+            <td style="vertical-align: top;">
+                <div>历史记录</div>
+                {{each file_history_list file_history}}
+                {{if !file_history.isdir || select_mode=='dir' || select_mode=='all'}}
+                <div>
+                    <a href="javascript:pathFileHistorySelect('{{file_window_id}}','{{file_history.path}}',{{file_history.isdir}})">{{file_history.path}}</a>
+                </div>
+                {{else}}
+                <div><a style="color: #767676; " href="#">{{file_history.path}}</a>
+                </div>
+                {{/if}}
+                {{/each}}
+            </td>
+        </tr>
+    </table>
+
+</script>
+<script>
+    const PATH_FILE_INFO = {}
+
+    function openFileWindow(callback, path = "/Users", selectMode = "all") {
+        const fileWindowId = 'file-window-' + guid()
+        openFloatingWindow('file-window-template', {
+            'file_window_id': fileWindowId,
+            'select_mode': selectMode
+        }, "选择文件")
+        PATH_FILE_INFO[fileWindowId] = {
+            'callback': callback
+        }
+        pathFile(fileWindowId, path, selectMode)
+    }
+
+    let file_draging = null;
+
+    function file_ondragstart(event) {
+        //console.log("start");
+        //firefox设置了setData后元素才能拖动！！！！
+        event.dataTransfer.setData("te", event.target.innerText); //不能使用text，firefox会打开新tab
+        //event.dataTransfer.setData("self", event.target);
+        file_draging = event.target;
+    }
+
+    function file_ondragend(event) {
+        if (file_draging == null) {
+            return
+        }
+        const nowDrag = file_draging
+        file_draging = null
+        const parentNode = $(nowDrag.parentNode)
+        const dataKey = parentNode.attr('drag-data')
+        if (!dataKey) {
+            return;
+        }
+        const old_file_quick_list = STORAGE[dataKey] || []
+        const file_quick_list = []
+        const file_quick_button_list = $(parentNode).find('.file_quick_button')
+        for (let i = 0; i < file_quick_button_list.length; i++) {
+            try {
+                const file_quick_button = file_quick_button_list.eq(i)
+                const index = file_quick_button.attr('_index')
+                file_quick_list.push(old_file_quick_list[index])
+                file_quick_button.attr('_index', i)
+            } catch (e) {
+                //
+            }
+        }
+
+        STORAGE[dataKey] = file_quick_list
+    }
+
+    function file_ondragover(event) {
+        //console.log("onDrop over");
+        event.preventDefault();
+        const target = event.target;
+        //因为dragover会发生在ul上，所以要判断是不是li
+        if (target.draggable) {
+            if (target !== file_draging && target.parentNode === file_draging.parentNode) {
+                var targetRect = target.getBoundingClientRect();
+                var dragingRect = file_draging.getBoundingClientRect();
+                if (target) {
+                    if (target.animated) {
+                        return;
+                    }
+                }
+                if (_index(file_draging) < _index(target)) {
+                    target.parentNode.insertBefore(file_draging, target.nextSibling);
+                } else {
+                    target.parentNode.insertBefore(file_draging, target);
+                }
+                _animate(dragingRect, file_draging);
+                _animate(targetRect, target);
+            }
+        }
+    }
+
+    function pathFile(file_window_id, path, selectMode) {
+        const fileWindow = $('#' + file_window_id)
+        $.post("/path_file", {
+            "dir_path": path,
+            "select_mode": selectMode
+        }, function (data) {
+            if (!data.status) {
+                alert(data.message)
+                return
+            }
+            fileWindow.empty()
+            let upFile = ""
+            if (path !== '/') {
+                const pathSplit = path.split("/")
+                upFile = '/' + pathSplit.slice(1, pathSplit.length - 1).join("/")
+            }
+            const file_quick_list = STORAGE.file_quick_list || []
+            const has_file_quick = {}
+            for (let i in file_quick_list) {
+                has_file_quick[file_quick_list[i].path] = true
+            }
+            fileWindow.html(template("file-window-table", {
+                "file_window_id": file_window_id,
+                "select_mode": selectMode,
+                "up_file": upFile,
+                "file_up_file": path === '/' ? "" : path,
+                "file_list": data.dir_info.files,
+                "file_quick_list": file_quick_list,
+                "has_file_quick": has_file_quick,
+                "file_history_list": STORAGE.file_history_list || []
+            }))
+
+            const file_quick_box = fileWindow.find(".file-quick-box")[0]
+            file_quick_box.ondragover = file_ondragover
+            file_quick_box.ondragstart = file_ondragstart
+            file_quick_box.ondragend = file_ondragend
+
+        })
+    }
+
+    function pathFileSelect(file_window_id, path, isDir) {
+        const callback = PATH_FILE_INFO[file_window_id].callback
+        if (callback) {
+            const fileHistory = {
+                'path': path,
+                'isdir': isDir,
+            }
+            if (STORAGE.file_history_list == null) {
+                STORAGE.file_history_list = [fileHistory]
+            }
+            let hasHistory = false
+            for (let i in STORAGE.file_history_list) {
+                if (path === STORAGE.file_history_list[i].path) {
+                    hasHistory = true
+                    break
+                }
+            }
+            if (!hasHistory) {
+                STORAGE.file_history_list.unshift(fileHistory)
+                if (STORAGE.file_history_list.length > 30) {
+                    STORAGE.file_history_list.splice(30)
+                }
+            }
+            if (callback(path, isDir)) {
+                closeFloatingWindow()
+            }
+        }
+    }
+
+    function pathFileHistorySelect(file_window_id, path, isDir) {
+        const callback = PATH_FILE_INFO[file_window_id].callback
+        if (callback) {
+            if (callback(path, isDir)) {
+                closeFloatingWindow()
+            }
+        }
+    }
+
+    function pathFileQuickSave(file_window_id, path, selectMode, name) {
+        const saveName = prompt('请输入保存名称', name)
+        if (saveName) {
+            const quick = {
+                'path': path,
+                'name': saveName
+            }
+            if (STORAGE.file_quick_list == null) {
+                STORAGE.file_quick_list = [quick]
+            } else {
+                STORAGE.file_quick_list.push(quick)
+            }
+            pathFile(file_window_id, path, selectMode)
+        }
+    }
+
+    function quickPathFile(that, file_window_id, path, selectMode, file_quick_index) {
+        if (KEYBOARD_KEY.ctrl || KEYBOARD_KEY.meta) {
+            if (confirm('确认删除？')) {
+                STORAGE.file_quick_list.splice(file_quick_index, 1)
+                $(that).remove()
+            }
+        } else {
+            pathFile(file_window_id, path, selectMode)
+        }
+    }
+
+</script>
+{% endblock %}
+{% block context %}
+{% endblock %}

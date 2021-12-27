@@ -1,0 +1,185 @@
+{% block script %}
+<script>
+    let draging = null;
+
+    function ondragstart(event) {
+        //console.log("start");
+        //firefox设置了setData后元素才能拖动！！！！
+        event.dataTransfer.setData("te", event.target.innerText); //不能使用text，firefox会打开新tab
+        //event.dataTransfer.setData("self", event.target);
+        draging = event.target;
+    }
+
+    function ondragend(event) {
+        if (draging == null) {
+            return
+        }
+        const nowDrag = draging
+        draging = null
+        const nowDragJquery = $(nowDrag)
+        const nowParentNodeJquery = $(nowDrag.parentNode)
+        const oldIndex = parseInt(nowDragJquery.attr("_index"))
+        const oldParentIndex = parseInt(nowDragJquery.attr("_parent_index"))
+        if (oldIndex === null) {
+            return
+        }
+        const parentNodeEq = isNaN(oldParentIndex) ? true : parseInt(nowParentNodeJquery.attr('_index')) === oldParentIndex
+        const nowIndex = _index(nowDrag)
+        if (!isNaN(oldParentIndex) || parentNodeEq) {
+            if (oldIndex === nowIndex) {
+                return
+            }
+        }
+
+        if (parentNodeEq) {
+            const dragData = eval(nowParentNodeJquery.attr('drag-data'))
+            if (nowIndex > oldIndex) {
+                dragData.splice(nowIndex + 1, 0, dragData[oldIndex])
+                dragData.splice(oldIndex, 1)
+            } else {
+                dragData.splice(nowIndex, 0, dragData[oldIndex])
+                dragData.splice(oldIndex + 1, 1)
+            }
+        } else if (KEYBOARD_KEY.ctrl || KEYBOARD_KEY.meta) {
+            const newDragData = eval(nowParentNodeJquery.attr('drag-data'))
+            const oldParents = nowParentNodeJquery.siblings(`[draggable="true"][_index="${oldParentIndex}"]`)
+            if (oldParents.length > 0) {
+                const oldDragData = eval(oldParents.eq(0).attr('drag-data'))
+                newDragData.splice(nowIndex, 0, oldDragData[oldIndex])
+                oldDragData.splice(oldIndex, 1)
+            }
+        }
+
+        let _tab_index = nowParentNodeJquery.attr('_tab_index')
+        if (_tab_index == null && nowDragJquery.attr('_is_tab_select') === 'true') {
+            _tab_index = nowIndex
+        }
+        if (_tab_index == null) {
+            _tab_index = 0
+        }
+
+        if (nowDragJquery.parents('#setting-tab-foot-box-main').length > 0) {
+            initSettingTabFootBox()
+        } else {
+            initSettingTabBox(parseInt(_tab_index))
+        }
+
+    }
+
+    function ondragoverParentEq(target, draging) {
+        if (target.parentNode === draging.parentNode) {
+            return true
+        }
+        if (KEYBOARD_KEY.ctrl || KEYBOARD_KEY.meta) {
+            if ($(target).parents('.setting-tab-button-group').length > 0 && $(draging).parents('.setting-tab-button-group').length > 0) {
+                if ($(target).parents('#setting-tab-button-box').length > 0 && $(draging).parents('#setting-tab-button-box').length > 0) {
+                    return true
+                }
+                if ($(target).parents('#setting-tab-foot-box').length > 0 && $(draging).parents('#setting-tab-foot-box').length > 0) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+
+    function ondragover(event) {
+        //console.log("onDrop over");
+        event.preventDefault();
+        const target = event.target;
+        //因为dragover会发生在ul上，所以要判断是不是li
+        if (target.draggable) {
+            if (target !== draging && ondragoverParentEq(target, draging)) {
+                var targetRect = target.getBoundingClientRect();
+                var dragingRect = draging.getBoundingClientRect();
+                if (target) {
+                    if (target.animated) {
+                        return;
+                    }
+                }
+                if (_index(draging) < _index(target)) {
+                    target.parentNode.insertBefore(draging, target.nextSibling);
+                } else {
+                    target.parentNode.insertBefore(draging, target);
+                }
+                _animate(dragingRect, draging);
+                _animate(targetRect, target);
+            }
+        }
+    }
+
+    //获取元素在父元素中的index
+    function _index(el) {
+        var index = 0;
+
+        if (!el || !el.parentNode) {
+            return -1;
+        }
+
+        while (el && (el = el.previousElementSibling)) {
+            //console.log(el);
+            index++;
+        }
+
+        return index;
+    }
+
+    function _animate(prevRect, target) {
+        let ms = 300;
+
+        if (ms) {
+            let currentRect = target.getBoundingClientRect();
+
+            if (prevRect.nodeType === 1) {
+                prevRect = prevRect.getBoundingClientRect();
+            }
+
+            _css(target, 'transition', 'none');
+            _css(target, 'transform', 'translate3d(' +
+                (prevRect.left - currentRect.left) + 'px,' +
+                (prevRect.top - currentRect.top) + 'px,0)'
+            );
+
+            target.offsetWidth; // 触发重绘
+            //放在timeout里面也可以
+            // setTimeout(function() {
+            //     _css(target, 'transition', 'all ' + ms + 'ms');
+            //     _css(target, 'transform', 'translate3d(0,0,0)');
+            // }, 0);
+            _css(target, 'transition', 'all ' + ms + 'ms');
+            _css(target, 'transform', 'translate3d(0,0,0)');
+
+            clearTimeout(target.animated);
+            target.animated = setTimeout(function () {
+                _css(target, 'transition', '');
+                _css(target, 'transform', '');
+                target.animated = false;
+            }, ms);
+        }
+    }
+
+    //给元素添加style
+    function _css(el, prop, val) {
+        let style = el && el.style;
+
+        if (style) {
+            if (val === void 0) {
+                if (document.defaultView && document.defaultView.getComputedStyle) {
+                    val = document.defaultView.getComputedStyle(el, '');
+                } else if (el.currentStyle) {
+                    val = el.currentStyle;
+                }
+
+                return prop === void 0 ? val : val[prop];
+            } else {
+                if (!(prop in style)) {
+                    prop = '-webkit-' + prop;
+                }
+
+                style[prop] = val + (typeof val === 'string' ? '' : 'px');
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,319 @@
+{% block style %}
+<style>
+    #system-setting-tab-button-box {
+        padding: 5px;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<script id="system-setting-template" type="text/html">
+    <div class="tab-select-box">
+        <div id="system-setting-tab-select" class="tab-select">
+            {{each tba_list tab tab_index}}
+            <span onclick="systemSettingTabSelectClick({{tab_index}})">{{tab.title}}</span>
+            {{/each}}
+        </div>
+        <div class="tab-select-box-border"></div>
+    </div>
+    <div id="system-setting-tab-button-box" class="tab-button-box">
+        <div id="system-setting-tab-button-main" class="tab-button-main">
+
+        </div>
+    </div>
+</script>
+<script>
+    const SYSTEM_SETTING_TBA_LIST = [{
+        "tab_id": "tab_1",
+        "title": "事件文本",
+        "template_id": "system-setting-variable-template",
+        "describe": `
+            <div>脚本必须设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1+1</div>
+            <div>可在值中使用[[自定变量]]，方式：data.get('自定变量名称'),当前页面脚本为python</div>
+            <div>可在值中使用[[自定py]]，方式：PY.方法名称(参数) 如：PY.to_int([[变量]], 0) </div>
+            <div>
+                1. 可在Triggers中使用Action为Invoke Script Function的Parameters填值，自动触发发送文本到窗口。<br>
+                1.1. shortcut_html_send_text(event_name:&nbsp;"事件名称\")<br>
+                1.2. shortcut_html_send_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3])  可以使用传入参数，使用方式params[0]<br>
+            </div>
+            <div>
+                2. 可在Triggers中使用事件返回的数据<br>
+                2.1. \\(shortcut_html_get_text(event_name:&nbsp;"事件名称"))<br>
+                2.2. \\(shortcut_html_get_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]<br>
+            </div>
+        `,
+        "value_fun": function () {
+            if (STORAGE.event_send_text == null) {
+                STORAGE.event_send_text = []
+            }
+            return {
+                edit_type: 'textarea',
+                variable_list: STORAGE.event_send_text
+            }
+        },
+        "value_change_fun": function (variable, change_type) {
+            console.log(`事件文本修改,name:${variable.name},value:${variable.value},change_type:${change_type}`)
+            storageResetEventSendMap()
+        }
+    }, {
+        "tab_id": "tab_2",
+        "title": "自定变量",
+        "template_id": "system-setting-variable-template",
+        "describe": "将会在事件文本中和js按钮中使用",
+        "value_fun": function () {
+            if (STORAGE.custom_variable == null) {
+                STORAGE.custom_variable = []
+            }
+            return {
+                edit_type: 'textarea',
+                variable_list: STORAGE.custom_variable
+            }
+        },
+        "value_change_fun": function (variable, change_type) {
+            console.log(`自定变量修改,name:${variable.name},value:${variable.value},change_type:${change_type}`)
+            storageResetCustomVariableMap()
+        }
+    }/*, {
+        "tab_id": "tab_3",
+        "title": "用户变量",
+        "template_id": "system-setting-variable-template",
+        "describe": "将会在Triggers中使用，使用时为 (user.[[变量名称]])",
+        "value_fun": function () {
+            if (STORAGE.user_variable == null) {
+                STORAGE.user_variable = []
+            }
+            return {
+                edit_type: 'text',
+                variable_list: STORAGE.user_variable,
+
+            }
+        },
+        "value_change_fun": function (variable, change_type) {
+            console.log(`用户变量修改,name:${variable.name},value:${variable.value},change_type:${change_type}`)
+        }
+    }*/, {
+        "tab_id": "tab_4",
+        "title": "自定py",
+        "template_id": "system-setting-variable-template",
+        "describe": `
+            <div>可在事件内使用 PY.方法名称 调用，例如 PY.to_int([[变量]], 0)。</div>
+            <div>编写脚本为正常方法定义，名字为方法名称。例：
+<pre>
+def to_int(v, d=None):
+    try:
+        return int(v)
+    except Exception:
+        return d
+
+# 也可主动注册多个方法
+PY.install('方法名', 方法名)
+PY.install('to_int', to_int)
+</pre>
+        </div>
+        `,
+        "value_fun": function () {
+            if (STORAGE.py_method == null) {
+                STORAGE.py_method = [{
+                    "name": "to_int",
+                    "value": "def to_int(v, d=None):\n    try:\n        return int(v)\n    except Exception:\n        return d"
+                }]
+            }
+            return {
+                edit_type: 'textarea',
+                variable_list: STORAGE.py_method,
+            }
+        },
+        "value_change_fun": function (variable, change_type) {
+            console.log(`自定py修改,name:${variable.name},value:${variable.value},change_type:${change_type}`)
+            storageResetPyMethod()
+        }
+    }, {
+        "tab_id": "tab_5",
+        "title": "自定js",
+        "template_id": "system-setting-variable-template",
+        "describe": `
+            <div>可在其他使用js的地方使用 JS.变量名称 调用，例如 JS.to_int([[变量]], 0)。</div>
+                        <div>编写脚本为正常方法定义，名字为方法名称。例：
+<pre>
+function to_int(v, def){
+    try{
+        const c= parseInt(v)
+        if(isNaN(c)){
+            return def
+        }
+        return c
+    }catch (e){
+        return def
+    }
+}
+
+# 也可主动注册多个方法
+JS.install('方法名', 方法名)
+JS.install('to_int', to_int)
+</pre>
+        </div>
+        `,
+        "value_fun": function () {
+            if (STORAGE.user_js == null) {
+                STORAGE.user_js = [{
+                    "name": "to_int",
+                    "value": "function to_int(v, def){\n    try{\n        const c= parseInt(v)\n        if(isNaN(c)){\n            return def\n        }\n        return c\n    }catch (e){\n        return def\n    }\n}"
+                }]
+            }
+            return {
+                edit_type: 'textarea',
+                variable_list: STORAGE.user_js,
+
+            }
+        },
+        "value_change_fun": function (variable, change_type) {
+            console.log(`自定js修改,name:${variable.name},value:${variable.value},change_type:${change_type}`)
+            try {
+                Function(`
+                    ${variable.value}
+
+                    try {
+                        JS.install('${variable.name}', ${variable.name})
+                    } catch (e) {
+
+                    }
+                `)()
+            } catch (e) {
+                alert(`自定js错误，name：${variable.name}，error：${e}`)
+            }
+        }
+    }]
+    const SYSTEM_SETTING_TBA_MAP = SYSTEM_SETTING_TBA_LIST.reduce((map, val, i) => {
+        map[val.tab_id] = val
+        return map;
+    }, new Map())
+
+    const VARIABLE_TYPE_LIST = [{
+        'type': 'custom_variable',
+        'name': '自定变量',
+        'data': STORAGE_CUSTOM_VARIABLE,
+        'init': function (name, value) {
+            return {"name": name, "value": value}
+        }
+    }/*, {
+        'type': 'user_variable',
+        'name': '用户变量',
+        'data': STORAGE_USER_VARIABLE,
+        'init': function (name, value) {
+            return {"name": name, "value": value}
+        }
+    }*/]
+    const VARIABLE_TYPE_MAP = VARIABLE_TYPE_LIST.reduce((map, val, i) => {
+        map[val.type] = val
+        return map;
+    }, new Map())
+
+    function inputGetVariableData(variable_type, value_name) {
+        if (!value_name) {
+            return;
+        }
+        const variableTypeData = VARIABLE_TYPE_MAP[variable_type]
+        if (!variableTypeData) {
+            return
+        }
+        const variableDataList = variableTypeData.data
+        for (let i in variableDataList) {
+            const variableData = variableDataList[i]
+            if (variableData.name === value_name) {
+                return variableData;
+            }
+        }
+        if (variableTypeData.init) {
+            const variableData = variableTypeData.init(value_name, "")
+            variableDataList.push(variableData)
+            return variableData
+        }
+        return null
+    }
+
+    function inputGetVariableValue(variable_type, value_name) {
+        const variableData = inputGetVariableData(variable_type, value_name)
+        if (variableData) {
+            return variableData.value
+        }
+        return ''
+    }
+
+    function changeCustomVariable(value_name, value) {
+        changeVariable('custom_variable', value_name, value)
+    }
+
+    function changeVariable(variable_type, value_name, value) {
+        const variableData = inputGetVariableData(variable_type, value_name)
+        if (variableData) {
+            variableData.value = value
+        }
+    }
+
+    function getCustomVariableData() {
+        return getVariableData('custom_variable')
+    }
+
+    function getVariableData(variable_type) {
+        const variableTypeData = VARIABLE_TYPE_MAP[variable_type]
+        if (variableTypeData == null) {
+            return {}
+        }
+
+        const data = {}
+        const variableDataList = variableTypeData.data
+        for (let i in variableDataList) {
+            const variableData = variableDataList[i]
+            data[variableData.name] = variableData.value
+        }
+        return data
+    }
+
+
+    function openSystemSettingWindow() {
+        openFloatingWindow('system-setting-template', {
+            'tba_list': SYSTEM_SETTING_TBA_LIST,
+            'storage': STORAGE,
+        }, "系统设置", function () {
+            initSettingTabBox()
+            return true
+        })
+        systemSettingTabSelectClick()
+    }
+
+    function initSystemSettingTabButtonMain(tab_id) {
+        const tab = SYSTEM_SETTING_TBA_MAP[tab_id]
+        if (tab) {
+            $("#system-setting-tab-button-main").html(template(tab.template_id, {
+                'tab_id': tab_id,
+                'describe': tab.describe,
+                'tab_value': tab.value_fun(),
+            }))
+        }
+
+    }
+
+    function systemSettingTabSelectClick(index) {
+        if (index == null) {
+            index = STORAGE.system_setting_tba_index
+        }
+        if (index == null) {
+            index = 0
+        }
+        if (index < 0 || index >= SYSTEM_SETTING_TBA_LIST.length) {
+            index = 0
+        }
+        if (index !== STORAGE.system_setting_tba_index) {
+            STORAGE.system_setting_tba_index = index
+        }
+        const selectList = $("#system-setting-tab-select>span")
+        selectList.removeClass('activity')
+        selectList.eq(index).addClass('activity')
+
+        const tab = SYSTEM_SETTING_TBA_LIST[index]
+        initSystemSettingTabButtonMain(tab.tab_id)
+    }
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

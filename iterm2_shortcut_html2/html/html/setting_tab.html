@@ -1,0 +1,76 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+
+<script id="setting-tab-add-template" type="text/html">
+    <div>
+        <p>类型：<select class="setting-add-tab-type" style="width: 200px;">
+            {{each tab_type_list tab_type}}
+            <option value="{{tab_type.type}}">{{tab_type.name}}</option>
+            {{/each}}
+        </select>
+        </p>
+        <p>名字：<input type="text" class="setting-add-tab-name" style="width: 200px;"></p>
+        <p>
+            <button onclick="settingAddTab(this)">保存</button>
+        </p>
+    </div>
+</script>
+<script id="setting-tab-move-template" type="text/html">
+    <p>
+        <button onClick="settingMoveTab(this, {{index}}, -1)">前移</button>
+        <button onClick="settingMoveTab(this, {{index}}, 1)">后移</button>
+
+        <button style="margin-left: 30px" ondblclick="settingDeleteTab(this, {{index}})">删除</button>
+    </p>
+</script>
+<script>
+
+    function settingAddTabWindow() {
+        openFloatingWindow('setting-tab-add-template', {
+            'tab_type_list': TAB_TYPE_LIST
+        }, "增加TAB")
+    }
+
+    function settingAddTab(that) {
+        const contentBox = $(that).parents('.floating_window_float_content_box_content')
+        STORAGE.tabs.push({
+            "type": contentBox.find(".setting-add-tab-type")[0].value,
+            "name": contentBox.find(".setting-add-tab-name")[0].value,
+            "tab_groups": [],
+            "tab_id": 'tab-' + guid()
+        })
+        closeFloatingWindow()
+        initSettingTabBox(STORAGE.tabs.length - 1)
+    }
+
+    function settingDeleteTab(that, index) {
+        STORAGE.tabs.splice(index, 1)
+        closeFloatingWindow()
+        initSettingTabBox()
+    }
+
+    function settingInTab(that, index) {
+        closeFloatingWindow()
+        settingTabSelectClick(index)
+    }
+
+    function settingMoveTab(that, index, move) {
+        if (index + move < 0 || index + move >= STORAGE.tabs.length) {
+            closeFloatingWindow()
+            return
+        }
+        [STORAGE.tabs[index], STORAGE.tabs[index + move]] = [STORAGE.tabs[index + move], STORAGE.tabs[index]];
+        closeFloatingWindow()
+        initSettingTabBox(index + move)
+    }
+
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

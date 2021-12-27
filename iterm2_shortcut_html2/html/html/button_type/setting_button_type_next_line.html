@@ -1,0 +1,91 @@
+{% block style %}
+<style>
+    .setting-button-type-show-next-line-edit-div {
+        background: rgba(86, 86, 86, 0.15);
+        position: relative;
+        cursor: pointer;
+    }
+
+    .setting-button-type-show-next-line-edit-span {
+        position: absolute;
+        right: 0px;
+        bottom: 2px;
+        border: 1px dashed white;
+        font-size: 8px;
+        cursor: pointer;
+        width: 8px;
+        height: 8px;
+        display: inline-block;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-show-next-line-template" type="text/html">
+    <div style="{{if tab_button.height}}height:{{tab_button.height}}px;{{/if}}"></div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-show-next-line-template" type="text/html">
+    <div draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
+         class="drag-width setting-button-type-show-next-line-edit-div"
+         style="{{if tab_button.height}}height:{{tab_button.height}}px;{{/if}}"
+         drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'height','height')"
+         onClick="settingEditButtonNextLineWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
+        <span class="setting-button-type-show-next-line-edit-span"></span>
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-next-line-template" type="text/html">
+    <div>
+        <p>
+            按钮类型：换行
+        </p>
+        <p>
+            高度：<input class="setting-button-next-line-height" type="number" value="{{button_info.height}}">
+            <button onclick="settingEditButtonNextLine(this,{{tab_index}},{{group_index}},{{button_index}})">保存</button>
+        </p>
+        {{include 'setting-button-operation-template'}}
+    </div>
+</script>
+<script>
+    function settingEditButtonNextLineWindow(tab_index, tab_group_index, button_index) {
+        const buttonInfo = button_index < 0 ? {"height": 3} : STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        openFloatingWindow('setting-button-type-next-line-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_index": button_index,
+            "button_info": buttonInfo
+        }, "BUTTON(换行)")
+    }
+
+    function settingEditButtonNextLine(that, tab_index, tab_group_index, button_index) {
+        const floatContent = $(that).parents('.floating_window_float_content_box_content')
+        let height = parseInt(floatContent.find(".setting-button-next-line-height")[0].value) || 0
+        if (height < 3) {
+            height = 3
+        }
+        if (button_index >= 0) {
+            const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+            button.height = height
+        } else {
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons.push({
+                "type": "next_line",
+                "height": height,
+            })
+        }
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    //注册
+    button_type_register(
+        "next_line", "换行", "进行换行操作，可指定高度。",
+        "main-button-type-show-next-line-template", "setting-button-type-show-next-line-template", {},
+        settingEditButtonNextLineWindow
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

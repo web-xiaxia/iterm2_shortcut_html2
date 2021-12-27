@@ -1,0 +1,15 @@
+*.pyc
+.idea
+
+.vscode/*
+.history
+
+.DS_Store
+*.csv
+venv
+.vscode
+iterm2env
+/Pipfile
+/Pipfile.lock
+/iterm2_shortcut_html2/storage.json
+/iterm2_shortcut_html2/storage_history/*.json

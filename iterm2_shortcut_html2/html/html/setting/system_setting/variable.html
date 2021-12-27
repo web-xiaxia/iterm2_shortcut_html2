@@ -1,0 +1,132 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="system-setting-variable-template" type="text/html">
+    <div>
+        名称：<input id="system-setting-variable-add-name" type="text">
+        {{if tab_value.edit_type == 'text'}}
+        值：<input id="system-setting-variable-add-value" type="text">
+        {{else}}
+        值：<textarea id="system-setting-variable-add-value" rows="2" style="vertical-align: bottom;"></textarea>
+        {{/if}}
+        <button onclick="addSystemSettingVariable('{{tab_id}}')">新增</button>
+    </div>
+    <div style="padding-top: 5px;">
+        {{@describe}}
+    </div>
+    <table style="width: 100%;margin-top: 20px;border-collapse:collapse;border-color:white; " cellspacing="2"
+           cellpadding="5" border="1">
+        <tr>
+            <td style="width: 30%">名称</td>
+            <td style="width: 30%">值</td>
+            <td>操作</td>
+        </tr>
+        {{each tab_value.variable_list variable index}}
+        <tr class="system-setting-variable-table-line" _index="{{index}}">
+            <td>{{variable.name}}</td>
+            <td>
+                {{if tab_value.edit_type == 'text'}}
+                <input type="text" class="system-setting-variable-table-line-value"
+                       style="width: 100%;" value="{{variable.value}}">
+                {{else}}
+                <textarea class="system-setting-variable-table-line-value" rows="2" style="width: 100%;">{{variable.value}}</textarea>
+                {{/if}}
+            </td>
+            <td>
+                <button onclick="editSystemSettingVariable(this,'{{tab_id}}',{{index}})"> 修改</button>
+                <button onclick="moveSystemSettingVariable(this,'{{tab_id}}',-1)"
+                        style="margin-left: 10px;">上移
+                </button>
+                <button onclick="moveSystemSettingVariable(this,'{{tab_id}}',1)">下移</button>
+                <button ondblclick="deleteSystemSettingVariable(this,'{{tab_id}}',{{index}})"
+                        style="margin-left: 20px;">删除
+                </button>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</script>
+<script>
+    function addSystemSettingVariable(tab_id) {
+        const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
+        const name = $("#system-setting-variable-add-name").val()
+        const value = $("#system-setting-variable-add-value").val()
+        if (!name) {
+            alert("请输入名称")
+            return
+        }
+        const variable_list = tab_value.variable_list
+        for (let i in variable_list) {
+            const variable = variable_list[i]
+            if (variable.name === name) {
+                alert("已有相同名称")
+                return
+            }
+        }
+        const variable = {
+            'name': name,
+            'value': value,
+        }
+        variable_list.push(variable)
+        SYSTEM_SETTING_TBA_MAP[tab_id].value_change_fun(variable, "add")
+        initSystemSettingTabButtonMain(tab_id)
+    }
+
+    function editSystemSettingVariable(that, tab_id, index) {
+        const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
+        const variable = tab_value.variable_list[index]
+        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
+        const newValue = tableLineDom.find('.system-setting-variable-table-line-value')[0].value
+        if (newValue !== variable.value) {
+            variable.value = newValue
+            SYSTEM_SETTING_TBA_MAP[tab_id].value_change_fun(tab_value.variable_list[index], "edit")
+        }
+    }
+
+    function deleteSystemSettingVariable(that, tab_id, index) {
+        const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
+        const variable = tab_value.variable_list[index]
+        tab_value.variable_list.splice(index, 1)
+        SYSTEM_SETTING_TBA_MAP[tab_id].value_change_fun(variable, "delete")
+        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
+        tableLineDom.remove()
+    }
+
+    function moveSystemSettingVariable(that, tab_id, move) {
+        const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
+        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
+        const index = parseInt(tableLineDom.attr("_index"))
+        if (index == null) {
+            return;
+        }
+        const variable_list = tab_value.variable_list
+        if (index + move < 0 || index + move >= variable_list.length) {
+            return
+        }
+        [variable_list[index], variable_list[index + move]] = [variable_list[index + move], variable_list[index]];
+
+        if (move > 0) {
+            const nextTableLineDom = tableLineDom.next();
+            if (nextTableLineDom.length > 0) {
+                nextTableLineDom.insertBefore(tableLineDom)
+                nextTableLineDom.attr("_index", index)
+                tableLineDom.attr("_index", index + move)
+            }
+
+        } else {
+            const prevTableLineDom = tableLineDom.prev()
+            if (prevTableLineDom.length > 0) {
+                prevTableLineDom.insertAfter(tableLineDom)
+                prevTableLineDom.attr("_index", index)
+                tableLineDom.attr("_index", index + move)
+            }
+        }
+    }
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

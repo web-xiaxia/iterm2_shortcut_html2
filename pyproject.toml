@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "iterm2_shortcut_html2"
+version = "0.0.1"
+description = ""
+authors = ["web-xiaxia"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+
+[tool.poetry.dev-dependencies]
+iterm2 = "^1.18"
+aiohttp = "^3.8.1"
+
+[build-system]
+requires = ["poetry-core>=1.1.10"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,306 @@
+{% block style %}
+<style>
+    #main-tab-foot-box-main {
+        overflow: scroll;
+    }
+
+    #main-tab-foot-box, #setting-tab-foot-box {
+        margin: 0 auto;
+        width: fit-content;
+    }
+
+    #main-tab-foot-box .tab-button-group:last-child {
+        border-bottom: 0px
+    }
+
+    .tab-button-main-md {
+        padding: 5px 10px;
+        font-size: 12px;
+        line-height: 110%;
+    }
+
+    .tab-button-main-md code {
+        color: #c63047;
+        background: rgb(28, 25, 25);
+        padding: 1px 5px;
+    }
+
+    .tab-button-main-md p {
+        font-size: 12px;
+        line-height: 120%;
+        padding: 0px;
+        margin: 3px 0px;
+    }
+
+    .tab-button-main-md h1 {
+        font-size: 26px;
+        line-height: 120%;
+        padding: 0px;
+        margin: 9px 0px;
+    }
+
+    .tab-button-main-md h2 {
+        font-size: 22px;
+        line-height: 120%;
+        padding: 0px;
+        margin: 9px 0px;
+    }
+
+    .tab-button-main-md h3 {
+        font-size: 18px;
+        line-height: 120%;
+        padding: 0px;
+        margin: 7px 0px;
+    }
+
+    .tab-button-main-md h4 {
+        font-size: 16px;
+        line-height: 120%;
+        padding: 0px;
+        margin: 7px 0px;
+    }
+
+    .tab-button-main-md h5 {
+        font-size: 14px;
+        line-height: 120%;
+        padding: 0px;
+        margin: 5px 0px;
+    }
+
+    .tab-button-main-md h6 {
+        font-size: 12px;
+        line-height: 120%;
+        padding: 0px;
+        margin: 3px 0px;
+    }
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="main-tab-select-template" type="text/html">
+    {{each storage.tabs tab index}}
+    {{if storage.foot_box_id != tab.tab_id && !tab.hidden}}
+    <span onclick="tabSelectClick({{index}})">{{tab.name}}</span>
+    {{else}}
+    <span style="display: none;"></span>
+    {{/if}}
+    {{/each}}
+</script>
+<script>
+    const TAB_TYPE_LIST = []
+    const TAB_TYPE_MAPPING = {}
+
+    function tab_type_register(tab_type, tab_type_name, tab_type_describe, main_template_id, setting_template_id) {
+        const tabTypeData = {
+            "type": tab_type,
+            "name": tab_type_name,
+            "describe": tab_type_describe,
+            "main_template_id": main_template_id,
+            "setting_template_id": setting_template_id,
+        }
+        TAB_TYPE_LIST.push(tabTypeData)
+        TAB_TYPE_MAPPING[tab_type] = tabTypeData
+    }
+
+    const BUTTON_TYPE_LIST = []
+    const BUTTON_TYPE_MAPPING = {}
+
+    function button_type_register(button_type, button_type_name, button_type_describe, main_template_id, setting_template_id, template_data, edit_window_fun) {
+        const buttonTypeData = {
+            "type": button_type,
+            "name": button_type_name,
+            "describe": button_type_describe,
+            "main_template_id": main_template_id,
+            "setting_template_id": setting_template_id,
+            "template_data": template_data,
+            "edit_window_fun": edit_window_fun,
+        }
+        BUTTON_TYPE_LIST.push(buttonTypeData)
+        BUTTON_TYPE_MAPPING[button_type] = buttonTypeData
+    }
+
+    const INPUT_SEND_TEXT_INPUT_GROUP_LIST = []
+    const INPUT_SEND_TEXT_INPUT_GROUP_MAPPING = {}
+
+    function input_send_text_input_group_register(input_group_type, input_group_type_name, main_template_id, setting_template_id, edit_template_id, input_data_fun, input_value_fun) {
+        const inputGroupTypeData = {
+            "type": input_group_type,
+            "name": input_group_type_name,
+            "main_template_id": main_template_id,
+            "setting_template_id": setting_template_id,
+            "edit_template_id": edit_template_id,
+            "input_data_fun": input_data_fun,
+            "input_value_fun": input_value_fun
+        }
+
+        INPUT_SEND_TEXT_INPUT_GROUP_LIST.push(inputGroupTypeData)
+        INPUT_SEND_TEXT_INPUT_GROUP_MAPPING[input_group_type] = inputGroupTypeData
+    }
+
+    const INPUT_SEND_TEXT_BUTTON_GROUP_LIST = []
+    const INPUT_SEND_TEXT_BUTTON_GROUP_MAPPING = {}
+
+    function input_send_text_button_group_register(button_group_type, button_group_type_name, main_template_id, setting_template_id, edit_template_id, input_data_fun) {
+        const buttonGroupTypeData = {
+            "type": button_group_type,
+            "name": button_group_type_name,
+            "main_template_id": main_template_id,
+            "setting_template_id": setting_template_id,
+            "edit_template_id": edit_template_id,
+            "input_data_fun": input_data_fun
+        }
+
+        INPUT_SEND_TEXT_BUTTON_GROUP_LIST.push(buttonGroupTypeData)
+        INPUT_SEND_TEXT_BUTTON_GROUP_MAPPING[button_group_type] = buttonGroupTypeData
+    }
+
+    function foot_box_close(foot_box_id, foot_box_padding, show) {
+        if (show && STORAGE.foot_box_id == null) {
+            $("#" + foot_box_id).css({"display": "none"})
+            return
+        }
+        const foot_box_height = STORAGE.foot_box_height || 200
+        $(`#${foot_box_id}`).addClass('main-tab-foot-box-close').css({
+            "bottom": -foot_box_height + 'px',
+            'height': foot_box_height + 'px'
+        })
+        $("#" + foot_box_padding).css({"display": "none"})
+        STORAGE.foot_box_close = true
+    }
+
+    function foot_box_open(foot_box_id, foot_box_padding, show) {
+        if (show && STORAGE.foot_box_id == null) {
+            $("#" + foot_box_id).css({"display": "none"})
+            return
+        }
+        const foot_box_height = STORAGE.foot_box_height || 200
+        $("#" + foot_box_id).removeClass('main-tab-foot-box-close').css({
+            "bottom": '0px',
+            'height': foot_box_height + 'px'
+        })
+        $("#" + foot_box_padding).css({"display": "", 'height': foot_box_height + 'px'})
+        STORAGE.foot_box_close = false
+    }
+
+    function initMainTabBox() {
+        $("#main-tab-select").html(template('main-tab-select-template', {storage: STORAGE}))
+        tabSelectClick(STORAGE.tab_index || 0)
+        if (STORAGE.foot_box_close) {
+            foot_box_close('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
+        } else {
+            foot_box_open('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
+        }
+        if (STORAGE.foot_box_id != null) {
+            let tab = null
+            let tab_index = null
+            for (let index in STORAGE.tabs) {
+                if (STORAGE.tabs[index].tab_id === STORAGE.foot_box_id) {
+                    tab = STORAGE.tabs[index]
+                    tab_index = index
+                    break
+                }
+            }
+            if (tab) {
+                $("#main-tab-foot-box-main").css({"display": ""})
+                const tabTypeInfo = TAB_TYPE_MAPPING[tab.type || 'default']
+                if (tabTypeInfo) {
+                    $("#main-tab-foot-box").html(template(tabTypeInfo.main_template_id, {
+                        'storage': STORAGE,
+                        'tab_index': tab_index,
+                        'tab': tab,
+                        'button_type_list': BUTTON_TYPE_LIST
+                    }))
+                }
+            } else {
+                $("#main-tab-foot-box-main").css({"display": "none"})
+                $("#main-tab-foot-box").html("")
+            }
+
+        } else {
+            $("#main-tab-foot-box-main").css({"display": "none"})
+            $("#main-tab-foot-box").html("")
+        }
+    }
+
+    function tabSelectClickFindTab(index) {
+        if (index == null | isNaN(index)) {
+            index = STORAGE.tab_index
+        }
+        if (isNaN(index) || index < 0 || index >= STORAGE.tabs.length) {
+            index = 0
+        }
+        const tab = STORAGE.tabs[index]
+        if (tab) {
+            if (!tab.hidden && tab.tab_id !== STORAGE.foot_box_id) {
+                return {tab, index}
+            }
+        }
+
+        for (let i in STORAGE.tabs) {
+            const tempTab = STORAGE.tabs[i]
+            if (tempTab) {
+                if (!tempTab.hidden && tempTab.tab_id !== STORAGE.foot_box_id) {
+                    return {'tab': tempTab, 'index': parseInt(i)}
+                }
+            }
+        }
+        return {tab, index}
+    }
+
+    function tabSelectClick(tempIndex) {
+        const {tab, index} = tabSelectClickFindTab(parseInt(tempIndex))
+        if (index !== STORAGE.tab_index) {
+            STORAGE.tab_index = index
+        }
+
+        ACTIV_TAB_INFO['name'] = tab.name
+        const selectList = $("#main-tab-select>span")
+        selectList.removeClass('activity')
+        selectList.eq(index).addClass('activity')
+
+        const tabTypeInfo = TAB_TYPE_MAPPING[tab.type || 'default']
+        if (tabTypeInfo) {
+            $("#main-tab-button-box").html(template(tabTypeInfo.main_template_id, {
+                'storage': STORAGE,
+                'tab_index': index,
+                'tab': tab,
+                'button_type_list': BUTTON_TYPE_LIST
+            }))
+        }
+    }
+
+    $(function () {
+        template.defaults.imports.marked_parse = marked.parse
+        initMainTabBox()
+    })
+</script>
+{% endblock %}
+{% block context %}
+<div id="main-tab-box" class="tab-box keyboard-open-input-shell-text-window">
+    <div id="main-tab-select-box" class="tab-select-box">
+        <div id="main-tab-setting-button" class="tab-setting-button-box">
+            <span class="tab-setting-button" onclick="openSystemSettingWindow()">事件</span>
+            <span class="tab-setting-button" onclick="tabSetting()">编辑</span>
+        </div>
+        <div id="main-tab-select" class="tab-select"></div>
+        <div id="main-tab-select-box-border" class="tab-select-box-border"></div>
+    </div>
+    <div id="main-tab-button-box" class="tab-button-box"></div>
+    <div id="main-tab-foot-box-main-padding"></div>
+    <div id="main-tab-foot-box-main" class="main-tab-foot-box">
+        <div class="main-tab-foot-box-main-button-box">
+            <button class="main-tab-foot-box-main-button main-tab-foot-box-main-button-open"
+                    onclick="foot_box_close('main-tab-foot-box-main','main-tab-foot-box-main-padding',true)">x
+            </button>
+            <button class="main-tab-foot-box-main-button main-tab-foot-box-main-button-close"
+                    style="line-height: 20px"
+                    onclick="foot_box_open('main-tab-foot-box-main','main-tab-foot-box-main-padding',true)">^
+            </button>
+        </div>
+        <div id="main-tab-foot-box" class="tab-button-box">
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

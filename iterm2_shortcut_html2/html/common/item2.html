@@ -1,0 +1,71 @@
+{% block script %}
+<script>
+    const IN_ITERM2 = inIterm2()
+
+    function inIterm2() {
+        try {
+            return iterm2Invoke ? true : false
+        } catch (e) {
+            //
+        }
+        return false
+    }
+
+    if (IN_ITERM2) {
+        window.alert = function (message) {
+            $.post("/iterm2_alert", {
+                'title': message,
+                'subtitle': ""
+            }, function (data) {
+                //pass
+            })
+        }
+        window.confirm = function (message) {
+            let b = false
+            $.ajax({
+                url: "/iterm2_confirm",
+                type: "POST",
+                async: false,
+                data: JSON.stringify({
+                    'title': message,
+                    'subtitle': "",
+                    'buttons': ['ok', 'cancel']
+                }),
+                contentType: "application/json; charset=utf-8",
+                success: function (response_data) {
+                    if (response_data.status === 1000) {
+                        b = true
+                    }
+                },
+                error: function (message) {
+
+                }
+            })
+            return b
+        }
+        window.prompt = function (message, _default = "") {
+            let b = ''
+            $.ajax({
+                url: "/iterm2_prompt",
+                type: "POST",
+                async: false,
+                data: JSON.stringify({
+                    'title': message,
+                    'subtitle': "",
+                    'default_value': _default
+                }),
+                contentType: "application/json; charset=utf-8",
+                success: function (response_data) {
+                    b = response_data.status
+                },
+                error: function (message) {
+
+                }
+            })
+            return b
+        }
+
+    }
+
+</script>
+{% endblock %}

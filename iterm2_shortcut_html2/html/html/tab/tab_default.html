@@ -1,0 +1,114 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="main-tab-button-group-default-template" type="text/html">
+    <div class="tab-button-main">
+        {{each tab.tab_groups tab_group tab_group_index}}
+        <div class="tab-button-group tab-button-group{{if tab_group.button_size}}{{tab_group.button_size}}{{/if}}">
+            {{each tab_group.buttons tab_button tab_button_index}}
+            {{each button_type_list button_type}}
+            {{if tab_button.type == button_type.type}}
+            <% include(button_type.main_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'tab_button':tab_button,
+            'template_data':button_type.template_data
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/each}}
+        </div>
+        {{/each}}
+    </div>
+</script>
+<script id="setting-tab-button-group-default-template" type="text/html">
+    <div class="tab-button-main setting-tab-button-main" _tab_index="{{tab_index}}"
+         drag-data="STORAGE.tabs[{{tab_index}}].tab_groups">
+        {{each tab.tab_groups tab_group tab_group_index}}
+        <div draggable="true"
+             _index="{{tab_group_index}}"
+             _tab_index="{{tab_index}}"
+             drag-data="STORAGE.tabs[{{tab_index}}].tab_groups[{{tab_group_index}}].buttons"
+             class="tab-button-group setting-tab-button-group tab-button-group{{if tab_group.button_size}}{{tab_group.button_size}}{{/if}}">
+            {{each tab_group.buttons tab_button tab_button_index}}
+            {{each button_type_list button_type}}
+            {{if tab_button.type == button_type.type}}
+            <% include(button_type.setting_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'tab_button':tab_button,
+            'template_data':button_type.template_data
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/each}}
+            <span class="setting-tab-button-group-button title-label"
+                  onclick="settingEditButtonGroupWindow(this,{{tab_index}},{{tab_group_index}},{{tab_group.button_size}})">
+                编辑
+            </span>
+            <span class="setting-tab-button-group-button title-label"
+                  onclick="settingAddButtonWindow(this,{{tab_index}},{{tab_group_index}})">+</span>
+        </div>
+        {{/each}}
+        <div class="tab-button-group"><span class="tab-button-group-add"
+                                            onclick="settingAddButtonGroupWindow(this, {{tab_index}})">+</span></div>
+    </div>
+</script>
+
+<script id="setting-tab-edit-template" type="text/html">
+    <div class="setting-tab-edit-box">
+        <p>
+            名字：<input type="text" class="setting-edit-tab-name" style="margin-right: 15px;" value="{{name}}">
+            <label>
+                {{if hidden}}
+                隐藏：<input type="checkbox" class="setting-edit-tab-hidden" checked value="{{hidden}}">
+                {{else}}
+                隐藏：<input type="checkbox" class="setting-edit-tab-hidden" value="{{hidden}}">
+                {{/if}}
+                <span style="color: #939393">在主页面隐藏，编辑页面正常显示</span>
+            </label>
+        </p>
+        <p>
+            <button onclick="settingEditTab(this, {{index}})">保存</button>
+            <button onclick="settingInTab(this, {{index}})">进入</button>
+        </p>
+        <% include('setting-tab-move-template',{ 'index':index } )%>
+    </div>
+</script>
+<script>
+    function settingEditTabWindow(index) {
+        settingTabSelectClick(index)
+        openFloatingWindow('setting-tab-edit-template', {
+            'name': STORAGE.tabs[index].name,
+            'hidden': STORAGE.tabs[index].hidden,
+            'index': index
+        }, "编辑TAB")
+    }
+
+    function settingEditTab(that, index) {
+        const editBoxDom = $(that).parents('.setting-tab-edit-box')
+        STORAGE.tabs[index].name = editBoxDom.find(".setting-edit-tab-name")[0].value
+        STORAGE.tabs[index].hidden = editBoxDom.find(".setting-edit-tab-hidden")[0].checked
+        closeFloatingWindow()
+        initSettingTabBox()
+    }
+
+    tab_type_register('default', '常规', '常规',
+        'main-tab-button-group-default-template', 'setting-tab-button-group-default-template',
+        'setting-tab-edit-template'
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

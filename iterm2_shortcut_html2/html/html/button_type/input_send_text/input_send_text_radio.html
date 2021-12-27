@@ -1,0 +1,300 @@
+{% block style %}
+<style>
+    .setting-button-type-input-send-text-input-group-radio-list {
+        background: #2e2e2e;
+        padding: 5px;
+        border-radius: 5px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-input-send-text-show-input-group-radio-template" type="text/html">
+    <div class="input-send-text-group-box" linkage="{{button_input.linkage}}"
+         style="{{if tab_button.linkage && button_input.linkage && button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}">
+        {{if button_input.margin_left}}
+        <div class="input-send-text-margin-box"
+             style="width:{{button_input.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if button_input.title}}
+            <span class="title-span"
+                  style="{{if button_input.title_width}}width: {{button_input.title_width}}px;{{/if}} ">
+            {{button_input.title}}
+            </span>
+            {{/if}}
+            {{each button_input.radio_list radio radio_index}}
+            <label class="title-label {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                   style="{{if radio.title_width}}width: {{radio.title_width}}px;{{/if}}">
+                {{if radio.value == button_input.value }}
+                <input type="radio" name="{{button_input.uid}}" value="{{radio.value}}" checked
+                       onclick="input_send_text_input_group_radio_input_checked(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})">
+                {{else}}
+                <input type="radio" name="{{button_input.uid}}" value="{{radio.value}}"
+                       onclick="input_send_text_input_group_radio_input_checked(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})">
+                {{/if}}
+                {{radio.title}}
+            </label>
+            {{/each}}
+        </div>
+        {{if button_input.margin_right}}
+        <div class="input-send-text-margin-box"
+             style="width:{{button_input.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-input-send-text-show-input-group-radio-template" type="text/html">
+    <div class="input-send-text-group-box" linkage="{{button_input.linkage}}"
+         style="{{if tab_button.linkage && button_input.linkage && button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}">
+        {{if button_input.margin_left}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'margin_left','width')"
+             style="width:{{button_input.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if button_input.title}}
+            <span class="title-span drag-width"
+                  drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'title_width','width')"
+                  style="{{if button_input.title_width}}width: {{button_input.title_width}}px;{{/if}} ">
+            {{button_input.title}}
+            </span>
+            {{/if}}
+            {{each button_input.radio_list radio radio_index}}
+            <label class="title-label drag-width {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                   drag-width="dragWidthButtonInputButtonInputRadioData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},{{radio_index}},'title_width','width')"
+                   style="{{if radio.title_width}}width: {{radio.title_width}}px;{{/if}}">
+                {{if radio.value == button_input.value }}
+                <input type="radio" name="{{button_input.uid}}" checked>
+                {{else}}
+                <input type="radio" name="{{button_input.uid}}">
+                {{/if}}
+                {{radio.title}}
+            </label>
+            {{/each}}
+        </div>
+        {{if button_input.margin_right}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'margin_right','width')"
+             style="width:{{button_input.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-input-send-text-input-group-radio-template" type="text/html">
+    <div class="setting-button-input-send-text-box-group setting-button-input-send-text-input-group"
+         group-type="radio">
+        <p class="setting-button-input-send-text-box-group-title">
+            <span class="setting-button-input-send-text-box-group-title-span">
+            单选框
+            </span>
+            <button class="setting-button-input-send-text-box-group-title-button"
+                    onclick="settingButtonInputSendTextBoxGroupTitleButtonContext(this)">
+                展开/收缩
+            </button>
+            {{include "setting-button-type-show-input-send-text-operation-button-template"}}
+        </p>
+        <table class="setting-button-input-send-text-box-group-context" style="{{if init_edit }}display: none;{{/if}}">
+            <tr>
+                <td>变量名称：</td>
+                <td><input class="setting-button-input-send-text-input-group-value_name" type="text"
+                           value="{{button_input.value_name}}"></td>
+
+            </tr>
+            <tr>
+                <td>值信息</td>
+                <td colspan="3">
+                    <div class="setting-button-type-input-send-text-show-input-group-box-group">
+                        <div class="setting-button-type-input-send-text-show-input-group-box">
+                            {{each button_input.radio_list radio radio_index}}
+                            <% include('setting-button-type-input-send-text-input-group-radio-list-template',
+                            {
+                            'tab_index':tab_index,
+                            'tab_group_index':tab_group_index,
+                            'tab_button_index':tab_button_index,
+                            'button_input_index':button_input_index,
+                            'radio_index':radio_index,
+                            'tab_button':tab_button,
+                            'button_input':button_input,
+                            'radio':radio,
+                            }
+                            ) %>
+                            {{/each}}
+
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <button onclick="input_send_text_input_group_radio_input_group_add(this)">
+                                新增单选项
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>标题：</td>
+                <td><input class="setting-button-input-send-text-input-group-title" type="text"
+                           value="{{button_input.title}}"></td>
+                <td>标题宽度：</td>
+                <td><input class="setting-button-input-send-text-input-group-title_width" type="text"
+                           value="{{button_input.title_width}}"></td>
+            </tr>
+            <tr>
+                <td>联动</td>
+                <td><input type="text" class="setting-button-input-send-text-input-group-value_linkage"
+                           value="{{button_input.linkage}}"></td>
+                <td>颜色：</td>
+                <td>
+                    <select class="setting-button-input-send-text-son-style {{if button_input.style}}button-color-{{button_input.style}}{{/if}}"
+                            onchange="settingButtonStyleSelect(this)">
+                        <option value="">跟随组件</option>
+                        {{each button_style_list button_style }}
+                        {{if button_input.style==button_style }}
+                        <option value="{{button_style}}" selected> {{button_style}}</option>
+                        {{else}}
+                        <option value="{{button_style}}"> {{button_style}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>前间距</td>
+                <td><input class="setting-button-input-send-text-input-group-margin_left" type="number"
+                           value="{{button_input.margin_left}}"></td>
+                <td>后间距</td>
+                <td><input class="setting-button-input-send-text-input-group-margin_right" type="number"
+                           value="{{button_input.margin_right}}"></td>
+            </tr>
+
+
+        </table>
+
+    </div>
+</script>
+<!--编辑模板(弹框)(选项)-->
+<script id="setting-button-type-input-send-text-input-group-radio-list-template" type="text/html">
+    <div class="setting-button-type-input-send-text-input-group-radio-list setting-button-input-send-text-box-group2">
+        <table>
+            <tr>
+                <td>标题</td>
+                <td><input type="text" class="setting-button-type-input-send-text-input-group-radio-title"
+                           value="{{radio.title}}"></td>
+                <td>标题宽度</td>
+                <td><input type="number"
+                           class="setting-button-type-input-send-text-input-group-radio-title_width"
+                           value="{{radio.title_width}}"></td>
+            </tr>
+            <tr>
+                <td>值</td>
+                <td><input type="text" class="setting-button-type-input-send-text-input-group-radio-list-value"
+                           value="{{radio.value}}"></td>
+                <td>默认</td>
+                <td>
+                    {{if radio.value == button_input.value && button_input.value!= null}}
+                    <input type="radio" name="setting-button-type-input-send-text-input-group-radio-add"
+                           class="setting-button-type-input-send-text-input-group-radio-list-checked"
+                           checked>
+                    {{else}}
+                    <input type="radio"
+                           name="setting-button-type-input-send-text-input-group-radio-add"
+                           class="setting-button-type-input-send-text-input-group-radio-list-checked">
+                    {{/if}}
+                </td>
+            </tr>
+        </table>
+        <%include("setting-button-type-show-input-send-text-operation-template",{'className':'.setting-button-input-send-text-box-group2'})%>
+    </div>
+</script>
+<!--js-->
+<script>
+    function input_send_text_input_group_radio_input_checked(that, tab_index, tab_group_index, button_index, button_input_index) {
+        STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[button_input_index].value = that.value
+    }
+
+    function input_send_text_input_group_radio_input_group_add(that) {
+        $(that).parents('.setting-button-type-input-send-text-show-input-group-box-group').find('.setting-button-type-input-send-text-show-input-group-box').append(template('setting-button-type-input-send-text-input-group-radio-list-template', {
+            "radio": {},
+            "button_input": {}
+        }))
+    }
+
+    function input_send_text_input_group_radio_input_data_fun(inputGroupDom) {
+        const valueName = inputGroupDom.find('.setting-button-input-send-text-input-group-value_name')[0].value
+        const radioDomList = inputGroupDom.find('.setting-button-type-input-send-text-input-group-radio-list')
+        const inputTitle = inputGroupDom.find('.setting-button-input-send-text-input-group-title')[0].value
+        const inputTitleWidth = inputGroupDom.find('.setting-button-input-send-text-input-group-title_width')[0].value
+        const linkage = inputGroupDom.find('.setting-button-input-send-text-input-group-value_linkage')[0].value
+        const style = inputGroupDom.find('.setting-button-input-send-text-son-style')[0].value
+        const inputMarginLeft = inputGroupDom.find('.setting-button-input-send-text-input-group-margin_left')[0].value
+        const inputMarginRight = inputGroupDom.find('.setting-button-input-send-text-input-group-margin_right')[0].value
+        if (radioDomList.length <= 0) {
+            alert("单选框未找到选项")
+            return null
+        }
+        let checked_value = null
+        const radio_list = []
+        for (let i = 0; i < radioDomList.length; i++) {
+            const radioDom = radioDomList.eq(i)
+            const value = radioDom.find('.setting-button-type-input-send-text-input-group-radio-list-value')[0].value
+            const checked = radioDom.find('.setting-button-type-input-send-text-input-group-radio-list-checked')[0].checked
+            const title = radioDom.find('.setting-button-type-input-send-text-input-group-radio-title')[0].value
+            const titleWidth = radioDom.find('.setting-button-type-input-send-text-input-group-radio-title_width')[0].value
+            if (checked) {
+                checked_value = value
+            }
+            radio_list.push({
+                'title': title,
+                'title_width': titleWidth,
+                'value': value,
+            })
+        }
+        if (!checked_value) {
+            let in_checked_value = false
+            for (let i in radio_list) {
+                if (radio_list.value === checked_value) {
+                    in_checked_value = true
+                    break
+                }
+            }
+            if (!in_checked_value) {
+                checked_value = null
+            }
+        }
+
+        if (checked_value == null) {
+            checked_value = radio_list[0].value
+        }
+        return {
+            'type': 'radio',
+            'value_name': valueName,
+            'value': checked_value,
+            'radio_list': radio_list,
+            'title': inputTitle,
+            'title_width': inputTitleWidth,
+            'linkage': linkage,
+            'style': style,
+            'margin_left': inputMarginLeft,
+            'margin_right': inputMarginRight,
+            'uid': 'input-send-text-radio-' + guid(),
+        }
+    }
+
+
+    //注册
+    input_send_text_input_group_register("radio", "单选框",
+        "main-button-type-input-send-text-show-input-group-radio-template",
+        "setting-button-type-input-send-text-show-input-group-radio-template",
+        "setting-button-type-input-send-text-input-group-radio-template",
+        input_send_text_input_group_radio_input_data_fun
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

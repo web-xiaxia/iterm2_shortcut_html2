@@ -1,0 +1,281 @@
+{% block style %}
+<style>
+    .main-button-type-input-send-text-show-input-group-input-quick {
+        border-width: 1px;
+        border-style: dashed;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .main-button-type-input-send-text-show-input-group-input-quick-list a:nth-of-type(even) {
+        color: #6fbac4;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-input-send-text-show-input-group-input-template" type="text/html">
+    <div class="input-send-text-group-box" linkage="{{button_input.linkage}}"
+         style="{{if tab_button.linkage && button_input.linkage && button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}">
+        {{if button_input.margin_left}}
+        <div class="input-send-text-margin-box"
+             style="width:{{button_input.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if button_input.title}}
+            <span class="title-span"
+                  style="{{if button_input.title_width}}width: {{button_input.title_width}}px;{{/if}} ">
+            {{button_input.title}}
+        </span>
+            {{/if}}
+            <input type="{{if button_input.input_type == 'number' }}number{{else}}text{{/if}}"
+                   class="input-send-text-input {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                   value_name="{{button_input.value_name}}"
+                   value="{{button_input.value}}"
+                   input-uid="{{button_input.input_uid}}"
+                   style="{{if button_input.width}}width: {{button_input.width}}px;{{/if}}"
+                   oninput="inputSendTextInputChange(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})"
+                   on-enter="{{if button_input.enter_input}}buttonInputEnterSendText(e,'{{button_input.enter_input}}'){{/if}}"
+            >{{if button_input.quick}}<span
+                class="main-button-type-input-send-text-show-input-group-input-quick {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                onclick="inputSendTextInputButtonInputQuick(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})">Q</span>
+            {{/if}}
+        </div>
+        {{if button_input.margin_right}}
+        <div class="input-send-text-margin-box"
+             style="width:{{button_input.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--显示模板(历史记录)-->
+<script id="main-button-type-input-send-text-show-input-group-input-quick-window-template" type="text/html">
+    <div class="main-button-type-input-send-text-show-input-group-input-quick-list">
+        {{each quick_list quick index}}
+        <a class="quick"
+           href="javascript:inputSendTextInputButtonInputQuickSelect({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},{{index}},false)">{{quick}}</a>
+        {{/each}}
+    </div>
+    <p style="font-size: 12px;color: #989898;">历史记录</p>
+    <div class="main-button-type-input-send-text-show-input-group-input-quick-list">
+        {{each history_value quick index}}
+        <a class="quick"
+           href="javascript:inputSendTextInputButtonInputQuickSelect({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},{{index}},true)">{{quick}}</a>
+        {{/each}}
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-input-send-text-show-input-group-input-template" type="text/html">
+    <div class="input-send-text-group-box" linkage="{{button_input.linkage}}"
+         style="{{if tab_button.linkage && button_input.linkage && button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}">
+        {{if button_input.margin_left}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'margin_left','width')"
+             style="width:{{button_input.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if button_input.title}}
+            <span class="title-span drag-width"
+                  drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'title_width','width')"
+                  style="{{if button_input.title_width}}width: {{button_input.title_width}}px;{{/if}} ">
+            {{button_input.title}}
+        </span>
+            {{/if}}
+            <input type="{{if button_input.input_type == 'number' }}number{{else}}text{{/if}}"
+                   class="input-send-text-input drag-width {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                   drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'width','width')"
+                   value="{{button_input.value}}"
+                   style="{{if button_input.width}}width: {{button_input.width}}px;{{/if}}"
+            >{{if button_input.quick}}<span
+                class="main-button-type-input-send-text-show-input-group-input-quick  {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}">Q</span>
+            {{/if}}
+        </div>
+        {{if button_input.margin_right}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'margin_right','width')"
+             style="width:{{button_input.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-input-send-text-input-group-input-template" type="text/html">
+    <div class="setting-button-input-send-text-box-group setting-button-input-send-text-input-group" group-type="input"
+         input-uid="{{button_input.input_uid}}" save-history="1">
+        <p class="setting-button-input-send-text-box-group-title">
+            <span class="setting-button-input-send-text-box-group-title-span">
+            输入框
+            </span>
+            <button class="setting-button-input-send-text-box-group-title-button"
+                    onclick="settingButtonInputSendTextBoxGroupTitleButtonContext(this)">
+                展开/收缩
+            </button>
+            {{include "setting-button-type-show-input-send-text-operation-button-template"}}
+        </p>
+        <table class="setting-button-input-send-text-box-group-context" style="{{if init_edit }}display: none;{{/if}}">
+            <tr>
+                <td>变量名称：</td>
+                <td><input class="setting-button-input-send-text-input-group-value_name" type="text"
+                           value="{{button_input.value_name}}"></td>
+                <td>类型</td>
+                <td>
+                    <select class="setting-button-input-send-text-input-group-input_type">
+                        {{if button_input.input_type == null || button_input.input_type == 'text' }}
+                        <option value="text" selected>文本</option>
+                        <option value="number">数字</option>
+                        {{else}}
+                        <option value="text">文本</option>
+                        <option value="number" selected>数字</option>
+                        {{/if}}
+                    </select>
+                </td>
+
+            </tr>
+            <tr>
+                <td>默认值：</td>
+                <td><input class="setting-button-input-send-text-input-group-value" type="text"
+                           value="{{button_input.value}}">
+                    <input type="hidden" class="setting-button-input-send-text-input-group-history_value"
+                           value="{{button_input.history_value}}"></td>
+                <td>输入框宽度：</td>
+                <td><input class="setting-button-input-send-text-input-group-width" type="number"
+                           value="{{button_input.width}}"></td>
+            </tr>
+            <tr>
+                <td>Enter发送</td>
+                <td>
+                    <input type="text" class="setting-button-input-send-text-input-group-enter_input"
+                           value="{{button_input.enter_input}}">
+                </td>
+                <td colspan="2" style="font-size: 12px;">
+                    按钮id，主界面输入时按Enter时建触发按钮点击效果
+                </td>
+            </tr>
+            <tr>
+                <td>快捷输入:</td>
+                <td colspan="3">
+                    <textarea class="setting-button-input-send-text-input-group-quick"
+                              rows="5" style="width: 500px">{{button_input.quick}}</textarea>
+                    <div class="bottom_edit_tips">使用 || 隔开</div>
+                </td>
+            </tr>
+            <tr>
+                <td>标题：</td>
+                <td><input class="setting-button-input-send-text-input-group-title" type="text"
+                           value="{{button_input.title}}"></td>
+                <td>标题宽度：</td>
+                <td><input class="setting-button-input-send-text-input-group-title_width" type="text"
+                           value="{{button_input.title_width}}"></td>
+            </tr>
+            <tr>
+                <td>联动：</td>
+                <td><input type="text" class="setting-button-input-send-text-input-group-linkage"
+                           value="{{button_input.linkage}}"></td>
+                <td>颜色：</td>
+                <td>
+                    <select class="setting-button-input-send-text-son-style {{if button_input.style}}button-color-{{button_input.style}}{{/if}}"
+                            onchange="settingButtonStyleSelect(this)">
+                        <option value="">跟随组件</option>
+                        {{each button_style_list button_style }}
+                        {{if button_input.style==button_style }}
+                        <option value="{{button_style}}" selected> {{button_style}}</option>
+                        {{else}}
+                        <option value="{{button_style}}"> {{button_style}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>前间距</td>
+                <td><input class="setting-button-input-send-text-input-group-margin_left" type="number"
+                           value="{{button_input.margin_left}}"></td>
+                <td>后间距</td>
+                <td><input class="setting-button-input-send-text-input-group-margin_right" type="number"
+                           value="{{button_input.margin_right}}"></td>
+            </tr>
+        </table>
+
+    </div>
+</script>
+<!--js-->
+<script>
+    function inputSendTextInputButtonInputQuickSelect(tab_index, tab_group_index, button_index, button_input_index, quick_index, history) {
+        const sendTextInput = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[button_input_index]
+        const inputQuick = history ? JSON.parse(sendTextInput.history_value) : sendTextInput.quick.split("||")
+        sendTextInput.value = inputQuick[quick_index]
+        $(`input[input-uid=${sendTextInput.input_uid}]`).val(inputQuick[quick_index])
+        closeFloatingWindow()
+    }
+
+    function inputSendTextInputButtonInputQuick(that, tab_index, tab_group_index, button_index, button_input_index) {
+        const buttonInput = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[button_input_index]
+        const inputQuick = buttonInput.quick
+        openFloatingWindow('main-button-type-input-send-text-show-input-group-input-quick-window-template', {
+            "tab_index": tab_index,
+            "tab_group_index": tab_group_index,
+            "tab_button_index": button_index,
+            "button_input_index": button_input_index,
+            "quick_list": inputQuick.split("||"),
+            "history_value": JSON.parse(buttonInput.history_value)
+        }, "快捷输入")
+    }
+
+    function input_send_text_input_group_input_input_data_fun(inputGroupDom) {
+        const inputValueName = inputGroupDom.find('.setting-button-input-send-text-input-group-value_name')[0].value
+        const inputType = inputGroupDom.find('.setting-button-input-send-text-input-group-input_type')[0].value
+        const inputValue = inputGroupDom.find('.setting-button-input-send-text-input-group-value')[0].value
+        let inputWidth = parseInt(inputGroupDom.find('.setting-button-input-send-text-input-group-width')[0].value) || 200
+        const enterInput = inputGroupDom.find('.setting-button-input-send-text-input-group-enter_input')[0].value
+        const inputQuick = inputGroupDom.find('.setting-button-input-send-text-input-group-quick')[0].value
+        const inputTitle = inputGroupDom.find('.setting-button-input-send-text-input-group-title')[0].value
+        const inputTitleWidth = inputGroupDom.find('.setting-button-input-send-text-input-group-title_width')[0].value
+        const linkage = inputGroupDom.find('.setting-button-input-send-text-input-group-linkage')[0].value
+        const style = inputGroupDom.find('.setting-button-input-send-text-son-style')[0].value
+        const inputMarginLeft = inputGroupDom.find('.setting-button-input-send-text-input-group-margin_left')[0].value
+        const inputMarginRight = inputGroupDom.find('.setting-button-input-send-text-input-group-margin_right')[0].value
+        let inputUid = inputGroupDom.attr('input-uid')
+        const historyValue = inputGroupDom.find('.setting-button-input-send-text-input-group-history_value')[0].value || "[]"
+        if (!inputUid) {
+            inputUid = 'input-send-text-input-' + guid()
+        }
+        if (inputWidth === 0) {
+            inputWidth = 200
+        }
+        if (inputWidth < 20) {
+            inputWidth = 20
+        }
+        return {
+            'type': 'input',
+            'value_name': inputValueName,
+            'input_type': inputType,
+            'value': inputValue,
+            'width': inputWidth,
+            'enter_input': enterInput,
+            'quick': inputQuick,
+            'title': inputTitle,
+            'title_width': inputTitleWidth,
+            'linkage': linkage,
+            'style': style,
+            'margin_left': inputMarginLeft,
+            'margin_right': inputMarginRight,
+            'input_uid': inputUid,
+            'save_history': true,
+            'history_value': historyValue,
+        }
+    }
+
+    //注册
+    input_send_text_input_group_register("input", "输入框",
+        "main-button-type-input-send-text-show-input-group-input-template",
+        "setting-button-type-input-send-text-show-input-group-input-template",
+        "setting-button-type-input-send-text-input-group-input-template",
+        input_send_text_input_group_input_input_data_fun
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

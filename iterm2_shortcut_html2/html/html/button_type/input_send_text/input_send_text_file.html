@@ -1,0 +1,235 @@
+{% block style %}
+<style>
+    .file-box-show {
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .button-span-file-box {
+        text-align: center;
+        padding: 3px;
+        border-width: 1px;
+        border-style: dashed;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-input-send-text-show-input-group-file-template" type="text/html">
+    <div class="input-send-text-group-box" linkage="{{button_input.linkage}}"
+         style="{{if tab_button.linkage && button_input.linkage && button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}">
+        {{if button_input.margin_left}}
+        <div class="input-send-text-margin-box"
+             style="width:{{button_input.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if button_input.title}}
+            <span class="title-span"
+                  style="{{if button_input.title_width}}width: {{button_input.title_width}}px;{{/if}} ">
+            {{button_input.title}}
+        </span>
+            {{/if}}
+            <div class="input-send-text-input file-box-show {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                 value_name="{{button_input.value_name}}">
+                <input type="text"
+                       class="button-span-box-text {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                       style="{{if button_input.width}}width: {{button_input.width}}px;{{/if}}"
+                       oninput="inputSendTextInputChange(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})"
+                       value="{{button_input.value}}"/>
+                <div onclick="buttonTypeInputSendTextShowInputGroupFile(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})"
+                     class="button-span-file-box"><img width="10"
+                                                       src="data:image/png;base64,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">
+                </div>
+            </div>
+        </div>
+        {{if button_input.margin_right}}
+        <div class="input-send-text-margin-box"
+             style="width:{{button_input.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-input-send-text-show-input-group-file-template" type="text/html">
+    <div class="input-send-text-group-box" linkage="{{button_input.linkage}}"
+         style="{{if tab_button.linkage && button_input.linkage && button_input.linkage!='' && tab_button.linkage_value !=button_input.linkage}}display: none;{{/if}}">
+        {{if button_input.margin_left}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'margin_left','width')"
+             style="width:{{button_input.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if button_input.title}}
+            <span class="title-span drag-width"
+                  drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'title_width','width')"
+                  style="{{if button_input.title_width}}width: {{button_input.title_width}}px;{{/if}} ">
+            {{button_input.title}}
+        </span>
+            {{/if}}
+            <div class="input-send-text-input file-box-show {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                 value_name="{{button_input.value_name}}">
+                <input type="text"
+                       class="drag-width button-span-box-text {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                       drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'width','width')"
+                       style="{{if button_input.width}}width: {{button_input.width}}px;{{/if}}"
+                       value="{{button_input.value}}"/>
+                <div class="button-span-file-box"><img width="10"
+                                                       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAAAXNSR0IArs4c6QAACgRJREFUeF7tnU+IXVcdx89v3vCChCgupsUsugiKSlIrNG58+DLnMal2oFYIunAjKhakWmhFsWjB0pZ2Y6GFBqpYhCJIFIUSJO3Ye24mBCOUWltKSttNF7W048KNhjG8e+QONiTpTHhz//zO/b37CWQRuOf3/Z7Pbz5kJnnzRhy/IACBHQkIbCAAgZ0JIAgfHRC4BgEE4cMDAgjCxwAEqhHgb5Bq3DjVEwII0pNFc81qBBCkGjdO9YQAgvRk0VyzGgEEqcaNUz0hgCA9WTTXrEYAQapx41RPCCBITxbNNasRQJBq3DjVEwII0pNFc81qBBCkGjdO9YQAgvRk0VyzGgEEqcaNUz0hgCA9WTTXrEYAQapx41RPCMwkyNra2g2Li4sHesLkA9dcWFj4r3NuoyiKDe/9v/rKoY/33laQ9fX1pel0+iMR+UyM8Sbn3PV9hLPDnd91zj3tnHvWe/9nuMw3gQ8IEkJYds790jn38fm+ev3bici6iDx05MiR5+pPY0IXCVwhSJZlj4vI97tYtMudYoyPTiaTH3S5I92qEbgkSJZlx0Xku9XGcMo5d8Z7P4bEfBHYEiTLsmMi8vv5ulqS2/zTe7+UJJnQVgjIyZMnP7p3796zzrlPt5LQv6Hlv3Rd179rz+eNJcuyr4vIb+bzeslulXvvfbJ0ghsjICGEB5xzP21sIoO2CMQYj08mkzvBYZuA5Hn+TIzxNtvX6GZ7EblzeXn5eDfb0WoWAqUgb8cY98/yMM9UIlB+tpVXOsmh5ATKT7Fi8hbzX+AT3vs35/+a83dDBFHa6b59+/YePnz4P0pxxDREAEEaAjnDmFe994dmeI5HOkSgqiB5URSnO3SPVqssLCyUL9j8SgMhv/Pef62BOYxQIlBZkD79O//a2tpHFhcXn3fO3dzAXn7mvb+/gTmMUCCAIDNCDiEcEpHnY4xN/C/5N733v54xmscSEkCQXcDP8/zWGOOfdnFkx0djjF+aTCbPNjGLGe0RQJBdss2y7A4ReXKXx7Z9fDAY3DQej19uYhYz2iGAIBW4NvjynI3BYHBwPB5vVKjBEQUCCFIRcgih/BriGxWPX36MFzY2ALGtEQhSg2ye5+UX7ZMaI7aOishTy8vL3647h/PNE0CQGkxPnDgxWFpaeq2h799/yHvPq6pr7KONowhSk2oI4VPOuZecc3tqjiqPf897/0QDcxjREAEEaQBknue3xRifaWBU+X0kxyaTyR+amMWM+gQQpD7DrQlZlt0jIj9vYtx0Ov38ysrKX5qYxYx6BBCkHr8rTjf4tklvDIfDo6PR6K0G6zGqAgEEqQDtWkdCCH9s4oWN5ZvSLS0tHT148GD5tqf8SkQAQVoAH0J4oaEXNvKdiC3spxwpIq/HGF8siuL85ubm+dXV1W3/sxZBWlpAnufvNvTCxpYaMvYqAo947++9mgqCtPRxcurUqY/t2bPnHy2NZ2w7BF4ZDocro9HovffHI0g7oLem5nn+hRjjeosRjG6BwGAw2D8ej9/Z+lSs4ps28PqhGRdz+vTpbxVF8asZH+exbhC49O3RCKKwkBDCw865HytEEdEcgfu89w8iSHNArzkphFC+OfgxpThiGiAgIrcgSAMgZx2RZdnfy5/aNevzPJeWgIjcgyDKOwghlO+N9SHlWOIqEIgxPoUgFcDVPRJC+Jtz7rN153C+dQJ/RZDWGW8fEEI44Zz7aqJ4Ymcj8G8EmQ1UK0+FEH7inCt/8ylXK4TrD0WQ+gxrTcjz/HMxxlKS22sN4nArBBCkFay7H3rmzJkDFy9evF1EvuycK3/OYfkGdfy8w92jbPQEgjSKk2FdJRBCCM655d32Q5DdEuN5kwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgS0BdG6FzkQSEpAQggxaQPCIdBhAgjS4eVQLT0BBEm/Axp0mEApyAvOuZs73JFqEEhCIMb4suR5/mSM8Y4kDQiFQIcJiMjTpSB3xRgf63BPqkEgFYEfloIcjTE+l6oBuRDoKoGiKL4oZbksy34hIt/palF6QSABgfu89w9uCfJ/Sd4Wkf0JihAJga4ReNV7f6gsdbkgnxSR17rWlD4Q0CYwGAz2j8fjd64QpPzDuXPnPnzhwoXfOudu1S5FHgQ6QOCV4XC4MhqN3nu/y6W/QS4vl+f53THGRztQmAoQ0CLwiPf+3qvDthWkfOjs2bPXTafTG8vfInJjjPGAVlNyINA2ARF5Pcb4YlEU5zc3N8+vrq5ubJe5oyBtF2Q+BCwQQBALW6JjMgIIkgw9wRYIIIiFLdExGQEESYaeYAsEEMTCluiYjACCJENPsAUCCGJhS3RMRgBBkqEn2AIBBLGwJTomI4AgydATbIEAgljYEh2TEUCQZOgJtkAAQSxsiY7JCCBIMvQEWyCAIBa2RMdkBBAkGXqCLRD4HyAJfCrOGtxmAAAAAElFTkSuQmCC">
+                </div>
+            </div>
+        </div>
+        {{if button_input.margin_right}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonInputData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},'margin_right','width')"
+             style="width:{{button_input.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-input-send-text-input-group-file-template" type="text/html">
+    <div class="setting-button-input-send-text-box-group setting-button-input-send-text-input-group" group-type="file"
+         input-uid="{{button_input.input_uid}}" save-history="1">
+        <p class="setting-button-input-send-text-box-group-title">
+            <span class="setting-button-input-send-text-box-group-title-span">
+            选择文件
+            </span>
+            <button class="setting-button-input-send-text-box-group-title-button"
+                    onclick="settingButtonInputSendTextBoxGroupTitleButtonContext(this)">
+                展开/收缩
+            </button>
+            {{include "setting-button-type-show-input-send-text-operation-button-template"}}
+        </p>
+        <table class="setting-button-input-send-text-box-group-context" style="{{if init_edit }}display: none;{{/if}}">
+            <tr>
+                <td>变量名称：</td>
+                <td><input class="setting-button-input-send-text-input-group-value_name" type="text"
+                           value="{{button_input.value_name}}"></td>
+            </tr>
+            <tr>
+                <td>选择类型：</td>
+                <td>
+                    <select class="setting-button-input-send-text-input-group-select_mode">
+                        {{if button_input.select_mode =='all' || button_input.select_mode == null}}
+                        <option value="all" selected>all</option>
+                        {{else}}
+                        <option value="all">all</option>
+                        {{/if}}
+                        {{if button_input.select_mode =='dir'}}
+                        <option value="dir" selected>dir</option>
+                        {{else}}
+                        <option value="dir">dir</option>
+                        {{/if}}
+                        {{if button_input.select_mode =='file'}}
+                        <option value="file" selected>file</option>
+                        {{else}}
+                        <option value="file">file</option>
+                        {{/if}}
+                    </select>
+                </td>
+                <td> 宽度：</td>
+                <td><input class="setting-button-input-send-text-input-group-width" type="number"
+                           value="{{button_input.width}}"></td>
+            </tr>
+            <tr>
+                <td>标题：</td>
+                <td><input class="setting-button-input-send-text-input-group-title" type="text"
+                           value="{{button_input.title}}"></td>
+                <td>标题宽度：</td>
+                <td><input class="setting-button-input-send-text-input-group-title_width" type="number"
+                           value="{{button_input.title_width}}"></td>
+            </tr>
+
+            <tr>
+                <td>联动:</td>
+                <td><input type="text" class="setting-button-input-send-text-input-group-linkage"
+                           value="{{button_input.linkage}}"></td>
+                <td>颜色：</td>
+                <td>
+                    <select class="setting-button-input-send-text-son-style {{if button_input.style}}button-color-{{button_input.style}}{{/if}}"
+                            onchange="settingButtonStyleSelect(this)">
+                        <option value="">跟随组件</option>
+                        {{each button_style_list button_style }}
+                        {{if button_input.style==button_style }}
+                        <option value="{{button_style}}" selected> {{button_style}}</option>
+                        {{else}}
+                        <option value="{{button_style}}"> {{button_style}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>前间距</td>
+                <td><input class="setting-button-input-send-text-input-group-margin_left" type="number"
+                           value="{{button_input.margin_left}}"></td>
+                <td>后间距</td>
+                <td><input class="setting-button-input-send-text-input-group-margin_right" type="number"
+                           value="{{button_input.margin_right}}"></td>
+            </tr>
+        </table>
+
+    </div>
+</script>
+<!--js-->
+<script>
+
+    function buttonTypeInputSendTextShowInputGroupFile(that, tab_index, tab_group_index, button_index, button_input_index) {
+        const input = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].inputs[button_input_index]
+        openFileWindow(function (path, isDir) {
+            $(that).parents('.input-send-text-input').find('.button-span-box-text')[0].value = path
+            input.value = path
+            return true
+        }, "/Users", input.select_mode)
+    }
+
+    function input_send_text_input_group_input_file_data_fun(inputGroupDom) {
+        const inputValueName = inputGroupDom.find('.setting-button-input-send-text-input-group-value_name')[0].value
+        const selectMode = inputGroupDom.find('.setting-button-input-send-text-input-group-select_mode')[0].value
+        let inputWidth = parseInt(inputGroupDom.find('.setting-button-input-send-text-input-group-width')[0].value) || 200
+        const inputTitle = inputGroupDom.find('.setting-button-input-send-text-input-group-title')[0].value
+        const inputTitleWidth = inputGroupDom.find('.setting-button-input-send-text-input-group-title_width')[0].value
+        const linkage = inputGroupDom.find('.setting-button-input-send-text-input-group-linkage')[0].value
+        const style = inputGroupDom.find('.setting-button-input-send-text-son-style')[0].value
+        const inputMarginLeft = inputGroupDom.find('.setting-button-input-send-text-input-group-margin_left')[0].value
+        const inputMarginRight = inputGroupDom.find('.setting-button-input-send-text-input-group-margin_right')[0].value
+
+        if (inputWidth === 0) {
+            inputWidth = 200
+        }
+        if (inputWidth < 50) {
+            inputWidth = 50
+        }
+        return {
+            'type': 'file',
+            'value_name': inputValueName,
+            'select_mode': selectMode,
+            'width': inputWidth,
+            'value': '/',
+            'title': inputTitle,
+            'title_width': inputTitleWidth,
+            'linkage': linkage,
+            'style': style,
+            'margin_left': inputMarginLeft,
+            'margin_right': inputMarginRight,
+
+        }
+    }
+
+    //注册
+    input_send_text_input_group_register("file", "选择文件",
+        "main-button-type-input-send-text-show-input-group-file-template",
+        "setting-button-type-input-send-text-show-input-group-file-template",
+        "setting-button-type-input-send-text-input-group-file-template",
+        input_send_text_input_group_input_file_data_fun
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

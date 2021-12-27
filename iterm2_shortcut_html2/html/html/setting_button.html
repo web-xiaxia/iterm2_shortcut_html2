@@ -1,0 +1,166 @@
+{% block style %}
+<style>
+    .setting-button-add-type-describe-table td {
+        border-bottom: 1px white dashed;
+        padding-bottom: 5px;
+    }
+
+    .bottom_edit_tips {
+        color: #cecece;
+        font-size: 12px;
+        margin: 3px;
+    }
+
+
+</style>
+{% endblock %}
+{% block script %}
+<script id="setting-button-js-button-template" type="text/html">
+    <div class="bottom_edit_tips">可使用的方法：</div>
+    <div class="bottom_edit_tips">sendText(text) 发送文本</div>
+    <div class="bottom_edit_tips">execShell(shellText) 执行shell 返回 {'status': true, 'result': ["",""],}</div>
+    <div class="bottom_edit_tips">iterm2SelectedText() 获取当前iterm2选择的文本</div>
+    <div class="bottom_edit_tips">JS.变量名称 调用事件中的自定js</div>
+    <div class="bottom_edit_tips">changeCustomVariable(value_name, value) 设置事件中的自定变量</div>
+    <div class="bottom_edit_tips">openFloatingHtmlWindow(title, html) 在窗口中显示</div>
+    <div class="bottom_edit_tips">openJsonWindow(jsonStr) 在窗口中显示JSON</div>
+    <div class="bottom_edit_tips">timeFormat(time,"yyyy-MM-dd HH:mm:ss") 时间格式化</div>
+</script>
+<script id="setting-button-add-type-template" type="text/html">
+    <div>
+        按钮类型：
+        <select class="setting-button-type">
+            {{each button_type_list as button_type }}
+            <option value="{{button_type.type}}">
+                {{button_type.name}}
+            </option>
+            {{/each}}
+        </select>
+        <button onclick="settingButtonTypeSelect(this,{{tab_index}},{{group_index}})">确认</button>
+    </div>
+    <div>
+        <table class="setting-button-add-type-describe-table" style="border-color:white;margin-top: 20px;"
+               cellspacing="9"
+               cellpadding="0" border="0">
+            <tr>
+                <th>类型</th>
+                <th>描述</th>
+            </tr>
+            {{each button_type_list as button_type }}
+            <tr>
+                <td>{{button_type.name}}</td>
+                <td>{{button_type.describe}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</script>
+<script id="setting-button-operation-template" type="text/html">
+    {{if button_index >= 0}}
+    <p>
+        <button onclick="settingMoveButton(this,{{tab_index}},{{group_index}},{{button_index}}, -1)">前移</button>
+        <button onclick="settingMoveButton(this,{{tab_index}},{{group_index}},{{button_index}}, 1)">后移</button>
+        <button style="margin-left: 20px"
+                ondblclick="settingDeleteButton(this,{{tab_index}},{{group_index}},{{button_index}})">删除
+        </button>
+    </p>
+    {{/if}}
+</script>
+<script id="setting-button-type-show-input-send-text-operation-button-template" type="text/html">
+    <button onclick="settingMoveButtonInputSendTextInputGroup(this,-1{{if className}},'{{className}}'{{/if}})">上移
+    </button>
+    <button onclick="settingMoveButtonInputSendTextInputGroup(this, 1{{if className}},'{{className}}'{{/if}})">下移
+    </button>
+
+    <button style="margin-left: 20px;"
+            ondblclick="settingDeleteButtonInputSendTextInputGroup(this{{if className}},'{{className}}'{{/if}})">删除
+    </button>
+</script>
+<script id="setting-button-type-show-input-send-text-operation-template" type="text/html">
+    <div style="padding-top: 10px;">
+        {{include "setting-button-type-show-input-send-text-operation-button-template"}}
+    </div>
+</script>
+<script>
+
+    const SETTING_BUTTON_STYLE = ["white", "purple", "cyan", "golden", "green", "red", "blue"]
+
+    function settingButtonOperationTemplate(tab_index, tab_group_index, button_index) {
+        return template('setting-button-operation-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_index": button_index,
+        })
+    }
+
+    function settingDeleteButton(that, tab_index, tab_group_index, button_index) {
+        STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons.splice(button_index, 1)
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    function settingMoveButton(that, tab_index, tab_group_index, index, move) {
+        const buttons = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons
+        if (index + move < 0 || index + move >= buttons.length) {
+            closeFloatingWindow()
+            return
+        }
+        [buttons[index], buttons[index + move]] = [buttons[index + move], buttons[index]];
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    function settingDeleteButtonInputSendTextInputGroup(that, className = '.setting-button-input-send-text-box-group') {
+        $(that).parents(className).remove()
+    }
+
+    function settingMoveButtonInputSendTextInputGroup(that, move, className = '.setting-button-input-send-text-box-group') {
+        const inputGroup = $(that).parents(className)
+        if (move > 0) {
+            const nextInputGroup = inputGroup.next();
+            if (nextInputGroup.length > 0) {
+                nextInputGroup.insertBefore(inputGroup)
+            }
+
+        } else {
+            const prevInputGroup = inputGroup.prev()
+            if (prevInputGroup.length > 0) {
+                prevInputGroup.insertAfter(inputGroup)
+            }
+        }
+    }
+
+    function settingAddButtonWindow(that, tab_index, tab_group_index) {
+        openFloatingWindow('setting-button-add-type-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_type_list": BUTTON_TYPE_LIST
+        }, "增加BUTTON")
+    }
+
+    function settingButtonTypeSelect(that, tab_index, tab_group_index) {
+        const buttonType = $(that).siblings(".setting-button-type")[0].value
+        closeFloatingWindow()
+        settingEditButtonWindow(tab_index, tab_group_index, buttonType, -1)
+    }
+
+    function settingButtonStyleSelect(that) {
+        const styleDom = $(that)
+        styleDom.removeClass('button-color-' + SETTING_BUTTON_STYLE.join(' button-color-'))
+        if (styleDom.val()) {
+            styleDom.addClass(`button-color-${styleDom.val()}`)
+        }
+    }
+
+    function settingEditButtonWindow(tab_index, tab_group_index, button_type, button_index) {
+        const buttonTypeData = BUTTON_TYPE_MAPPING[button_type]
+        if (buttonTypeData) {
+            buttonTypeData.edit_window_fun(tab_index, tab_group_index, button_index)
+        }
+    }
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

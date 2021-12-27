@@ -1,0 +1,110 @@
+{% block script %}
+<script>
+    const KEYBOARD_KEY = {}
+    document.onkeydown = function (e) {
+        var code = e.keyCode
+        KEYBOARD_KEY.ctrl = e.ctrlKey
+        KEYBOARD_KEY.meta = e.metaKey
+
+        if (ACTIV_TAB_INFO.drag_width) {
+            const isQ = e.key === 'q' || e.key === 'Q'
+            const isE = e.key === 'w' || e.key === 'W'
+            if (!isQ && !isE) {
+                return;
+            }
+            keyboardDragWidth(isQ)
+            return;
+        }
+
+        const nowActiveElement = document.activeElement
+        if (nowActiveElement) {
+            //dom事件
+            if (code === 13) {
+                if (e.ctrlKey || e.metaKey) {
+                    const onCtrlEnter = document.activeElement.getAttribute('on-ctrl-enter')
+                    if (onCtrlEnter) {
+                        eval(onCtrlEnter)
+                        return
+                    }
+                } else {
+                    const onEnter = document.activeElement.getAttribute('on-enter')
+                    if (onEnter) {
+                        eval(onEnter)
+                        return
+                    }
+                }
+            }
+
+            //dom事件
+            const onKeyDown = document.activeElement.getAttribute('on-key-down')
+            if (onKeyDown) {
+                eval(onKeyDown)
+                return
+            }
+
+            //输入框按键
+            const nowElementTagName = document.activeElement.tagName.toUpperCase()
+            if (nowElementTagName === 'INPUT' || nowElementTagName === 'TEXTAREA') {
+                return
+            }
+        }
+
+        //全局输入框
+        if (!ACTIV_TAB_INFO.in_setting && !ACTIV_TAB_INFO.has_floating_window) {
+            if (STORAGE.floating_input_shell_mode === 'textarea') {
+                openInputShellText2()
+            } else {
+                openInputShellText()
+            }
+        }
+        return;
+        if (code === 13) {
+            sendText('\n')
+            return
+        }
+        if (code === 8) {
+            sendText('\b \b')
+            return
+        }
+        if (e.ctrlKey || e.metaKey || e.altKey) {
+            //sendHexCode(0x7e)
+            return;
+        } else if (e.key.length === 1) {
+            sendText(e.key)
+            return
+        }
+
+        // 按键输入
+        // if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+        //     sendText(e.key)
+        //     return
+        // }
+
+        console.log(e)
+
+
+        // vim映射
+        // if (ACTIV_TAB_INFO['name'] === 'vim') {
+        //     switch (code) {
+        //         case 38:
+        //             sendText('k')
+        //             return //上
+        //         case 40:
+        //             sendText('j')
+        //             return //下
+        //         case 37:
+        //             sendText('h')
+        //             return //左
+        //         case 39:
+        //             sendText('l')
+        //             return //右
+        //     }
+        // }
+    }
+    document.onkeyup = function (e) {
+        var code = e.keyCode
+        KEYBOARD_KEY.ctrl = e.ctrlKey
+        KEYBOARD_KEY.meta = e.metaKey
+    }
+</script>
+{% endblock %}

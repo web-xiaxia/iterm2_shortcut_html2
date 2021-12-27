@@ -1,0 +1,72 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-show-padding-template" type="text/html">
+    <span class="button-padding" style="width: {{tab_button.padding}}px"></span>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-show-padding-template" type="text/html">
+    <span draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
+          class="drag-width button-padding" style="width: {{tab_button.padding}}px"
+          drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'padding','width')"
+          onClick="settingEditButtonPaddingWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})"> </span>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-padding-template" type="text/html">
+    <div>
+        <p>
+            按钮类型：间隔
+        </p>
+        <p>
+            间隔：<input class="setting-button-padding-padding" type="number" value="{{button_info.padding}}">
+            <button onclick="settingEditButtonPadding(this,{{tab_index}},{{group_index}},{{button_index}})">保存</button>
+        </p>
+        {{include 'setting-button-operation-template'}}
+    </div>
+</script>
+<script>
+    function settingEditButtonPaddingWindow(tab_index, tab_group_index, button_index) {
+        const buttonInfo = button_index < 0 ? {"padding": 20} : STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        openFloatingWindow('setting-button-type-padding-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_index": button_index,
+            "button_info": buttonInfo
+        }, "BUTTON(间隔)")
+    }
+
+    function settingEditButtonPadding(that, tab_index, tab_group_index, button_index) {
+        const floatContent = $(that).parents('.floating_window_float_content_box_content')
+        let padding = parseInt(floatContent.find(".setting-button-padding-padding")[0].value) || 5
+        if (padding < 5) {
+            padding = 5
+        }
+        if (button_index >= 0) {
+            const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+            button.padding = padding
+        } else {
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons.push({
+                "type": "padding",
+                "padding": padding,
+            })
+        }
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    //注册
+    button_type_register(
+        "padding", "间隔", "可进行按钮间的距离设置。",
+        "main-button-type-show-padding-template", "setting-button-type-show-padding-template",{},
+        settingEditButtonPaddingWindow
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+

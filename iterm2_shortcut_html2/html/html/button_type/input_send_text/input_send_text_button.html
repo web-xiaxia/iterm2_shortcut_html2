@@ -1,0 +1,158 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-input-send-text-button-group-show-template" type="text/html">
+    <div class="input-send-text-group-box"
+         linkage="{{one_button.linkage}}"
+         style="{{if tab_button.linkage && one_button.linkage  && one_button.linkage!='' && tab_button.linkage_value !=one_button.linkage}}display: none;{{/if}}">
+        {{if one_button.margin_left}}
+        <div class="input-send-text-margin-box"
+             style="width:{{one_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            <button class="button-type-input-send-text-button {{if one_button.style }}button-color-{{one_button.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                    style="{{if one_button.width}}width:{{one_button.width}}px;{{/if}}"
+                    button-id="{{if one_button.button_id}}{{one_button.button_id}}{{/if}}"
+                    onclick="buttonInputSendText(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{one_button_index}})">
+                {{one_button.name}}
+            </button>
+        </div>
+        {{if one_button.margin_right}}
+        <div class="input-send-text-margin-box"
+             style="width:{{one_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-input-send-text-button-group-show-template" type="text/html">
+    <div class="input-send-text-group-box"
+         linkage="{{one_button.linkage}}"
+         style="{{if tab_button.linkage && one_button.linkage  && one_button.linkage!='' && tab_button.linkage_value !=one_button.linkage}}display: none;{{/if}}">
+        {{if one_button.margin_left}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{one_button_index}},'margin_left','width')"
+             style="width:{{one_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            <button class="drag-width {{if one_button.style }}button-color-{{one_button.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                    drag-width="dragWidthButtonInputButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{one_button_index}},'width','width')"
+                    style="{{if one_button.width}}width:{{one_button.width}}px;{{/if}}">
+                {{one_button.name}}
+            </button>
+        </div>
+        {{if one_button.margin_right}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonInputButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{one_button_index}},'margin_right','width')"
+             style="width:{{one_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-input-send-text-button-group-template" type="text/html">
+    <div class="setting-button-input-send-text-box-group setting-button-input-send-text-button-group"
+         group-type="button">
+        <p class="setting-button-input-send-text-box-group-title">
+            <span class="setting-button-input-send-text-box-group-title-span">按钮</span>
+            <button class="setting-button-input-send-text-box-group-title-button"
+                    onclick="settingButtonInputSendTextBoxGroupTitleButtonContext(this)">
+                展开/收缩
+            </button>
+            {{include "setting-button-type-show-input-send-text-operation-button-template"}}
+        </p>
+        <table class="setting-button-input-send-text-box-group-context" style="{{if init_edit }}display: none;{{/if}}">
+            <tr>
+                <td>按钮名称：</td>
+                <td><input class="setting-button-input-send-text-name" type="text"
+                           value="{{one_button.name}}"></td>
+                <td>宽度：</td>
+                <td><input class="setting-button-input-send-text-width" type="number"
+                           value="{{one_button.width}}"></td>
+            </tr>
+            <tr>
+                <td>发送文字：</td>
+                <td colspan="3"><textarea class="setting-button-input-send-text-send_text"
+                                          style="width: 500px" rows="5">{{one_button.send_text}}</textarea>
+                    <div class="bottom_edit_tips">替换变量方式为 [[变量名称]]</div>
+                </td>
+            </tr>
+            <tr>
+                <td>按钮id</td>
+                <td><input type="text" class="setting-button-input-send-text-button_id"
+                           value="{{one_button.button_id}}"></td>
+                <td colspan="2">输入框Enter发送中使用</td>
+            </tr>
+            <tr>
+                <td>联动</td>
+                <td><input type="text" class="setting-button-input-send-text-send_text_linkage"
+                           value="{{one_button.linkage}}"></td>
+                <td>颜色：</td>
+                <td>
+                    <select class="setting-button-input-send-text-son-style {{if one_button.style}}button-color-{{one_button.style}}{{/if}}"
+                            onchange="settingButtonStyleSelect(this)">
+                        <option value="">跟随组件</option>
+                        {{each button_style_list button_style }}
+                        {{if one_button.style==button_style }}
+                        <option value="{{button_style}}" selected> {{button_style}}</option>
+                        {{else}}
+                        <option value="{{button_style}}"> {{button_style}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>前间距</td>
+                <td><input class="setting-button-input-send-text-send-margin_left" type="number"
+                           value="{{one_button.margin_left}}"></td>
+                <td>后间距</td>
+                <td><input class="setting-button-input-send-text-send-margin_right" type="number"
+                           value="{{one_button.margin_right}}"></td>
+            </tr>
+        </table>
+    </div>
+</script>
+<script>
+
+    function input_send_text_button_group_button_data_fun(buttonGroupDom) {
+        const name = buttonGroupDom.find(".setting-button-input-send-text-name")[0].value
+        const buttonWidth = parseInt(buttonGroupDom.find(".setting-button-input-send-text-width")[0].value)
+        const sendText = buttonGroupDom.find(".setting-button-input-send-text-send_text")[0].value
+        const buttonId = buttonGroupDom.find(".setting-button-input-send-text-button_id")[0].value
+        const buttonLinkage = buttonGroupDom.find(".setting-button-input-send-text-send_text_linkage")[0].value
+        const style = buttonGroupDom.find('.setting-button-input-send-text-son-style')[0].value
+        const buttonMarginLeft = buttonGroupDom.find(".setting-button-input-send-text-send-margin_left")[0].value
+        const buttonMarginRight = buttonGroupDom.find(".setting-button-input-send-text-send-margin_right")[0].value
+
+        return {
+            "type": "button",
+            "name": name,
+            "width": buttonWidth,
+            "send_text": sendText,
+            "button_id": buttonId,
+            "linkage": buttonLinkage,
+            "style": style,
+            "margin_left": buttonMarginLeft,
+            "margin_right": buttonMarginRight,
+        }
+    }
+
+    input_send_text_button_group_register(
+        'button', '按钮',
+        "main-button-type-input-send-text-button-group-show-template",
+        "setting-button-type-input-send-text-button-group-show-template",
+        "setting-button-type-input-send-text-button-group-template",
+        input_send_text_button_group_button_data_fun
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
