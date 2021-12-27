@@ -4,6 +4,7 @@ from aiohttp.connector import Connection
 
 import sqlite3
 from iterm2.app import App
+from system_storage import SystemStorage
 from storage import Storage
 from typing import Tuple, List
 
@@ -21,8 +22,8 @@ BLOCK_SCRIPT_PATTERN = re.compile(r'''\{% block script %\}(.*?)\{% endblock %\}'
 BLOCK_CONTEXT_PATTERN = re.compile(r'''\{% block context %\}(.*?)\{% endblock %\}''', re.DOTALL)
 
 
-async def api_register(connection: Connection, app: App, STORAGE_DATA: Storage, main_file: str, main_home: str,
-                       html_home: str):
+async def api_register(connection: Connection, app: App, SYSTEM_CONFIG_DATA: SystemStorage, STORAGE_DATA: Storage,
+                       main_home: str, html_home: str):
     async def my_send_text(send_text=''):
         session = app.current_terminal_window.current_tab.current_session
         await session.async_send_text(send_text.replace('|==f==h==|', '"'))
@@ -101,6 +102,28 @@ async def api_register(connection: Connection, app: App, STORAGE_DATA: Storage, 
 
     async def delete_storage_api(request):
         await STORAGE_DATA.delete_storage()
+        return await send_ok(request)
+
+    async def reload_storage_api(request):
+        data = await request.json()
+        path = data.get('path')
+        await STORAGE_DATA.reload_storage(path)
+        return await send_ok(request)
+
+    async def get_system_storage_api(request):
+        return await send_html(json.dumps(await SYSTEM_CONFIG_DATA.get_storage(), sort_keys=True, indent=4), request)
+
+    async def save_store_path_api(request):
+        data = await request.json()
+        storage_path = data.get('storage_path')
+        storage_history_path = data.get('storage_history_path')
+        reload = bool(data.get('reload'))
+        await SYSTEM_CONFIG_DATA.set_storage_path(storage_path, storage_history_path)
+        if storage_path:
+            if reload:
+                await STORAGE_DATA.reload_storage(storage_path + "/storage.json")
+            else:
+                await STORAGE_DATA.set_storage(None, bak=True)
         return await send_ok(request)
 
     async def storage_reset_event_send_map_api(request):
@@ -289,6 +312,9 @@ async def api_register(connection: Connection, app: App, STORAGE_DATA: Storage, 
     webapp.router.add_get('/storage', get_storage_api)
     webapp.router.add_post('/storage', save_storage_api)
     webapp.router.add_delete('/storage', delete_storage_api)
+    webapp.router.add_post('/reload_storage', reload_storage_api)
+    webapp.router.add_get('/system_storage', get_system_storage_api)
+    webapp.router.add_post('/change_store_path', save_store_path_api)
     webapp.router.add_post('/storage_reset_event_send_map', storage_reset_event_send_map_api)
     webapp.router.add_post('/storage_reset_custom_variable_map', storage_reset_custom_variable_map_api)
     webapp.router.add_post('/storage_reset_py_method', storage_reset_py_method_api)

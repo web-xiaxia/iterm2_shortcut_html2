@@ -2,11 +2,13 @@
 import time
 
 from datetime import datetime
+from system_storage import SystemStorage
+from utils import singleton
 
 from os.path import abspath, dirname
 import shutil
 from functools import wraps
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Optional
 import json
 import os
 
@@ -29,25 +31,12 @@ INIT_CONFIG_JSON = {
 }
 
 
-def singleton(f):
-    instance = {}
-
-    @wraps(f)
-    def getinstance(*args, **kwargs):
-        if f not in instance:
-            instance[f] = f(*args, **kwargs)
-        return instance[f]
-
-    return getinstance
-
-
 @singleton
 class Storage:
 
-    def __init__(self, storage_path):
-        self.storage_path = storage_path
+    def __init__(self, system_config: SystemStorage):
+        self.system_config = system_config
         self.storage = None
-        self.storage_history_home = os.path.join(abspath(dirname(__file__)), './storage_history')
         self.temp_storage = {}
         self.last_bak_time = 0
         self.last_bak_path = None
@@ -109,28 +98,47 @@ class Storage:
             return self.storage
 
         print(f"storage 打开了文件")
-        if not os.path.exists(self.storage_path):
-            with open(self.storage_path, 'w') as fp:
+        system_config_storage = await self.system_config.get_storage()
+        storage_full_path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
+        if not os.path.exists(storage_full_path):
+            with open(storage_full_path, 'w') as fp:
                 fp.write(json.dumps(INIT_CONFIG_JSON))
-        with open(self.storage_path, 'r') as fp:
+        with open(storage_full_path, 'r') as fp:
             self.storage = json.load(fp)
 
         return self.storage
 
-    async def set_storage(self, storage: Tuple[Dict, str], bak: bool = True):
-        if isinstance(storage, str):
-            storage_str = storage
-        else:
-            storage_str = json.dumps(storage)
+    async def reload_storage(self, path):
+        if not path:
+            system_config_storage = await self.system_config.get_storage()
+            path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
 
-        self.storage = json.loads(storage_str)
-        # self.temp_storage = {}
+        if not os.path.exists(path):
+            with open(path, 'w') as fp:
+                fp.write(json.dumps(INIT_CONFIG_JSON))
+        if not os.path.isfile(path):
+            return
+        with open(path, 'r') as fp:
+            self.storage = json.load(fp)
+        await self.set_storage(self.storage, bak=True)
 
+    async def set_storage(self, storage: Optional[Tuple[Dict, str]], bak: bool = True):
+        if storage is not None:
+            if isinstance(storage, str):
+                storage_str = storage
+            else:
+                storage_str = json.dumps(storage)
+            self.storage = json.loads(storage_str)
+
+        system_config_storage = await self.system_config.get_storage()
+        storage_full_path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
         if bak:
+            storage_history_home = system_config_storage.get('storage_history_path')
             file_path = os.path.join(
-                self.storage_history_home, f'./{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}_bak.json'
+                storage_history_home, f'./{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}_bak.json'
             )
-            shutil.move(self.storage_path, file_path)
+
+            shutil.move(storage_full_path, file_path)
             try:
                 if time.time() - self.last_bak_time < 120 and self.last_bak_path:
                     os.remove(self.last_bak_path)
@@ -140,14 +148,18 @@ class Storage:
             self.last_bak_time = time.time()
             self.last_bak_path = file_path
 
-        with open(self.storage_path, 'w') as fp:
+        with open(storage_full_path, 'w') as fp:
             fp.write(json.dumps(self.storage, sort_keys=True, indent=4))
 
     async def delete_storage(self):
-        file_list = sorted(os.listdir(self.storage_history_home), key=lambda a: a, reverse=True)[120:]
+        system_config_storage = await self.system_config.get_storage()
+        storage_history_home = system_config_storage.get('storage_history_path')
+        file_list = sorted(os.listdir(storage_history_home), key=lambda a: a, reverse=True)[120:]
         for file in file_list:
+            if file == 'storage.json':
+                continue
             try:
-                os.remove(f'{self.storage_history_home}/{file}')
+                os.remove(f'{storage_history_home}/{file}')
             except Exception:
                 pass
 

@@ -1,9 +1,10 @@
 {% block style %}
 <style>
-    .tab-setting-help-button{
+    .tab-setting-help-button {
         display: inline-block;
         cursor: pointer;
     }
+
     .tab-setting-help-tips {
         position: fixed;
         top: 28px;
@@ -16,7 +17,8 @@
         border-radius: 10px;
         display: none;
     }
-    .tab-setting-help-button:hover>.tab-setting-help-tips{
+
+    .tab-setting-help-button:hover > .tab-setting-help-tips {
         display: block;
     }
 
@@ -119,7 +121,7 @@
             <span class="activity"
                   onclick="systemWindowTabSelectClick(this,'#setting-edit-window-tab-window')">窗口</span>
             <span onclick="systemWindowTabSelectClick(this,'#setting-edit-window-tab-input-shell-mode')">命令行</span>
-            <span onclick="systemWindowTabSelectClick(this,'#setting-edit-window-tab-save-storage-timeout')">保存延时</span>
+            <span onclick="systemWindowTabSelectClick(this,'#setting-edit-window-tab-save-storage-timeout')">存储</span>
         </div>
         <div class="tab-select-box-border"></div>
     </div>
@@ -163,9 +165,44 @@
             </p>
         </div>
         <div id="setting-edit-window-tab-save-storage-timeout" class="tab-button-main" style="display: none;">
+            <p>重新加载数据</p>
+            <div>
+                <div class="input-send-text-input file-box-show">
+                    <input id="setting-edit-window-reload-storage-path" type="text"
+                           value="{{system_storage.storage_path}}/storage.json"/>
+                    <div onclick="settingEditWindowReloadStoragePathFile()" class="button-span-file-box"><img width="10"
+                                                                                                              src="data:image/png;base64,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">
+                    </div>
+                </div>
+                <button onclick="settingEditWindowReloadStorage()">重新加载数据</button>
+            </div>
+            <p>数据保存路径</p>
+            <div>
+                <div class="input-send-text-input file-box-show">
+                    <input id="setting-edit-window-storage-path" type="text" value="{{system_storage.storage_path}}"/>
+                    <div onclick="settingEditWindowStoragePathFile()" class="button-span-file-box"><img width="10"
+                                                                                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAAAXNSR0IArs4c6QAACgRJREFUeF7tnU+IXVcdx89v3vCChCgupsUsugiKSlIrNG58+DLnMal2oFYIunAjKhakWmhFsWjB0pZ2Y6GFBqpYhCJIFIUSJO3Ye24mBCOUWltKSttNF7W048KNhjG8e+QONiTpTHhz//zO/b37CWQRuOf3/Z7Pbz5kJnnzRhy/IACBHQkIbCAAgZ0JIAgfHRC4BgEE4cMDAgjCxwAEqhHgb5Bq3DjVEwII0pNFc81qBBCkGjdO9YQAgvRk0VyzGgEEqcaNUz0hgCA9WTTXrEYAQapx41RPCCBITxbNNasRQJBq3DjVEwII0pNFc81qBBCkGjdO9YQAgvRk0VyzGgEEqcaNUz0hgCA9WTTXrEYAQapx41RPCMwkyNra2g2Li4sHesLkA9dcWFj4r3NuoyiKDe/9v/rKoY/33laQ9fX1pel0+iMR+UyM8Sbn3PV9hLPDnd91zj3tnHvWe/9nuMw3gQ8IEkJYds790jn38fm+ev3bici6iDx05MiR5+pPY0IXCVwhSJZlj4vI97tYtMudYoyPTiaTH3S5I92qEbgkSJZlx0Xku9XGcMo5d8Z7P4bEfBHYEiTLsmMi8vv5ulqS2/zTe7+UJJnQVgjIyZMnP7p3796zzrlPt5LQv6Hlv3Rd179rz+eNJcuyr4vIb+bzeslulXvvfbJ0ghsjICGEB5xzP21sIoO2CMQYj08mkzvBYZuA5Hn+TIzxNtvX6GZ7EblzeXn5eDfb0WoWAqUgb8cY98/yMM9UIlB+tpVXOsmh5ATKT7Fi8hbzX+AT3vs35/+a83dDBFHa6b59+/YePnz4P0pxxDREAEEaAjnDmFe994dmeI5HOkSgqiB5URSnO3SPVqssLCyUL9j8SgMhv/Pef62BOYxQIlBZkD79O//a2tpHFhcXn3fO3dzAXn7mvb+/gTmMUCCAIDNCDiEcEpHnY4xN/C/5N733v54xmscSEkCQXcDP8/zWGOOfdnFkx0djjF+aTCbPNjGLGe0RQJBdss2y7A4ReXKXx7Z9fDAY3DQej19uYhYz2iGAIBW4NvjynI3BYHBwPB5vVKjBEQUCCFIRcgih/BriGxWPX36MFzY2ALGtEQhSg2ye5+UX7ZMaI7aOishTy8vL3647h/PNE0CQGkxPnDgxWFpaeq2h799/yHvPq6pr7KONowhSk2oI4VPOuZecc3tqjiqPf897/0QDcxjREAEEaQBknue3xRifaWBU+X0kxyaTyR+amMWM+gQQpD7DrQlZlt0jIj9vYtx0Ov38ysrKX5qYxYx6BBCkHr8rTjf4tklvDIfDo6PR6K0G6zGqAgEEqQDtWkdCCH9s4oWN5ZvSLS0tHT148GD5tqf8SkQAQVoAH0J4oaEXNvKdiC3spxwpIq/HGF8siuL85ubm+dXV1W3/sxZBWlpAnufvNvTCxpYaMvYqAo947++9mgqCtPRxcurUqY/t2bPnHy2NZ2w7BF4ZDocro9HovffHI0g7oLem5nn+hRjjeosRjG6BwGAw2D8ej9/Z+lSs4ps28PqhGRdz+vTpbxVF8asZH+exbhC49O3RCKKwkBDCw865HytEEdEcgfu89w8iSHNArzkphFC+OfgxpThiGiAgIrcgSAMgZx2RZdnfy5/aNevzPJeWgIjcgyDKOwghlO+N9SHlWOIqEIgxPoUgFcDVPRJC+Jtz7rN153C+dQJ/RZDWGW8fEEI44Zz7aqJ4Ymcj8G8EmQ1UK0+FEH7inCt/8ylXK4TrD0WQ+gxrTcjz/HMxxlKS22sN4nArBBCkFay7H3rmzJkDFy9evF1EvuycK3/OYfkGdfy8w92jbPQEgjSKk2FdJRBCCM655d32Q5DdEuN5kwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgQQRIs0OSYJIIjJtVFaiwCCaJEmxyQBBDG5NkprEUAQLdLkmCSAICbXRmktAgiiRZockwQQxOTaKK1FAEG0SJNjkgCCmFwbpbUIIIgWaXJMEkAQk2ujtBYBBNEiTY5JAghicm2U1iKAIFqkyTFJAEFMro3SWgS0BdG6FzkQSEpAQggxaQPCIdBhAgjS4eVQLT0BBEm/Axp0mEApyAvOuZs73JFqEEhCIMb4suR5/mSM8Y4kDQiFQIcJiMjTpSB3xRgf63BPqkEgFYEfloIcjTE+l6oBuRDoKoGiKL4oZbksy34hIt/palF6QSABgfu89w9uCfJ/Sd4Wkf0JihAJga4ReNV7f6gsdbkgnxSR17rWlD4Q0CYwGAz2j8fjd64QpPzDuXPnPnzhwoXfOudu1S5FHgQ6QOCV4XC4MhqN3nu/y6W/QS4vl+f53THGRztQmAoQ0CLwiPf+3qvDthWkfOjs2bPXTafTG8vfInJjjPGAVlNyINA2ARF5Pcb4YlEU5zc3N8+vrq5ubJe5oyBtF2Q+BCwQQBALW6JjMgIIkgw9wRYIIIiFLdExGQEESYaeYAsEEMTCluiYjACCJENPsAUCCGJhS3RMRgBBkqEn2AIBBLGwJTomI4AgydATbIEAgljYEh2TEUCQZOgJtkAAQSxsiY7JCCBIMvQEWyCAIBa2RMdkBBAkGXqCLRD4HyAJfCrOGtxmAAAAAElFTkSuQmCC">
+                    </div>
+                </div>
+                <button onclick="settingEditWindowStoragePath(false)">保存并覆盖配置</button>
+                <button onclick="settingEditWindowStoragePath(true)">保存并加载配置</button>
+            </div>
+            <p>历史数据保存路径</p>
+            <div>
+                <div class="input-send-text-input file-box-show">
+                    <input id="setting-edit-window-storage-history-path" type="text"
+                           value="{{system_storage.storage_history_path}}"/>
+                    <div onclick="settingEditWindowStorageHistoryPathFile()" class="button-span-file-box"><img
+                            width="10"
+                            src="data:image/png;base64,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">
+                    </div>
+
+                </div>
+                <button onclick="settingEditWindowStorageHistoryPath()">保存</button>
+
+            </div>
             <p>数据修改自动保存时间(ms)(等待保存中时，左上角转圈圈)</p>
-            <p><input class="setting-save-storage-timeout" type="number" value="{{save_storage_timeout}}"></p>
-            <p>
+            <p><input class="setting-save-storage-timeout" type="number" value="{{save_storage_timeout}}">
                 <button onclick="settingSaveStorageTimeout(this)">保存</button>
             </p>
         </div>
@@ -310,11 +347,13 @@
     }
 
     function settingEditWindowWindow() {
+        const system_storage = getSystemStorage()
         openFloatingWindow('setting-edit-window-template', {
             "window_width": STORAGE.window_width || 950,
             "window_height": STORAGE.window_height || 480,
             "floating_input_shell_mode": STORAGE.floating_input_shell_mode,
-            "save_storage_timeout": isNaN(STORAGE.save_storage_timeout) ? 1000 : STORAGE.save_storage_timeout
+            "save_storage_timeout": isNaN(STORAGE.save_storage_timeout) ? 1000 : STORAGE.save_storage_timeout,
+            "system_storage": system_storage
         }, "编辑Window")
     }
 
@@ -343,6 +382,48 @@
     function settingEditFloatingInputShellMode(that) {
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
         STORAGE.floating_input_shell_mode = floatContent.find("[name='floating_input_shell_mode']")[0].checked ? 'input' : 'textarea'
+        closeFloatingWindow()
+    }
+
+    function settingEditWindowReloadStoragePathFile() {
+        openFileWindow(function (path, isDir) {
+            if (!isDir) {
+                $("#setting-edit-window-reload-storage-path")[0].value = path
+            }
+            return true
+        }, "/Users", 'file')
+    }
+
+    function settingEditWindowReloadStorage() {
+        reloadStorage($("#setting-edit-window-reload-storage-path")[0].value)
+        closeFloatingWindow()
+    }
+
+    function settingEditWindowStoragePathFile() {
+        openFileWindow(function (path, isDir) {
+            if (isDir) {
+                $("#setting-edit-window-storage-path")[0].value = path
+            }
+            return true
+        }, "/Users", 'dir')
+    }
+
+    function settingEditWindowStoragePath(reload) {
+        changeStorePath($("#setting-edit-window-storage-path").val(), null, reload)
+        closeFloatingWindow()
+    }
+
+    function settingEditWindowStorageHistoryPathFile() {
+        openFileWindow(function (path, isDir) {
+            if (isDir) {
+                $("#setting-edit-window-storage-history-path")[0].value = path
+            }
+            return true
+        }, "/Users", 'dir')
+    }
+
+    function settingEditWindowStorageHistoryPath() {
+        changeStorePath(null, $("#setting-edit-window-storage-history-path").val(), false)
         closeFloatingWindow()
     }
 

@@ -2,6 +2,7 @@
 import time
 
 import traceback
+from system_storage import SystemStorage
 from typing import List, Optional
 
 from iterm2.connection import Connection
@@ -11,11 +12,12 @@ import iterm2
 import os
 from os.path import abspath, dirname
 
-MAIN_HOME = os.path.join(abspath(dirname(__file__)), '.')
-MAIN_FILE = abspath(dirname(__file__))
-HTML_HOME = os.path.join(abspath(dirname(__file__)), './html')
+MAIN_HOME = abspath(dirname(__file__))
+HTML_HOME = os.path.join(MAIN_HOME, 'html')
 
-STORAGE_DATA: Storage = Storage(os.path.join(os.path.join(MAIN_HOME, '.'), './storage.json'))
+SYSTEM_CONFIG = SystemStorage(MAIN_HOME)
+
+STORAGE_DATA: Storage = Storage(SYSTEM_CONFIG)
 
 LAST_OPEN_TOOLBELT_TAB_NAME_TIME = {}
 
@@ -159,7 +161,7 @@ async def main(connection: Connection):
 
     # 注册web
     from html_api import api_register
-    await api_register(connection, app, STORAGE_DATA, MAIN_FILE, MAIN_HOME, HTML_HOME)
+    await api_register(connection, app, SYSTEM_CONFIG, STORAGE_DATA, MAIN_HOME, HTML_HOME)
 
 
 iterm2.run_forever(main)

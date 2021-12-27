@@ -243,6 +243,69 @@
         }, STORAGE.save_storage_timeout + 300)
     }
 
+    function reloadStorage(path) {
+        $.ajax({
+            url: "/reload_storage",
+            type: "post",
+            async: false,
+            data: JSON.stringify({
+                'path': path
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+
+            },
+            error: function (message) {
+
+            }
+        })
+
+        setTimeout(function () {
+            window.location.reload()
+        }, 1000)
+    }
+
+    function getSystemStorage() {
+        let storage = null
+        $.ajax({
+            url: "/system_storage",
+            type: "GET",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+                storage = response_data
+            },
+            error: function (message) {
+                window.location.reload()
+            }
+        })
+        return storage
+    }
+
+    function changeStorePath(storage_path, storage_history_path, reload) {
+        $.ajax({
+            url: "/change_store_path",
+            type: "post",
+            async: false,
+            data: JSON.stringify({
+                'storage_path': storage_path,
+                'storage_history_path': storage_history_path,
+                'reload': reload,
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+
+            },
+            error: function (message) {
+
+            }
+        })
+        if (reload) {
+            setTimeout(function () {
+                window.location.reload()
+            }, 1000)
+        }
+    }
 </script>
 {% endblock %}
 {% block context %}
