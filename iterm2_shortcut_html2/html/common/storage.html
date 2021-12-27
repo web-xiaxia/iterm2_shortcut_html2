@@ -1,11 +1,15 @@
 {% block style %}
 <style>
     #save_storage_loading {
-        width: 10px;
         position: fixed;
-        top: 11px;
-        left: 7px;
+        top: 9px;
+        left: 4px;
         z-index: 20;
+        border: 1px solid rgba(255, 255, 255, 0.60);
+        padding: 1px;
+        width: fit-content;
+        border-radius: 20px;
+        background: black;
     }
 </style>
 {% endblock %}
@@ -309,5 +313,7 @@
 </script>
 {% endblock %}
 {% block context %}
-<img id="save_storage_loading" style="display: none;" src="/image/loading.gif"/>
+<div id="save_storage_loading" style="display: none;">
+    <img width="10" src="/image/loading.gif"/>
+</div>
 {% endblock %}
