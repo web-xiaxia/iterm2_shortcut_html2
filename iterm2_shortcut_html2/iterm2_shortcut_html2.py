@@ -135,6 +135,7 @@ async def main(connection: Connection):
                 selected_tab = tab
                 selected_tab_index = tab_index
                 break
+        print(f'打开Toolbelt，index:{selected_tab_index}')
         if not selected_tab:
             return
 
