@@ -208,7 +208,13 @@
     }
 
     function storageResetEventSendMap() {
-        setTimeout(function () {
+        if (SYNC_STORAGE_INFO.reset_event_send_map_set_timeout) {
+            clearTimeout(SYNC_STORAGE_INFO.reset_event_send_map_set_timeout)
+        }
+        SYNC_STORAGE_INFO.reset_event_send_map_set_timeout = setTimeout(function () {
+            if (SYNC_STORAGE_INFO.reset_event_send_map_set_timeout) {
+                clearTimeout(SYNC_STORAGE_INFO.reset_event_send_map_set_timeout)
+            }
             $.ajax({
                 url: "/storage_reset_event_send_map",
                 type: "POST",
@@ -223,7 +229,13 @@
     }
 
     function storageResetCustomVariableMap() {
-        setTimeout(function () {
+        if (SYNC_STORAGE_INFO.reset_event_custom_variable_map_set_timeout) {
+            clearTimeout(SYNC_STORAGE_INFO.reset_event_custom_variable_map_set_timeout)
+        }
+        SYNC_STORAGE_INFO.reset_event_custom_variable_map_set_timeout = setTimeout(function () {
+            if (SYNC_STORAGE_INFO.reset_event_custom_variable_map_set_timeout) {
+                clearTimeout(SYNC_STORAGE_INFO.reset_event_custom_variable_map_set_timeout)
+            }
             $.ajax({
                 url: "/storage_reset_custom_variable_map",
                 type: "POST",
@@ -237,7 +249,13 @@
     }
 
     function storageResetPyMethod() {
-        setTimeout(function () {
+        if (SYNC_STORAGE_INFO.reset_event_py_method_set_timeout) {
+            clearTimeout(SYNC_STORAGE_INFO.reset_event_py_method_set_timeout)
+        }
+        SYNC_STORAGE_INFO.reset_event_py_method_set_timeout = setTimeout(function () {
+            if (SYNC_STORAGE_INFO.reset_event_py_method_set_timeout) {
+                clearTimeout(SYNC_STORAGE_INFO.reset_event_py_method_set_timeout)
+            }
             $.ajax({
                 url: "/storage_reset_py_method",
                 type: "POST",
