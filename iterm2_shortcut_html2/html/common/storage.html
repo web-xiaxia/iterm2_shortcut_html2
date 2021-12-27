@@ -212,6 +212,7 @@
             $.ajax({
                 url: "/storage_reset_event_send_map",
                 type: "POST",
+                async: false,
                 data: JSON.stringify({}),
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -226,6 +227,7 @@
             $.ajax({
                 url: "/storage_reset_custom_variable_map",
                 type: "POST",
+                async: false,
                 data: JSON.stringify({}),
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -239,6 +241,7 @@
             $.ajax({
                 url: "/storage_reset_py_method",
                 type: "POST",
+                async: false,
                 data: JSON.stringify({}),
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
