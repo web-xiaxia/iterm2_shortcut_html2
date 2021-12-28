@@ -35,10 +35,10 @@
                     <div>0.1.[[自定变量]]使用方式 data.get('自定变量名称')</div>
                     <div>0.2.自定py&nbsp; PY.方法名称(参数) 如：PY.to_int([[变量]], 0)</div>
                     <div>0.3.内置方法</div>
-                    <div>0.3.1.iterm2_send_text 发送文本。使用方式：iterm2_send_text("发送文本")</div>
-                    <div>0.3.2.iterm2_alert 提示框。使用方式：iterm2_alert("主标题","子标题")</div>
-                    <div>0.3.3.iterm2_confirm 确认框。使用方式：iterm2_confirm("主标题","子标题",['按钮1','按钮2'])，按钮可不传默认['ok','cancel']</div>
-                    <div>0.3.4.iterm2_prompt 提示输入框。使用方式：iterm2_prompt("主标题","子标题",placeholder="提示文本",default_value="默认文本")</div>
+                    <div>0.3.1.iterm2_send_text 发送文本。使用方式：await iterm2_send_text("发送文本")</div>
+                    <div>0.3.2.iterm2_alert 提示框。使用方式：await iterm2_alert("主标题","子标题")</div>
+                    <div>0.3.3.iterm2_confirm 确认框。使用方式：await iterm2_confirm("主标题","子标题",['按钮1','按钮2'])，按钮可不传默认['ok','cancel']</div>
+                    <div>0.3.4.iterm2_prompt 提示输入框。使用方式：await iterm2_prompt("主标题","子标题",placeholder="提示文本",default_value="默认文本")</div>
                     <div style="padding-top: 10px;">1.发送文本，需要脚本设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1+1</div>
                     <div>1.1.无参发送文本 shortcut_html_send_text(event_name:&nbsp;"事件名称\") </div>
                     <div>1.2.入参发送文本 shortcut_html_send_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]) 参数使用方式params[0]</div>
