@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
-from iterm2.api_pb2 import ClientOriginatedMessage
-
 import traceback
+from iterm2_shortcut_html2 import utils
 from system_storage import SystemStorage
 from typing import List, Optional
 
@@ -74,20 +73,15 @@ async def main(connection: Connection):
             await session.async_send_text(send_text.replace('|==f==h==|', '"'))
 
     async def iterm2_alert(title='', subtitle=''):
-        alert = iterm2.Alert(title, subtitle)
-        await alert.async_run(connection)
+        await utils.alert(connection, title=title, subtitle=subtitle)
 
     async def iterm2_confirm(title='', subtitle='', buttons=None):
-        alert = iterm2.Alert(title, subtitle)
         if not buttons:
             buttons = ['ok', 'cancel']
-        for button in buttons:
-            alert.add_button(button)
-        return await alert.async_run(connection)
+        return await utils.alert(connection, title=title, subtitle=subtitle, buttons=buttons)
 
     async def iterm2_prompt(title='', subtitle='', placeholder='', default_value='', ):
-        alert = iterm2.TextInputAlert(title, subtitle, placeholder, default_value)
-        return await alert.async_run(connection)
+        return await utils.prompt(title, subtitle, placeholder, default_value)
 
     async def event_name_text(event_name, params: Optional[List[str]] = None):
         try:

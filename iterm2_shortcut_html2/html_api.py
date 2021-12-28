@@ -5,6 +5,7 @@ import re
 
 import sqlite3
 from iterm2.app import App
+from iterm2_shortcut_html2 import utils
 from system_storage import SystemStorage
 from storage import Storage
 from typing import Tuple, List
@@ -244,15 +245,11 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
                 'message': "{}".format(e),
             }), request)
 
-    async def item2_alert(title='', subtitle=''):
-        alert = iterm2.Alert(title, subtitle)
-        await alert.async_run(connection)
-
     async def iterm2_alert_api(request):
         data = await request.post()
         title = data['title']
         subtitle = data['subtitle']
-        await item2_alert(title, subtitle)
+        await utils.alert(connection, title=title, subtitle=subtitle)
         return await send_ok(request)
 
     async def iterm2_confirm_api(request):
@@ -260,11 +257,8 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         title = data['title']
         subtitle = data['subtitle']
         buttons = data['buttons']
-        alert = iterm2.Alert(title, subtitle)
-        for button in buttons:
-            alert.add_button(button)
         return await send_html(json.dumps({
-            'status': await alert.async_run(connection)
+            'status': await utils.alert(connection, title=title, subtitle=subtitle, buttons=buttons)
         }), request)
 
     async def iterm2_prompt_api(request):
@@ -272,9 +266,8 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         title = data['title']
         subtitle = data['subtitle']
         default_value = data['default_value']
-        alert = iterm2.TextInputAlert(title, subtitle, '', default_value)
         return await send_html(json.dumps({
-            'status': await alert.async_run(connection)
+            'status': await utils.prompt(title, subtitle, '', default_value)
         }), request)
 
     async def restart_api(_):
