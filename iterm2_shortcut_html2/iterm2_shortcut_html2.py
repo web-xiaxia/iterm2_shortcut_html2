@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
+from iterm2.api_pb2 import ClientOriginatedMessage
+
 import traceback
 from system_storage import SystemStorage
 from typing import List, Optional
@@ -66,6 +68,27 @@ async def main(connection: Connection):
         "http://localhost:9998/"
     )
 
+    async def iterm2_send_text(send_text):
+        if send_text:
+            session = app.current_terminal_window.current_tab.current_session
+            await session.async_send_text(send_text.replace('|==f==h==|', '"'))
+
+    async def iterm2_alert(title='', subtitle=''):
+        alert = iterm2.Alert(title, subtitle)
+        await alert.async_run(connection)
+
+    async def iterm2_confirm(title='', subtitle='', buttons=None):
+        alert = iterm2.Alert(title, subtitle)
+        if not buttons:
+            buttons = ['ok', 'cancel']
+        for button in buttons:
+            alert.add_button(button)
+        return await alert.async_run(connection)
+
+    async def iterm2_prompt(title='', subtitle='', placeholder='', default_value='', ):
+        alert = iterm2.TextInputAlert(title, subtitle, placeholder, default_value)
+        return await alert.async_run(connection)
+
     async def event_name_text(event_name, params: Optional[List[str]] = None):
         try:
             selected_event_send = await STORAGE_DATA.get_event_send(event_name)
@@ -74,18 +97,38 @@ async def main(connection: Connection):
             custom_variable_map = await STORAGE_DATA.get_custom_variable_map()
             xpy_method = await STORAGE_DATA.get_xpy_method()
             eval_results = {}
-            exec(selected_event_send.get('value'), {
+
+            exec("async def __ex():\n{}\nresults['__ex'] = __ex".format(
+                ''.join(f'   {x}\n' for x in selected_event_send.get('value').split('\n'))
+            ), {
                 'PY': xpy_method,
+                'iterm2_send_text': iterm2_send_text,
+                'iterm2_alert': iterm2_alert,
+                'iterm2_confirm': iterm2_confirm,
+                'iterm2_prompt': iterm2_prompt,
                 'data': custom_variable_map,
                 'params': [] if params is None else params,
                 'results': eval_results,
             })
+            await eval_results['__ex']()
             return eval_results['event'] if 'event' in eval_results else ''
         except Exception as e:
             print("event_name_text 获取失败，event_name：{},{}\n,{}".format(
                 event_name, e, traceback.format_exc()
             ))
             return ''
+
+    @iterm2.RPC
+    async def shortcut_html_event(event_name: str):
+        await shortcut_html_eventx(event_name, [])
+
+    await shortcut_html_event.async_register(connection)
+
+    @iterm2.RPC
+    async def shortcut_html_eventx(event_name: str, params: Optional[List[str]] = None):
+        await event_name_text(event_name, params)
+
+    await shortcut_html_eventx.async_register(connection)
 
     @iterm2.RPC
     async def shortcut_html_send_text(event_name: str):
@@ -96,9 +139,7 @@ async def main(connection: Connection):
     @iterm2.RPC
     async def shortcut_html_send_textx(event_name: str, params: Optional[List[str]] = None):
         send_text = await event_name_text(event_name, params)
-        if send_text:
-            session = app.current_terminal_window.current_tab.current_session
-            await session.async_send_text(send_text.replace('|==f==h==|', '"'))
+        await send_text(send_text)
 
     await shortcut_html_send_textx.async_register(connection)
 

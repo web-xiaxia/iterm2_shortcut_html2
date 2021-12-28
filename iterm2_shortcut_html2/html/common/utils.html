@@ -24,9 +24,21 @@
         return fmt;
     }
 
-    function settingInputBlur(that){
+    function settingInputBlur(that) {
         $(that).blur()
         return false
+    }
+
+    function helpBoxTrigger(that) {
+        const helpContextBox = $(that).parents('.help-box').find('.help-context')
+        if (helpContextBox.css('display') === 'none') {
+            helpContextBox.css({'display': 'block'})
+            $(that).text('关闭帮助')
+        } else {
+            helpContextBox.css({'display': 'none'})
+            $(that).text('打开帮助')
+        }
+
     }
 </script>
 {% endblock %}

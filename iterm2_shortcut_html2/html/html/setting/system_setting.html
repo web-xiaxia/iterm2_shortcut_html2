@@ -27,18 +27,28 @@
         "title": "事件文本",
         "template_id": "system-setting-variable-template",
         "describe": `
-            <div>脚本必须设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1+1</div>
-            <div>可在值中使用[[自定变量]]，方式：data.get('自定变量名称'),当前页面脚本为python</div>
-            <div>可在值中使用[[自定py]]，方式：PY.方法名称(参数) 如：PY.to_int([[变量]], 0) </div>
-            <div>
-                1. 可在Triggers中使用Action为Invoke Script Function的Parameters填值，自动触发发送文本到窗口。<br>
-                1.1. shortcut_html_send_text(event_name:&nbsp;"事件名称\")<br>
-                1.2. shortcut_html_send_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3])  可以使用传入参数，使用方式params[0]<br>
-            </div>
-            <div>
-                2. 可在Triggers中使用事件返回的数据<br>
-                2.1. \\(shortcut_html_get_text(event_name:&nbsp;"事件名称"))<br>
-                2.2. \\(shortcut_html_get_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]<br>
+            <div class="help-box">
+                <button class="help-button" onclick="helpBoxTrigger(this)">打开帮助</button>
+                <div class="help-context" style="display: none;">
+                    <div>事件可在Triggers中使用(当前页面脚本为python)，使用方法如下：</div>
+                    <div style="padding-top: 10px;">0.所有脚本可使用[[自定变量]][[自定py]]和内置方法</div>
+                    <div>0.1.[[自定变量]]使用方式 data.get('自定变量名称')</div>
+                    <div>0.2.自定py&nbsp; PY.方法名称(参数) 如：PY.to_int([[变量]], 0)</div>
+                    <div>0.3.内置方法</div>
+                    <div>0.3.1.iterm2_send_text 发送文本。使用方式：iterm2_send_text("发送文本")</div>
+                    <div>0.3.2.iterm2_alert 提示框。使用方式：iterm2_alert("主标题","子标题")</div>
+                    <div>0.3.3.iterm2_confirm 确认框。使用方式：iterm2_confirm("主标题","子标题",['按钮1','按钮2'])，按钮可不传默认['ok','cancel']</div>
+                    <div>0.3.4.iterm2_prompt 提示输入框。使用方式：iterm2_prompt("主标题","子标题",placeholder="提示文本",default_value="默认文本")</div>
+                    <div style="padding-top: 10px;">1.发送文本，需要脚本设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1+1</div>
+                    <div>1.1.无参发送文本 shortcut_html_send_text(event_name:&nbsp;"事件名称\") </div>
+                    <div>1.2.入参发送文本 shortcut_html_send_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]) 参数使用方式params[0]</div>
+                    <div style="padding-top: 10px;">2.获取文本，可在Triggers中使用事件返回的数据，需要脚本设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1</div>
+                    <div>2.1.无惨获取文本 \\(shortcut_html_get_text(event_name:&nbsp;"事件名称"))</div>
+                    <div>2.2.入参获取文本 \\(shortcut_html_get_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]</div>
+                    <div style="padding-top: 10px;">3.触发事件(无返回值)，可在Triggers中使用。</div>
+                    <div>3.1.无参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称"))</div>
+                    <div>3.2.入参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]</div>
+                </div>
             </div>
         `,
         "value_fun": function () {
@@ -58,7 +68,14 @@
         "tab_id": "tab_2",
         "title": "自定变量",
         "template_id": "system-setting-variable-template",
-        "describe": "将会在事件文本中和js按钮中使用",
+        "describe": `
+            <div class="help-box">
+                <button class="help-button" onclick="helpBoxTrigger(this)">打开帮助</button>
+                <div class="help-context" style="display: none;">
+                    将会在事件文本中使用，可以在js按钮和修改变量按钮中进行修改
+                </div>
+            </div>
+        `,
         "value_fun": function () {
             if (STORAGE.custom_variable == null) {
                 STORAGE.custom_variable = []
@@ -95,8 +112,11 @@
         "title": "自定py",
         "template_id": "system-setting-variable-template",
         "describe": `
-            <div>可在事件内使用 PY.方法名称 调用，例如 PY.to_int([[变量]], 0)。</div>
-            <div>编写脚本为正常方法定义，名字为方法名称。例：
+            <div class="help-box">
+                <button class="help-button" onclick="helpBoxTrigger(this)">打开帮助</button>
+                <div class="help-context" style="display: none;">
+                    <div>可在事件内使用 PY.方法名称 调用，例如 PY.to_int([[变量]], 0)。</div>
+                    <div>编写脚本为正常方法定义，名字为方法名称。例：
 <pre>
 def to_int(v, d=None):
     try:
@@ -108,6 +128,8 @@ def to_int(v, d=None):
 PY.install('方法名', 方法名)
 PY.install('to_int', to_int)
 </pre>
+                    </div>
+                </div>
         </div>
         `,
         "value_fun": function () {
@@ -131,8 +153,11 @@ PY.install('to_int', to_int)
         "title": "自定js",
         "template_id": "system-setting-variable-template",
         "describe": `
-            <div>可在其他使用js的地方使用 JS.变量名称 调用，例如 JS.to_int([[变量]], 0)。</div>
-                        <div>编写脚本为正常方法定义，名字为方法名称。例：
+            <div class="help-box">
+                <button class="help-button" onclick="helpBoxTrigger(this)">打开帮助</button>
+                <div class="help-context" style="display: none;">
+                    <div>可在其他使用js的地方使用 JS.变量名称 调用，例如 JS.to_int([[变量]], 0)。</div>
+                    <div>编写脚本为正常方法定义，名字为方法名称。例：
 <pre>
 function to_int(v, def){
     try{
@@ -150,6 +175,8 @@ function to_int(v, def){
 JS.install('方法名', 方法名)
 JS.install('to_int', to_int)
 </pre>
+                    </div>
+               </div>
         </div>
         `,
         "value_fun": function () {
