@@ -3,6 +3,7 @@ import iterm2
 import json
 import typing
 from functools import wraps
+import aiohttp
 
 
 def singleton(f):
@@ -45,3 +46,30 @@ async def prompt(connection: iterm2.connection.Connection, title='', subtitle=''
          f'placeholder: {placeholder}, ' +
          f'defaultValue: {default_value}, ' +
          f'window_id: {json.dumps(None)})'))
+
+
+async def send_http(url, method, headers: None, params: None, data: None, json_data: None):
+    r = {
+        "status": False,
+        "data": None,
+        "message": ""
+    }
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.request(method.upper(), url, params=params, data=data, json=json_data,
+                                       headers=headers,
+                                       verify_ssl=False) as resp:
+                response_headers = {}
+                for key, v in resp.headers.items():
+                    response_headers[key] = v
+                resp_text = await resp.text()
+                r['data'] = {
+                    'status': f'{resp.status}',
+                    'text': f'{resp_text}',
+                    'headers': response_headers
+                }
+                r.datta = resp.text()
+    except Exception as e:
+        r['message'] = f"{e}"
+
+    return r

@@ -12,7 +12,7 @@ from typing import Tuple, List
 
 import json
 import os
-import aiohttp
+
 from aiohttp import web
 import subprocess
 
@@ -147,29 +147,8 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         params = request_data.get('params', None)
         data = request_data.get('data', None)
         json_data = request_data.get('json_data', None)
-        r = {
-            "status": False,
-            "data": None,
-            "message": ""
-        }
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.request(method.upper(), url, params=params, data=data, json=json_data,
-                                           headers=headers,
-                                           verify_ssl=False) as resp:
-                    response_headers = {}
-                    for key, v in resp.headers.items():
-                        response_headers[key] = v
-                    resp_text = await resp.text()
-                    r['data'] = {
-                        'status': f'{resp.status}',
-                        'text': f'{resp_text}',
-                        'headers': response_headers
-                    }
-                    r.datta = resp.text()
-        except Exception as e:
-            r['message'] = f"{e}"
 
+        r = await utils.send_http(url, method, headers, params, data, json_data)
         return await send_html(json.dumps(r), request)
 
     async def send_text_api(request):
@@ -270,10 +249,11 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         }), request)
 
     async def restart_api(_):
-        os.system("ps -ef | grep python | grep -v grep | grep iterm2_shortcut_html2.py | awk '{print $2}' | xargs kill -9  "
-                  "&& nohup /bin/bash /Applications/iTerm.app/Contents/Resources/it2_api_wrapper.sh "
-                  + os.path.join(main_home, '../iterm2env/versions/3.7.9/bin/python3 ')
-                  + main_home + "/iterm2_shortcut_html2.py 2>&1 &")
+        os.system(
+            "ps -ef | grep python | grep -v grep | grep iterm2_shortcut_html2.py | awk '{print $2}' | xargs kill -9  "
+            "&& nohup /bin/bash /Applications/iTerm.app/Contents/Resources/it2_api_wrapper.sh "
+            + os.path.join(main_home, '../iterm2env/versions/3.7.9/bin/python3 ')
+            + main_home + "/iterm2_shortcut_html2.py 2>&1 &")
 
     async def command_history_api(request):
         status = True

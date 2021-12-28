@@ -100,6 +100,7 @@ async def main(connection: Connection):
                 'iterm2_alert': iterm2_alert,
                 'iterm2_confirm': iterm2_confirm,
                 'iterm2_prompt': iterm2_prompt,
+                'iterm2_send_http': utils.send_http,
                 'data': custom_variable_map,
                 'params': [] if params is None else params,
                 'results': eval_results,

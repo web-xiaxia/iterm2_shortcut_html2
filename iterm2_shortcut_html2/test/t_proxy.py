@@ -7,7 +7,9 @@ import aiohttp
 
 async def main():
     async with aiohttp.ClientSession() as session:
-        async with session.request('GET', 'https://www.baidu.com', verify_ssl=False) as resp:
+        async with session.request('GET', 'https://www.baidu.com', verify_ssl=False, headers={
+            'xxx': "xxxx"
+        }) as resp:
             b = await resp.text()
             data = {}
             for key, v in resp.headers.items():
