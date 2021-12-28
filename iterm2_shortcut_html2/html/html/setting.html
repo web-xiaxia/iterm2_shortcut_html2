@@ -107,7 +107,8 @@
 <script id="setting-tab-select-template" type="text/html">
     {{each storage.tabs tab index}}
     {{if storage.foot_box_id != tab.tab_id}}
-    <span _is_tab_select="true" _index="{{index}}" draggable="true" onclick="settingEditTabWindow({{index}})">{{tab.name}}</span>
+    <span _is_tab_select="true" _index="{{index}}" draggable="true" ondblclick="settingEditTabWindow({{index}})"
+          onclick="settingTabSelectClick({{index}})">{{tab.name}}</span>
     {{else}}
     <span style="display: none;"></span>
     {{/if}}
@@ -486,7 +487,7 @@
             <div class="tab-setting-button tab-setting-help-button">
                 帮助
                 <div class="tab-setting-help-tips">
-                    <div>新增/修改/删除按钮信息(点击按钮可以进行编辑)</div>
+                    <div>新增/修改/删除按钮信息(点击按钮可以进行编辑)(双击tab可编辑tab信息)</div>
                     <div>拖动tab/分组/按钮可改变顺序(按住command拖动按钮可拖到其他分组)</div>
                 </div>
             </div>

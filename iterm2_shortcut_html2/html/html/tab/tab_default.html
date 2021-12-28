@@ -79,14 +79,13 @@
         </p>
         <p>
             <button onclick="settingEditTab(this, {{index}})">保存</button>
-            <button onclick="settingInTab(this, {{index}})">进入</button>
         </p>
         <% include('setting-tab-move-template',{ 'index':index } )%>
     </div>
 </script>
 <script>
     function settingEditTabWindow(index) {
-        settingTabSelectClick(index)
+
         openFloatingWindow('setting-tab-edit-template', {
             'name': STORAGE.tabs[index].name,
             'hidden': STORAGE.tabs[index].hidden,

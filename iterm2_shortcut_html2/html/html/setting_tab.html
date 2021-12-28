@@ -53,11 +53,6 @@
         initSettingTabBox()
     }
 
-    function settingInTab(that, index) {
-        closeFloatingWindow()
-        settingTabSelectClick(index)
-    }
-
     function settingMoveTab(that, index, move) {
         if (index + move < 0 || index + move >= STORAGE.tabs.length) {
             closeFloatingWindow()
