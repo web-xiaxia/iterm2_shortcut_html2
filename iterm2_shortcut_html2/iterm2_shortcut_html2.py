@@ -2,7 +2,7 @@
 import time
 
 import traceback
-from iterm2_shortcut_html2 import utils
+import utils
 from system_storage import SystemStorage
 from typing import List, Optional
 

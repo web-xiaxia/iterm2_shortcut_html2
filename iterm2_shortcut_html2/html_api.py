@@ -5,12 +5,11 @@ import re
 
 import sqlite3
 from iterm2.app import App
-from iterm2_shortcut_html2 import utils
+import utils
 from system_storage import SystemStorage
 from storage import Storage
 from typing import Tuple, List
 
-import iterm2
 import json
 import os
 import aiohttp

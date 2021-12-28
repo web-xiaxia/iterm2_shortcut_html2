@@ -20,7 +20,9 @@ def singleton(f):
 async def alert(connection: iterm2.connection.Connection, title='', subtitle='', buttons=None) -> int:
     if not buttons:
         buttons = []
-    buttons = json.dumps(buttons)
+    title = json.dumps(title, ensure_ascii=False)
+    subtitle = json.dumps(subtitle, ensure_ascii=False)
+    buttons = json.dumps(buttons, ensure_ascii=False)
 
     return await iterm2.async_invoke_function(
         connection,
@@ -32,6 +34,10 @@ async def alert(connection: iterm2.connection.Connection, title='', subtitle='',
 
 async def prompt(connection: iterm2.connection.Connection, title='', subtitle='', placeholder='',
                  default_value='') -> typing.Optional[str]:
+    title = json.dumps(title, ensure_ascii=False)
+    subtitle = json.dumps(subtitle, ensure_ascii=False)
+    placeholder = json.dumps(placeholder, ensure_ascii=False)
+    default_value = json.dumps(default_value, ensure_ascii=False)
     return await iterm2.async_invoke_function(
         connection,
         (f'iterm2.get_string(title: {title}, ' +
