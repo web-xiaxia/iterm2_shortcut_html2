@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+import iterm2
 from iterm2.session import Session
-
 from typing import Optional, Tuple
 
 import traceback
@@ -17,6 +17,10 @@ class Iterm2Api:
     def __init__(self, app: App, connection: Connection):
         self.app: App = app
         self.connection: Connection = connection
+
+    @property
+    def iterm2(self) -> iterm2:
+        return iterm2
 
     @property
     def session(self) -> Session:
@@ -68,7 +72,7 @@ class ExecApi:
                 return ''
             return await self.og_code_exec(selected_event_send.get('value'), params)
         except Exception as e:
-            print("event_name_text 获取失败，event_name：{},{}\n,{}".format(
+            print("event_name_text 执行失败，event_name：{},{}\n,{}".format(
                 event_name, e, traceback.format_exc()
             ))
             return ''
@@ -81,7 +85,7 @@ class ExecApi:
             r = await self.og_code_exec(selected_event_send.get('value'), params)
             return True, r, ''
         except Exception as e:
-            print("event_name_text 获取失败，event_name：{},{}\n,{}".format(
+            print("event_name_text 执行失败，event_name：{},{}\n,{}".format(
                 event_name, e, traceback.format_exc()
             ))
             return False, '', f'{e}'
