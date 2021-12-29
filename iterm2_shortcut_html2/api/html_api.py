@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
-from iterm2.connection import Connection
-
+from api.py_api import PyApi
 import re
 
 import sqlite3
-from iterm2.app import App
-import utils
-from system_storage import SystemStorage
-from storage import Storage
+from common import utils
+from common.system_storage_data import SystemStorageData
+from common.storage_data import StorageData
 from typing import Tuple, List
 
 import json
 import os
 
 from aiohttp import web
-import subprocess
 
 CONTEXT_INCLUDE_PATTERN = re.compile(r'''(<context-include src=["|'](.*?)["|']/>)''')
 HTML_INCLUDE_PATTERN = re.compile(r'''(<html-include src=["|'](.*?)["|']/>)''')
@@ -23,17 +20,16 @@ BLOCK_SCRIPT_PATTERN = re.compile(r'''{% block script %}(.*?){% endblock %}''', 
 BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}''', re.DOTALL)
 
 
-async def api_register(connection: Connection, app: App, system_config_data: SystemStorage, storage_data: Storage,
-                       main_home: str, html_home: str):
-
-    def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
+async def register(system_config_data: SystemStorageData, storage_data: StorageData, py_api: PyApi, main_home: str,
+                   html_home: str, http_web_host: str, http_web_port: int):
+    async def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
         style_block = BLOCK_STYLE_PATTERN.findall(html)
         script_block = BLOCK_SCRIPT_PATTERN.findall(html)
         context_block = BLOCK_CONTEXT_PATTERN.findall(html)
 
         return style_block, script_block, context_block
 
-    def include_html_util(html_text: str) -> str:
+    async def include_html_util(html_text: str) -> str:
         html_text_return = html_text
         for include_html, include_html_path in CONTEXT_INCLUDE_PATTERN.findall(html_text):
             with open(os.path.join(html_home, include_html_path), 'r') as fp:
@@ -47,7 +43,7 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
             if include_html_path not in has_include_html_path:
                 with open(os.path.join(html_home, include_html_path), 'r') as fp:
                     html_text_return = html_text_return.replace(include_html, "")
-                    style_block, script_block, context_block = include_block(fp.read())
+                    style_block, script_block, context_block = await include_block(fp.read())
                     style_block_list += style_block
                     script_block_list += script_block
                     context_block_list += context_block
@@ -75,7 +71,7 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
     async def main_page(request):
         with open(os.path.join(html_home, './index.html'), 'r') as fp:
             html_text = fp.read()
-            return await send_html(include_html_util(html_text), request, content_type='text/html')
+            return await send_html(await include_html_util(html_text), request, content_type='text/html')
 
     async def get_storage_api(request):
         try:
@@ -151,33 +147,18 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
     async def send_text_api(request):
         data = await request.post()
         send_text_context = data['send_text']
-        await utils.send_text(app, send_text_context)
+        await py_api.send_text(send_text_context)
         return await send_ok(request)
 
     async def send_hex_code_api(request):
         data = await request.post()
-        session = app.current_terminal_window.current_tab.current_session
-        await session.async_inject(bytes(str(data['send_hex_code']), encoding="utf-8"))
+        await py_api.send_hex_code(data['send_hex_code'])
         return await send_ok(request)
-
-    def exec_shell(shell_text: str) -> Tuple[bool, List[str]]:
-        p = subprocess.Popen(shell_text, shell=True, stdout=subprocess.PIPE)  # 执行shell语句并定义输出格式
-        while p.poll() is None:  # 判断进程是否结束（Popen.poll()用于检查子进程（命令）是否已经执行结束，没结束返回None，结束后返回状态码）
-            if p.wait() != 0:  # 判断是否执行成功（Popen.wait()等待子进程结束，并返回状态码；如果设置并且在timeout指定的秒数之后进程还没有结束，将会抛出一个TimeoutExpired异常。）
-                print("命令执行失败，请检查设备连接状态")
-                return False, []
-            else:
-                shell_result = p.stdout.readlines()  # 获取原始执行结果
-                result = []
-                for i in range(len(shell_result)):  # 由于原始结果需要转换编码，所以循环转为utf8编码并且去除\n换行
-                    res = shell_result[i].decode('utf-8').strip('\r\n')
-                    result.append(res)
-                return True, result
 
     async def exec_shell_api(request):
         data = await request.post()
         shell_text = data['shell']
-        status, result = exec_shell(shell_text)
+        status, result = await py_api.exec_shell(shell_text)
 
         return await send_html(json.dumps({
             'status': status,
@@ -185,9 +166,7 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         }), request)
 
     async def selected_text_api(request):
-        session = app.current_terminal_window.current_tab.current_session
-        selection = await session.async_get_selection()
-        selected_text = await session.async_get_selection_text(selection)
+        selected_text = await py_api.selected_text()
         return await send_html(json.dumps({
             'selected_text': selected_text,
         }), request)
@@ -224,7 +203,7 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         data = await request.post()
         title = data['title']
         subtitle = data['subtitle']
-        await utils.alert(connection, title=title, subtitle=subtitle)
+        await py_api.alert(title=title, subtitle=subtitle)
         return await send_ok(request)
 
     async def iterm2_confirm_api(request):
@@ -233,7 +212,7 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         subtitle = data['subtitle']
         buttons = data['buttons']
         return await send_html(json.dumps({
-            'status': await utils.alert(connection, title=title, subtitle=subtitle, buttons=buttons)
+            'status': await py_api.confirm(title=title, subtitle=subtitle, buttons=buttons)
         }), request)
 
     async def iterm2_prompt_api(request):
@@ -242,7 +221,7 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
         subtitle = data['subtitle']
         default_value = data['default_value']
         return await send_html(json.dumps({
-            'status': await utils.prompt(title, subtitle, '', default_value)
+            'status': await py_api.prompt(title, subtitle, '', default_value)
         }), request)
 
     async def restart_api(_):
@@ -296,5 +275,5 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
     webapp.router.add_static('/', path=html_home)
     runner = web.AppRunner(webapp)
     await runner.setup()
-    site = web.TCPSite(runner, 'localhost', 9998)
+    site = web.TCPSite(runner, http_web_host, http_web_port)
     await site.start()

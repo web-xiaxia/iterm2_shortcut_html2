@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from utils import singleton
+from common.utils import singleton
 from typing import Dict
 import json
 import os
 
 
 @singleton
-class SystemStorage:
+class SystemStorageData:
 
     def __init__(self, main_home):
         self.storage = None

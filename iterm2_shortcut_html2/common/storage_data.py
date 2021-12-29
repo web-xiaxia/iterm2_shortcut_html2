@@ -2,8 +2,8 @@
 import time
 
 from datetime import datetime
-from system_storage import SystemStorage
-from utils import singleton
+from common.system_storage_data import SystemStorageData
+from common.utils import singleton
 
 import shutil
 from typing import Dict, Tuple, Optional
@@ -30,10 +30,10 @@ INIT_CONFIG_JSON = {
 
 
 @singleton
-class Storage:
+class StorageData:
 
-    def __init__(self, system_config: SystemStorage):
-        self.system_config = system_config
+    def __init__(self, system_config_data: SystemStorageData):
+        self.system_config_data = system_config_data
         self.storage = None
         self.temp_storage = {}
         self.last_bak_time = 0
@@ -96,7 +96,7 @@ class Storage:
             return self.storage
 
         print(f"storage 打开了文件")
-        system_config_storage = await self.system_config.get_storage()
+        system_config_storage = await self.system_config_data.get_storage()
         storage_full_path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
         if not os.path.exists(storage_full_path):
             with open(storage_full_path, 'w') as fp:
@@ -108,7 +108,7 @@ class Storage:
 
     async def reload_storage(self, path):
         if not path:
-            system_config_storage = await self.system_config.get_storage()
+            system_config_storage = await self.system_config_data.get_storage()
             path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
 
         if not os.path.exists(path):
@@ -128,7 +128,7 @@ class Storage:
                 storage_str = json.dumps(storage)
             self.storage = json.loads(storage_str)
 
-        system_config_storage = await self.system_config.get_storage()
+        system_config_storage = await self.system_config_data.get_storage()
         storage_full_path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
         if bak:
             storage_history_home = system_config_storage.get('storage_history_path')
@@ -150,7 +150,7 @@ class Storage:
             fp.write(json.dumps(self.storage, sort_keys=True, indent=4))
 
     async def delete_storage(self):
-        system_config_storage = await self.system_config.get_storage()
+        system_config_storage = await self.system_config_data.get_storage()
         storage_history_home = system_config_storage.get('storage_history_path')
         file_list = sorted(os.listdir(storage_history_home), key=lambda a: a, reverse=True)[120:]
         for file in file_list:
