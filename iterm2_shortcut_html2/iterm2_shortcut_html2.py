@@ -125,7 +125,7 @@ async def main(connection: Connection):
     @iterm2.RPC
     async def shortcut_html_send_textx(event_name: str, params: Optional[List[str]] = None):
         send_text = await event_name_text(event_name, params)
-        await send_text(send_text)
+        await py_api.send_text(send_text)
 
     await shortcut_html_send_textx.async_register(connection)
 
