@@ -24,6 +24,6 @@ iTerm2 自带的 Status Bar 可以添加按钮，但是显示范围太小，可�
 2.4 执行 mv ~/Library/Application\ Support/iTerm2/Scripts/AutoLaunch/iterm2env ~/Library/Application\ Support/iTerm2/Scripts/AutoLaunch/iterm2_shortcut_html2/iterm2env
 2.5 重新启动 iTerm2
 2.6 在 Profiles 中选择一个 Profile 选择 Session Tab 在最下面勾选 Status bar enabled 点击 Configure Status Bar
-2.6 在 Status Bar 添加 Shortcut html2 到 Status Bar 点击保存
-2.7 可以在 Appearance 中的 General Tab 中可以设置 Status bar location 为 Bottom，按钮在窗口下面
+2.7 在 Status Bar 添加 Shortcut html2 到 Status Bar 点击保存
+2.8 可以在 Appearance 中的 General Tab 中可以设置 Status bar location 为 Bottom，按钮在窗口下面
 ```
