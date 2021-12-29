@@ -25,9 +25,6 @@ BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}'''
 
 async def api_register(connection: Connection, app: App, system_config_data: SystemStorage, storage_data: Storage,
                        main_home: str, html_home: str):
-    async def my_send_text(send_text=''):
-        session = app.current_terminal_window.current_tab.current_session
-        await session.async_send_text(send_text.replace('|==f==h==|', '"'))
 
     def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
         style_block = BLOCK_STYLE_PATTERN.findall(html)
@@ -153,8 +150,8 @@ async def api_register(connection: Connection, app: App, system_config_data: Sys
 
     async def send_text_api(request):
         data = await request.post()
-        send_text = data['send_text']
-        await my_send_text(send_text)
+        send_text_context = data['send_text']
+        await utils.send_text(app, send_text_context)
         return await send_ok(request)
 
     async def send_hex_code_api(request):

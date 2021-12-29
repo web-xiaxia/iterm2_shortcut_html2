@@ -18,6 +18,12 @@ def singleton(f):
     return get_instance
 
 
+async def send_text(app, send_text_context):
+    if send_text_context:
+        session = app.current_terminal_window.current_tab.current_session
+        await session.async_send_text(send_text_context)
+
+
 async def alert(connection: iterm2.connection.Connection, title='', subtitle='', buttons=None) -> int:
     if not buttons:
         buttons = []
