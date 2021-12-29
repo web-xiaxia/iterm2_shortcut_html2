@@ -2,6 +2,7 @@
 import time
 
 import traceback
+import utils
 from py_api import PyApi
 from system_storage import SystemStorage
 from typing import List, Optional
@@ -29,7 +30,7 @@ TOOLBELT_SHORTCUT_HTML1_IDENTIFIER = 'com.iterm2.toolbelt.shortcut-html2'
 
 async def main(connection: Connection):
     app = await iterm2.async_get_app(connection)
-    py_api = PyApi(app, connection)
+    py_api: PyApi = PyApi(app, connection)
 
     @iterm2.RPC
     async def shortcut_html2_onclick(session_id):
@@ -93,6 +94,15 @@ async def main(connection: Connection):
                 event_name, e, traceback.format_exc()
             ))
             return ''
+
+    @iterm2.RPC
+    async def shortcut_html_event_feishu(feishu_token: str, title: str, context: str, screen_text_line=0):
+        note = None
+        if screen_text_line > 0:
+            note = await py_api.screen_text(screen_text_line)
+        await utils.send_feishu(feishu_token, title, context, note=note)
+
+    await shortcut_html_event_feishu.async_register(connection)
 
     @iterm2.RPC
     async def shortcut_html_event(event_name: str):

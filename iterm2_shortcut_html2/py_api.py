@@ -29,7 +29,7 @@ class PyApi:
     async def prompt(self, title='', subtitle='', placeholder='', default_value='') -> str:
         return await utils.prompt(title, subtitle, placeholder, default_value)
 
-    async def send_http(self, url, method, headers: None, params: None, data: None, json_data: None) -> Dict:
+    async def send_http(self, url, method, headers=None, params=None, data=None, json_data=None) -> Dict:
         return utils.send_http(url, method, headers, params, data, json_data)
 
     async def screen_text(self, number_of_lines=30) -> str:
@@ -58,3 +58,6 @@ class PyApi:
         #     f'{line_start},{line_end}')
         line_content_array = [line_content.string for line_content in line_contents]
         return '\n'.join(line_content_array)
+
+    async def send_feishu(self, token: str, title: str, context: str, note: str = None):
+        await utils.send_feishu(token, title, context, note)

@@ -42,6 +42,7 @@
                     <div>0.3.5.PYX.send_http 发送请求 使用方式：await PYX.send_http(url, method, headers: None, params: None, data: None, json_data: None)</div>
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回结果{ "status": True, "data": {"status": 200, "text": "", "headers": {"key":"value"}}, "message":
                     <div>0.3.6.PYX.screen_text 获取窗口文本(最后多少行) 使用方式：await PYX.screen_text(50) 获取最后50行 </div>
+                    <div>0.3.7.PYX.send_feishu 发送飞书信息 使用方式：await PYX.send_feishu('token', 'title', 'context', 'note') </div>
             "错误信息"}}</div>
                     <div style="padding-top: 10px;">1.发送文本，需要脚本设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1+1</div>
                     <div>1.1.无参发送文本 shortcut_html_send_text(event_name:&nbsp;"事件名称\") </div>
@@ -52,6 +53,9 @@
                     <div style="padding-top: 10px;">3.触发事件(无返回值)，可在Triggers中使用。</div>
                     <div>3.1.无参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称"))</div>
                     <div>3.2.入参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]</div>
+                    <div style="padding-top: 10px;">4.触发事件发送飞书(可携带屏幕数据)，可在Triggers中使用。</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用方式：shortcut_html_event_feishu(feishu_token: "token", title: "title", context:"title", screen_text_line=20)</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feishu_token 为机器人token，screen_text_line 附带屏幕文本行数  0为不携带。 </div>
                 </div>
             </div>
         `,

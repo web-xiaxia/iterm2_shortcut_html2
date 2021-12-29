@@ -48,7 +48,7 @@ async def prompt(connection: iterm2.connection.Connection, title='', subtitle=''
          f'window_id: {json.dumps(None)})'))
 
 
-async def send_http(url, method, headers: None, params: None, data: None, json_data: None):
+async def send_http(url, method, headers=None, params=None, data=None, json_data=None):
     r = {
         "status": False,
         "data": None,
@@ -68,8 +68,41 @@ async def send_http(url, method, headers: None, params: None, data: None, json_d
                     'text': f'{resp_text}',
                     'headers': response_headers
                 }
-                r.datta = resp.text()
     except Exception as e:
         r['message'] = f"{e}"
 
     return r
+
+
+async def send_feishu(token: str, title: str, context: str, note: str = None):
+    elements = [{
+        'tag': 'markdown',
+        'content': context
+    }]
+    if note:
+        elements.append({
+            "tag": "note",
+            "elements": [{
+                "tag": "plain_text",
+                "content": note
+            }]})
+    json_data = {
+        "msg_type": "interactive",
+        "card": {
+            "config": {
+                "update_multi": True,
+                "wide_screen_mode": True
+            },
+            "header": {
+                "title": {
+                    "tag": "plain_text",
+                    "content": title
+                },
+                "template": "blue"
+            },
+            "elements": elements
+        }
+    }
+    resp = await send_http(url=f'https://open.feishu.cn/open-apis/bot/v2/hook/{token}', method='POST',
+                           headers={"Content-Type": "application/json"}, json_data=json_data)
+    print(f'飞书：{json.dumps(resp)}')
