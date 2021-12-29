@@ -22,9 +22,9 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
         last_time = LAST_EVENT_NAME_TIME.get(time_key, 0)
         now_time = time.time()
         if now_time - last_time < silence_second:
-            return False
+            return True
         LAST_EVENT_NAME_TIME[time_key] = now_time
-        return True
+        return False
 
     async def exec_event_name(event_name, params: Optional[List] = None):
         return await exec_api.event_name_exec(event_name, params)
