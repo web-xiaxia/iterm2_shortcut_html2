@@ -2,7 +2,7 @@
 import time
 
 import traceback
-import utils
+from py_api import PyApi
 from system_storage import SystemStorage
 from typing import List, Optional
 
@@ -67,22 +67,6 @@ async def main(connection: Connection):
         "http://localhost:9998/"
     )
 
-    async def iterm2_send_text(send_text):
-        if send_text:
-            session = app.current_terminal_window.current_tab.current_session
-            await session.async_send_text(send_text.replace('|==f==h==|', '"'))
-
-    async def iterm2_alert(title='', subtitle=''):
-        await utils.alert(connection, title=title, subtitle=subtitle)
-
-    async def iterm2_confirm(title='', subtitle='', buttons=None):
-        if not buttons:
-            buttons = ['ok', 'cancel']
-        return await utils.alert(connection, title=title, subtitle=subtitle, buttons=buttons)
-
-    async def iterm2_prompt(title='', subtitle='', placeholder='', default_value='', ):
-        return await utils.prompt(title, subtitle, placeholder, default_value)
-
     async def event_name_text(event_name, params: Optional[List[str]] = None):
         try:
             selected_event_send = await STORAGE_DATA.get_event_send(event_name)
@@ -96,11 +80,7 @@ async def main(connection: Connection):
                 ''.join(f'   {x}\n' for x in selected_event_send.get('value').split('\n'))
             ), {
                 'PY': xpy_method,
-                'iterm2_send_text': iterm2_send_text,
-                'iterm2_alert': iterm2_alert,
-                'iterm2_confirm': iterm2_confirm,
-                'iterm2_prompt': iterm2_prompt,
-                'iterm2_send_http': utils.send_http,
+                'PYX': PyApi(app, connection),
                 'data': custom_variable_map,
                 'params': [] if params is None else params,
                 'results': eval_results,
