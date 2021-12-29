@@ -54,8 +54,8 @@
                     <div>3.1.无参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称"))</div>
                     <div>3.2.入参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]</div>
                     <div style="padding-top: 10px;">4.触发事件发送飞书(可携带屏幕数据)，可在Triggers中使用。</div>
-                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用方式：shortcut_html_event_feishu(feishu_token: "token", title: "title", context:"title", screen_text_line=20)</div>
-                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feishu_token 为机器人token，screen_text_line 附带屏幕文本行数  0为不携带。 </div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用方式：shortcut_html_event_feishu(feishu_token: "token", title: "title", context:"title", screen_text_line=20, silence_second=1)</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feishu_token 为机器人token，screen_text_line 附带屏幕文本行数  0为不携带。 silence_second(秒)单位时间内不重复发送信息</div>
                 </div>
             </div>
         `,

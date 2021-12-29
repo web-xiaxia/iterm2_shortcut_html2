@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+import time
+
 from api.exec_api import ExecApi
-from datetime import time
 
 from api.py_api import PyApi
 from rpc import web_view_tool_rpc
@@ -15,13 +16,25 @@ from common.storage_data import StorageData
 
 async def register(connection: Connection, storage_data: StorageData, http_web_index_url: str, py_api: PyApi,
                    exec_api: ExecApi):
-    LAST_OPEN_TOOLBELT_TAB_NAME_TIME = {}
+    LAST_EVENT_NAME_TIME = {}
+
+    async def time_key_can_not_run(time_key, silence_second: float = 1):
+        last_time = LAST_EVENT_NAME_TIME.get(time_key, 0)
+        now_time = time.time()
+        if now_time - last_time < silence_second:
+            return False
+        LAST_EVENT_NAME_TIME[time_key] = now_time
+        return True
 
     async def exec_event_name(event_name, params: Optional[List] = None):
         return await exec_api.event_name_exec(event_name, params)
 
     @iterm2.RPC
-    async def shortcut_html_event_feishu(feishu_token: str, title: str, context: str, screen_text_line=0):
+    async def shortcut_html_event_feishu(feishu_token: str, title: str, context: str, screen_text_line=0,
+                                         silence_second: float = 1):
+        time_key = utils.md5(f'{feishu_token}-{title}-{context}-{screen_text_line}-{silence_second}')
+        if await time_key_can_not_run(f'feishu_{time_key}', silence_second=silence_second):
+            return
         note = None
         if screen_text_line > 0:
             note = await py_api.screen_text(screen_text_line)
@@ -68,12 +81,8 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
 
     @iterm2.RPC
     async def shortcut_html_open_toolbelt(tab_name):
-        now_time = time.time()
-        last_time = LAST_OPEN_TOOLBELT_TAB_NAME_TIME.get(tab_name, 0)
-        if now_time - last_time < 1:
+        if await time_key_can_not_run(f'toolbelt_{tab_name}'):
             return
-        LAST_OPEN_TOOLBELT_TAB_NAME_TIME[tab_name] = now_time
-
         selected_tab = None
         selected_tab_index = None
         storage = await storage_data.get_storage()
@@ -96,7 +105,7 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
             await iterm2.MainMenu.async_select_menu_item(connection, constants.SHOW_TOOLBELT_IDENTIFIER)
 
         # 注册 view_tool
-        web_view_tool_rpc.register(
+        await web_view_tool_rpc.register(
             connection, f'{http_web_index_url}?toolbelt_tab_name={tab_name}&time={int(time.time() * 1000)}'
         )
 

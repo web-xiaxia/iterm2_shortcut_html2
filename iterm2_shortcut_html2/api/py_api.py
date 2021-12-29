@@ -3,6 +3,7 @@ import subprocess
 
 import iterm2
 import json
+from iterm2 import Profile, RPCTrigger
 from typing import Dict, Optional, Tuple, List
 from iterm2.connection import Connection
 
@@ -120,3 +121,10 @@ class PyApi:
 
     async def send_feishu(self, token: str, title: str, context: str, note: str = None):
         await utils.send_feishu(token, title, context, note)
+
+    async def get_(self):
+        profile: Profile = await self.app.current_terminal_window.current_tab.current_session.async_get_profile()
+        profile.async_set_triggers()
+
+        profile.triggers.append(RPCTrigger('xxx', 'shortcut_html_event_feishu(feishu_token: "d227490c-485a-4f0d-89c7-e2c14df5ffe4 ", title: "test", context:"test", screen_text_line=20)', False, True))
+        profile.async_set_triggers(profile.triggers)

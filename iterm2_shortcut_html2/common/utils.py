@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import json
 from functools import wraps
 import aiohttp
@@ -14,6 +15,12 @@ def singleton(f):
         return instance[f]
 
     return get_instance
+
+
+async def md5(text: str) -> str:
+    m = hashlib.md5()
+    m.update(text.encode('utf-8'))
+    return m.hexdigest()
 
 
 async def send_http(url, method, headers=None, params=None, data=None, json_data=None):
