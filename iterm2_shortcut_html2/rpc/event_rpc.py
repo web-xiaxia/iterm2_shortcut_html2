@@ -32,7 +32,7 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
     @iterm2.RPC
     async def shortcut_html_event_feishu(feishu_token: str, title: str, context: str, screen_text_line=0,
                                          silence_second: float = 1):
-        time_key = utils.md5(f'{feishu_token}-{title}-{context}-{screen_text_line}-{silence_second}')
+        time_key = await utils.md5(f'{feishu_token}-{title}-{context}-{screen_text_line}-{silence_second}')
         if await time_key_can_not_run(f'feishu_{time_key}', silence_second=silence_second):
             return
         note = None
