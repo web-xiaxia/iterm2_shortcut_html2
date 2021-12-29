@@ -88,4 +88,4 @@ class ExecApi:
             print("event_name_text 执行失败，event_name：{},{}\n,{}".format(
                 event_name, e, traceback.format_exc()
             ))
-            return False, '', f'{e}'
+            return False, '', f'{e}\n{traceback.format_exc()}'
