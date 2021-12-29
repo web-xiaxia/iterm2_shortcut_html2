@@ -29,7 +29,7 @@
         <button onclick="settingTestEventName(this)">测试事件</button>
         <div style="font-size: 12px;color: #bebebe; padding: 3px 0 10px 0">
             参数以||隔开，测试触发事件已得到返回数据(shortcut_html_get_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))<br/>
-            其他方法执行结果一致，例如发送文本实际运行时会将返回值发送到窗口
+            其他方法执行结果一致，例如发送文本实际运行时会将返回值发送到窗口，显示返回值中的换行替换为↵显示
         </div>
         <div class="test-event-name-result-status" style="color: #6f96c4;"></div>
         <pre class="test-event-name-result"></pre>
@@ -149,8 +149,8 @@
         const eventParams = boxDom.find('.test-event-name-event_params')[0].value
         const eventName = boxDom.find('.test-event-name-event_name')[0].value
         const r = sendTestEventName(eventName, eventParams.split('||'))
-        boxDom.find('.test-event-name-result-status').text(r.status ? '测试成功' : '测试失败')
-        boxDom.find('.test-event-name-result').text(r.status ? (r.data ? r.data : '无返回值') : r.message)
+        boxDom.find('.test-event-name-result-status').text(r.status ? '测试成功，返回值如下：' : '测试失败，错误信息如下：')
+        boxDom.find('.test-event-name-result').text(r.status ? (r.data ? r.data.replace(/\n/g,'↵\n') : '无返回值') : r.message)
     }
 </script>
 {% endblock %}
