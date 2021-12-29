@@ -39,8 +39,9 @@
                     <div>0.3.2.PYX.alert 提示框。使用方式：await PYX.alert("主标题","子标题")</div>
                     <div>0.3.3.PYX.confirm 确认框。使用方式：await PYX.confirm("主标题","子标题",['按钮1','按钮2'])，按钮可不传默认['ok','cancel']</div>
                     <div>0.3.4.PYX.prompt 提示输入框。使用方式：await PYX.prompt("主标题","子标题",placeholder="提示文本",default_value="默认文本")</div>
-                    <div>0.3.5.PYX.send_http 发送请求 await PYX.send_http(url, method, headers: None, params: None, data: None, json_data: None)</div>
+                    <div>0.3.5.PYX.send_http 发送请求 使用方式：await PYX.send_http(url, method, headers: None, params: None, data: None, json_data: None)</div>
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回结果{ "status": True, "data": {"status": 200, "text": "", "headers": {"key":"value"}}, "message":
+                    <div>0.3.6.PYX.screen_text 获取窗口文本(最后多少行) 使用方式：await PYX.screen_text(50) 获取最后50行 </div>
             "错误信息"}}</div>
                     <div style="padding-top: 10px;">1.发送文本，需要脚本设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1+1</div>
                     <div>1.1.无参发送文本 shortcut_html_send_text(event_name:&nbsp;"事件名称\") </div>

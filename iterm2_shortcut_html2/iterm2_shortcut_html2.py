@@ -29,6 +29,7 @@ TOOLBELT_SHORTCUT_HTML1_IDENTIFIER = 'com.iterm2.toolbelt.shortcut-html2'
 
 async def main(connection: Connection):
     app = await iterm2.async_get_app(connection)
+    py_api = PyApi(app, connection)
 
     @iterm2.RPC
     async def shortcut_html2_onclick(session_id):
@@ -80,7 +81,7 @@ async def main(connection: Connection):
                 ''.join(f'   {x}\n' for x in selected_event_send.get('value').split('\n'))
             ), {
                 'PY': xpy_method,
-                'PYX': PyApi(app, connection),
+                'PYX': py_api,
                 'data': custom_variable_map,
                 'params': [] if params is None else params,
                 'results': eval_results,
