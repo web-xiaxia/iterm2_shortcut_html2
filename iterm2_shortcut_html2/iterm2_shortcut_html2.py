@@ -38,7 +38,9 @@ async def main(connection: Connection):
     # 注册事件
     await event_rpc.register(connection, storage_data, http_web_index_url, py_api, exec_api)
     # 注册web
-    await html_api.register(system_config, storage_data, py_api, main_home, html_home, http_web_host, http_web_port)
+    await html_api.register(
+        system_config, storage_data, py_api, exec_api, main_home, html_home, http_web_host, http_web_port
+    )
 
 
 iterm2.run_forever(main)

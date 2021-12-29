@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from api.exec_api import ExecApi
 from api.py_api import PyApi
 import re
 
@@ -20,8 +21,8 @@ BLOCK_SCRIPT_PATTERN = re.compile(r'''{% block script %}(.*?){% endblock %}''', 
 BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}''', re.DOTALL)
 
 
-async def register(system_config_data: SystemStorageData, storage_data: StorageData, py_api: PyApi, main_home: str,
-                   html_home: str, http_web_host: str, http_web_port: int):
+async def register(system_config_data: SystemStorageData, storage_data: StorageData, py_api: PyApi,
+                   exec_api: ExecApi, main_home: str, html_home: str, http_web_host: str, http_web_port: int):
     async def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
         style_block = BLOCK_STYLE_PATTERN.findall(html)
         script_block = BLOCK_SCRIPT_PATTERN.findall(html)
@@ -224,6 +225,17 @@ async def register(system_config_data: SystemStorageData, storage_data: StorageD
             'status': await py_api.prompt(title, subtitle, '', default_value)
         }), request)
 
+    async def test_event_name_api(request):
+        data = await request.json()
+        event_name = data['event_name']
+        params = data.get('params', [])
+        status, data, message = await exec_api.test_event_name_exec(event_name, params)
+        return await send_html(json.dumps({
+            'status': status,
+            'data': data,
+            'message': message,
+        }), request)
+
     async def restart_api(_):
         os.system(
             "ps -ef | grep python | grep -v grep | grep iterm2_shortcut_html2.py | awk '{print $2}' | xargs kill -9  "
@@ -271,6 +283,7 @@ async def register(system_config_data: SystemStorageData, storage_data: StorageD
     webapp.router.add_post('/iterm2_alert', iterm2_alert_api)
     webapp.router.add_post('/iterm2_confirm', iterm2_confirm_api)
     webapp.router.add_post('/iterm2_prompt', iterm2_prompt_api)
+    webapp.router.add_post('/test_event_name', test_event_name_api)
     webapp.router.add_get('/restart', restart_api)
     webapp.router.add_static('/', path=html_home)
     runner = web.AppRunner(webapp)

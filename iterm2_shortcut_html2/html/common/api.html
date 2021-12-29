@@ -122,6 +122,30 @@
         })
         return d
     }
+
+    function sendTestEventName(eventName, params) {
+        let d = {
+            'status': false,
+            'message': "请求出错"
+        }
+        $.ajax({
+            url: "/test_event_name",
+            type: "POST",
+            async: false,
+            data: JSON.stringify({
+                'event_name': eventName,
+                'params': params ? params : []
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+                d = response_data
+            },
+            error: function (message) {
+
+            }
+        })
+        return d
+    }
 </script>
 <script>
     function getInputButtonValueInputValue(inputButtonInput) {

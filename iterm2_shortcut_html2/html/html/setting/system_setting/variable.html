@@ -17,6 +17,24 @@
     <div style="padding-top: 5px;">
         {{@describe}}
     </div>
+    {{if tab_id == 'tab_1' && tab_value.variable_list && tab_value.variable_list.length>0}}
+    <div style="margin-top: 20px;" class="test-event-name-box">
+        事件：
+        <select class="test-event-name-event_name">
+            {{each tab_value.variable_list variable index}}
+            <option value="{{variable.name}}">{{variable.name}}</option>
+            {{/each}}
+        </select>
+        参数：<input type="text" class="test-event-name-event_params">
+        <button onclick="settingTestEventName(this)">测试事件</button>
+        <div style="font-size: 12px;color: #bebebe; padding: 3px 0 10px 0">
+            参数以||隔开，测试触发事件已得到返回数据(shortcut_html_get_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))<br/>
+            其他方法执行结果一致，例如发送文本实际运行时会将返回值发送到窗口
+        </div>
+        <div class="test-event-name-result-status" style="color: #6f96c4;"></div>
+        <pre class="test-event-name-result"></pre>
+    </div>
+    {{/if}}
     <table style="width: 100%;margin-top: 20px;border-collapse:collapse;border-color:white; " cellspacing="2"
            cellpadding="5" border="1">
         <tr>
@@ -124,6 +142,15 @@
                 tableLineDom.attr("_index", index + move)
             }
         }
+    }
+
+    function settingTestEventName(that) {
+        const boxDom = $(that).parents('.test-event-name-box')
+        const eventParams = boxDom.find('.test-event-name-event_params')[0].value
+        const eventName = boxDom.find('.test-event-name-event_name')[0].value
+        const r = sendTestEventName(eventName, eventParams.split('||'))
+        boxDom.find('.test-event-name-result-status').text(r.status ? '测试成功' : '测试失败')
+        boxDom.find('.test-event-name-result').text(r.status ? (r.data ? r.data : '无返回值') : r.message)
     }
 </script>
 {% endblock %}

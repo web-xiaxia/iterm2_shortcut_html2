@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from iterm2.session import Session
 
-from typing import Optional
+from typing import Optional, Tuple
 
 import traceback
 from api.py_api import PyApi
@@ -72,3 +72,16 @@ class ExecApi:
                 event_name, e, traceback.format_exc()
             ))
             return ''
+
+    async def test_event_name_exec(self, event_name: str, params: Optional[list] = None) -> Tuple[bool, str, str]:
+        try:
+            selected_event_send = await self.storage_data.get_event_send(event_name)
+            if not selected_event_send:
+                return False, '', f'未找到:{event_name}'
+            r = await self.og_code_exec(selected_event_send.get('value'), params)
+            return True, r, ''
+        except Exception as e:
+            print("event_name_text 获取失败，event_name：{},{}\n,{}".format(
+                event_name, e, traceback.format_exc()
+            ))
+            return False, '', f'{e}'
