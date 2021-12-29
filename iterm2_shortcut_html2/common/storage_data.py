@@ -38,6 +38,7 @@ class StorageData:
         self.temp_storage = {}
         self.last_bak_time = 0
         self.last_bak_path = None
+        self.storage_file_name = 'storage.json'
 
     async def reset_xpy_method(self):
         if 'py_method' in self.temp_storage:
@@ -97,7 +98,7 @@ class StorageData:
 
         print(f"storage 打开了文件")
         system_config_storage = await self.system_config_data.get_storage()
-        storage_full_path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
+        storage_full_path = os.path.join(system_config_storage.get('storage_path'), self.storage_file_name)
         if not os.path.exists(storage_full_path):
             with open(storage_full_path, 'w') as fp:
                 fp.write(json.dumps(INIT_CONFIG_JSON))
@@ -109,7 +110,7 @@ class StorageData:
     async def reload_storage(self, path):
         if not path:
             system_config_storage = await self.system_config_data.get_storage()
-            path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
+            path = os.path.join(system_config_storage.get('storage_path'), self.storage_file_name)
 
         if not os.path.exists(path):
             with open(path, 'w') as fp:
@@ -129,7 +130,7 @@ class StorageData:
             self.storage = json.loads(storage_str)
 
         system_config_storage = await self.system_config_data.get_storage()
-        storage_full_path = os.path.join(system_config_storage.get('storage_path'), 'storage.json')
+        storage_full_path = os.path.join(system_config_storage.get('storage_path'), self.storage_file_name)
         if bak:
             storage_history_home = system_config_storage.get('storage_history_path')
             file_path = os.path.join(
@@ -154,7 +155,7 @@ class StorageData:
         storage_history_home = system_config_storage.get('storage_history_path')
         file_list = sorted(os.listdir(storage_history_home), key=lambda a: a, reverse=True)[120:]
         for file in file_list:
-            if file == 'storage.json':
+            if file == self.storage_file_name:
                 continue
             try:
                 os.remove(f'{storage_history_home}/{file}')
