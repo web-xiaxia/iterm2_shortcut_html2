@@ -185,16 +185,7 @@ except Exception as e:
             except Exception as e:
                 print(f'初始化PyMethod 失败，name:{data.get("name")}，error：{e}')
 
-    def __setattr__(self, key, value):
-        super().__getattribute__('method_map')[key] = value
-
     def __getattr__(self, item):
-        return super().__getattribute__('method_map').get(item)
-
-    def __setitem__(self, key, value):
-        super().__getattribute__('method_map')[key] = value
-
-    def __getitem__(self, item):
         return super().__getattribute__('method_map').get(item)
 
     def install(self, key, value):
