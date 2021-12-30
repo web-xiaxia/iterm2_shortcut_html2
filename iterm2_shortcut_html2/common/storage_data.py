@@ -44,7 +44,7 @@ class StorageData:
         if 'py_method' in self.temp_storage:
             del self.temp_storage['py_method']
 
-    async def get_xpy_method(self):
+    async def get_xpy_method(self) -> 'XPyMethod':
         if 'py_method' in self.temp_storage:
             return self.temp_storage['py_method']
         storage = await self.get_storage()
@@ -76,18 +76,40 @@ class StorageData:
         if 'custom_variable_map' in self.temp_storage:
             del self.temp_storage['custom_variable_map']
 
-    async def get_custom_variable_map(self) -> Dict:
+    async def set_custom_variable(self, key, value):
+        if (not isinstance(value, str)
+                and not isinstance(value, bool)
+                and not isinstance(value, float)
+                and not isinstance(value, int)):
+            return
+        saved = False
+        storage = await self.get_storage()
+        if 'custom_variable' not in storage:
+            storage['custom_variable'] = []
+        for custom_variable in storage.get('custom_variable', []):
+            if custom_variable.get('name') == key:
+                custom_variable['value'] = value
+                saved = True
+                break
+        if not saved:
+            storage['custom_variable'].append({
+                'name': key,
+                'value': value,
+            })
+        await self.set_storage(None, bak=False)
+
+    async def get_custom_variable_map(self) -> 'CustomVariable':
         if 'custom_variable_map' in self.temp_storage:
             return self.temp_storage['custom_variable_map']
 
-        custom_variable_map = {}
+        custom_variable_map = dict()
         storage = await self.get_storage()
         for custom_variable in storage.get('custom_variable', []):
             if custom_variable.get('name'):
                 custom_variable_map[custom_variable.get('name')] = custom_variable.get('value', '')
 
-        self.temp_storage['custom_variable_map'] = custom_variable_map
-        return custom_variable_map
+        self.temp_storage['custom_variable_map'] = CustomVariable(custom_variable_map, self)
+        return self.temp_storage['custom_variable_map']
 
     async def set_tab_index(self, tab_index):
         self.storage['tab_index'] = tab_index
@@ -190,3 +212,24 @@ except Exception as e:
 
     def install(self, key, value):
         super().__getattribute__('method_map')[key] = value
+
+
+class CustomVariable(object):
+    storage_data: StorageData = None
+    storage = None
+
+    def __init__(self, storage: Dict, storage_data: StorageData):
+        super().__setattr__('storage_data', storage_data)
+        super().__setattr__('storage', storage)
+
+    def __setattr__(self, key, value):
+        super().__getattribute__('storage_data').set_custom_variable(key, value)
+
+    def __getattr__(self, item):
+        return super().__getattribute__('storage').get(item)
+
+    def __setitem__(self, key, value):
+        super().__getattribute__('storage_data').set_custom_variable(key, value)
+
+    def __getitem__(self, item):
+        return super().__getattribute__('storage').get(item)
