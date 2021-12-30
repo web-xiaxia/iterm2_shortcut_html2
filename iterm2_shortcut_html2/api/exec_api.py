@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import iterm2
 from iterm2.session import Session
-from typing import Optional, Tuple, Dict
+from typing import Optional, Tuple
 
 import traceback
 from api.py_api import PyApi
-from common.session_data import SessionStorageData
+from common.session_storage_data import SessionStorageData
 from common.storage_data import StorageData
 from iterm2.connection import Connection
 

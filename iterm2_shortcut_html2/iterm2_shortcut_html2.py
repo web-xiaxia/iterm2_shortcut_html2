@@ -4,7 +4,7 @@ from iterm2.app import App
 
 from api import html_api
 from api.py_api import PyApi
-from common.session_data import SessionStorageData
+from common.session_storage_data import SessionStorageData
 from common.system_storage_data import SystemStorageData
 
 from rpc import status_bar_rpc, web_view_tool_rpc, event_rpc

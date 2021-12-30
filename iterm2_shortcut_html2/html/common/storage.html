@@ -309,7 +309,7 @@
 
     function saveSessionStorage(key, value) {
         $.ajax({
-            url: "/system_storage",
+            url: "/session_storage",
             type: "POST",
             async: false,
             data: JSON.stringify({

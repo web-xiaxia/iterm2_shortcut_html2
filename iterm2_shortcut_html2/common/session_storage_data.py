@@ -14,7 +14,7 @@ class SessionStorageData:
         session_id = self.app.current_window.current_tab.current_session.session_id
         if session_id not in self.storage:
             self.storage[session_id] = SessionStorage()
-        return self.storage
+        return self.storage[session_id]
 
     async def delete_storage(self):
         session_id = self.app.current_window.current_tab.current_session.session_id
@@ -26,12 +26,22 @@ class SessionStorageData:
         storage[key] = value
 
 
-class SessionStorage:
+class SessionStorage(object):
+    storage = None
+
     def __init__(self):
-        self.storage = {}
+        super().__setattr__('storage', dict())
 
     def __setattr__(self, key, value):
-        self.storage[key] = value
+        super().__getattribute__('storage')[key] = value
+        print(f"SessionStorageLen:{len(super().__getattribute__('storage'))}")
 
     def __getattr__(self, item):
-        return self.storage.get(item)
+        return super().__getattribute__('storage').get(item)
+
+    def __setitem__(self, key, value):
+        super().__getattribute__('storage')[key] = value
+        print(f"SessionStorageLen:{len(super().__getattribute__('storage'))}")
+
+    def __getitem__(self, item):
+        return super().__getattribute__('storage').get(item)
