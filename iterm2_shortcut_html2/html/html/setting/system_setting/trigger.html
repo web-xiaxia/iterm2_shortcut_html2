@@ -1,0 +1,156 @@
+{% block style %}
+<style>
+    .system-setting-trigger-title {
+        width: 75px;
+        display: inline-block;
+        text-align: right;
+    }
+
+    .system-setting-trigger-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<script id="system-setting-trigger-template" type="text/html">
+    <div>
+        <div>
+            <span class="system-setting-trigger-title">名称：</span>
+            <input id="system-setting-trigger-add-name" type="text">
+            <span class="system-setting-trigger-title">Instant：</span>
+            <input id="system-setting-trigger-add-partial" type="checkbox">
+            <span class="system-setting-trigger-title" style="width: 160px;">Session Auto：</span>
+            <input id="system-setting-trigger-add-auto" type="checkbox">
+        </div>
+        <div>
+            <span class="system-setting-trigger-title">Regular：</span>
+            <input id="system-setting-trigger-add-regex" type="text">
+            <span class="system-setting-trigger-title">Action：</span>
+            <select id="system-setting-trigger-add-action">
+                {{each tab_value.trigger_action_list trigger_action}}
+                <option value="{{trigger_action.value}}">{{trigger_action.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div>
+            <span class="system-setting-trigger-title">Parameter：</span>
+            <input id="system-setting-trigger-add-parameter" style="width: 488px;" type="text">
+        </div>
+        <div>
+            <button onclick="addSystemSettingTrigger('{{tab_id}}')">新增</button>
+        </div>
+    </div>
+    <div style="padding-top: 5px;">
+        {{@describe}}
+    </div>
+    <table style="width: 100%;margin-top: 20px;border-collapse:collapse;border-color:white; table-layout: fixed;word-break: break-all;"
+           cellspacing="2"
+           cellpadding="5" border="1">
+        <tr>
+            <td style="width: 220px;">名称/Action</td>
+            <td>Regex/Parameter</td>
+            <td style="width: 130px">操作</td>
+        </tr>
+        {{each tab_value.variable_list variable index}}
+        <tr class="system-setting-variable-table-line trigger-edit-box" _index="{{index}}">
+            <td>
+                <div class="system-setting-trigger-text" title="{{variable.name}}">{{variable.name}}</div>
+                {{each tab_value.trigger_action_list trigger_action}}
+                {{if trigger_action.value==variable.action}}
+                <div class="system-setting-trigger-text" title="{{trigger_action.name}}">{{trigger_action.name}}</div>
+                {{/if}}
+                {{/each}}
+                {{ if variable.partial}}
+                Instant:<input type="checkbox" checked class="system-setting-trigger-edit-partial">
+                {{else}}
+                Instant:<input type="checkbox" class="system-setting-trigger-edit-partial">
+                {{/if}}
+                {{ if variable.auto}}
+                Session Auto:<input type="checkbox" checked class="system-setting-trigger-edit-auto">
+                {{else}}
+                Session Auto:<input type="checkbox" class="system-setting-trigger-edit-auto">
+                {{/if}}
+
+            </td>
+            <td>
+                <div>
+                    <input style="width: 100%" type="text" class="system-setting-trigger-edit-regex"
+                           value="{{variable.regex}}">
+                    <br/>
+                    <input style="width: 100%" type="text" class="system-setting-trigger-edit-parameter"
+                           value="{{variable.parameter}}">
+                </div>
+            </td>
+            <td>
+                <button onclick="editSystemSettingTrigger(this,'{{tab_id}}')"> 修改</button>
+                <button onclick="moveSystemSettingVariable(this,'{{tab_id}}',-1)">上移</button>
+                <br/>
+                <button ondblclick="deleteSystemSettingVariable(this,'{{tab_id}}')">删除</button>
+                <button onclick="moveSystemSettingVariable(this,'{{tab_id}}',1)">下移</button>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</script>
+<script>
+    function addSystemSettingTrigger(tab_id) {
+        const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
+        const triggerName = $("#system-setting-trigger-add-name").val()
+        const triggerPartial = $("#system-setting-trigger-add-partial")[0].checked
+        const triggerAuto = $("#system-setting-trigger-add-auto")[0].checked
+        const triggerRegex = $("#system-setting-trigger-add-regex").val()
+        const triggerAction = $("#system-setting-trigger-add-action").val()
+        const triggerParameter = $("#system-setting-trigger-add-parameter").val()
+        if (!triggerName) {
+            alert("请输入名称")
+            return
+        }
+        const variable_list = tab_value.variable_list
+        for (let i in variable_list) {
+            const variable = variable_list[i]
+            if (variable.name === triggerName) {
+                alert("已有相同名称")
+                return
+            }
+        }
+        const variable = {
+            name: triggerName,
+            partial: triggerPartial,
+            auto: triggerAuto,
+            regex: triggerRegex,
+            action: triggerAction,
+            parameter: triggerParameter,
+        }
+        variable_list.push(variable)
+        SYSTEM_SETTING_TBA_MAP[tab_id].value_change_fun(variable, "add")
+        initSystemSettingTabButtonMain(tab_id)
+    }
+
+    function editSystemSettingTrigger(that, tab_id) {
+        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
+        const index = parseInt(tableLineDom.attr("_index"))
+        if (index == null) {
+            return;
+        }
+
+        const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
+        const variable = tab_value.variable_list[index]
+        const triggerPartial = tableLineDom.find(".system-setting-trigger-edit-partial")[0].checked
+        const triggerAuto = tableLineDom.find(".system-setting-trigger-edit-auto")[0].checked
+        const triggerRegex = tableLineDom.find(".system-setting-trigger-edit-regex").val()
+        const triggerParameter = tableLineDom.find(".system-setting-trigger-edit-parameter").val()
+
+        variable.partial = triggerPartial
+        variable.auto = triggerAuto
+        variable.regex = triggerRegex
+        variable.parameter = triggerParameter
+        SYSTEM_SETTING_TBA_MAP[tab_id].value_change_fun(tab_value.variable_list[index], "edit")
+    }
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}

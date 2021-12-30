@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import subprocess
+import traceback
 
 import iterm2
 import json
@@ -120,3 +121,28 @@ class PyApi:
 
     async def send_feishu(self, token: str, title: str, context: str, note: str = None):
         await utils.send_feishu(token, title, context, note)
+
+    async def get_triggers(self):
+        session = self.app.current_terminal_window.current_tab.current_session
+        profile = await session.async_get_profile()
+        triggers = []
+        for trigger in profile.triggers:
+            try:
+                # regex
+                # action
+                # parameter
+                # partial
+                # disabled
+                print(f'{json.dumps(trigger)}')
+                triggers.append(iterm2.decode_trigger(trigger))
+            except Exception as e:
+                print(f'trigger decode error:{e}\n{json.dumps(trigger)}\n{traceback.format_exc()}')
+
+        return triggers
+        # rpc_trigger = iterm2.RPCTrigger(
+        #     'xxx',
+        #     'shortcut_html_event_feishu(feishu_token: "d227490c-485a-4f0d-89c7-e2c14df5ffe4 ", title: "test", context:"test", screen_text_line: 20, silence_second: 10)',
+        #     False, True
+        # )
+        # profile.triggers.append(rpc_trigger.encode)
+        # await profile.async_set_triggers(profile.triggers)

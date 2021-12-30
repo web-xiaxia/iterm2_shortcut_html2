@@ -5,6 +5,7 @@ import re
 
 import sqlite3
 from common import utils
+from common.session_data import SessionStorageData
 from common.system_storage_data import SystemStorageData
 from common.storage_data import StorageData
 from typing import Tuple, List
@@ -21,8 +22,9 @@ BLOCK_SCRIPT_PATTERN = re.compile(r'''{% block script %}(.*?){% endblock %}''', 
 BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}''', re.DOTALL)
 
 
-async def register(system_config_data: SystemStorageData, storage_data: StorageData, py_api: PyApi,
-                   exec_api: ExecApi, main_home: str, html_home: str, http_web_host: str, http_web_port: int):
+async def register(system_storage_data: SystemStorageData, session_storage_data: SessionStorageData,
+                   storage_data: StorageData, py_api: PyApi, exec_api: ExecApi,
+                   main_home: str, html_home: str, http_web_host: str, http_web_port: int):
     async def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
         style_block = BLOCK_STYLE_PATTERN.findall(html)
         script_block = BLOCK_SCRIPT_PATTERN.findall(html)
@@ -105,15 +107,22 @@ async def register(system_config_data: SystemStorageData, storage_data: StorageD
         await storage_data.reload_storage(path)
         return await send_ok(request)
 
+    async def save_session_storage_api(request):
+        data = await request.json()
+        key = data.get('key')
+        value = data.get('value')
+        await session_storage_data.set_storage(key, value)
+        return await send_ok(request)
+
     async def get_system_storage_api(request):
-        return await send_html(json.dumps(await system_config_data.get_storage(), sort_keys=True, indent=4), request)
+        return await send_html(json.dumps(await system_storage_data.get_storage(), sort_keys=True, indent=4), request)
 
     async def save_store_path_api(request):
         data = await request.json()
         storage_path = data.get('storage_path')
         storage_history_path = data.get('storage_history_path')
         reload = bool(data.get('reload'))
-        await system_config_data.set_storage_path(storage_path, storage_history_path)
+        await system_storage_data.set_storage_path(storage_path, storage_history_path)
         if storage_path:
             if reload:
                 await storage_data.reload_storage(storage_path + "/storage.json")
@@ -268,6 +277,7 @@ async def register(system_config_data: SystemStorageData, storage_data: StorageD
     webapp.router.add_post('/storage', save_storage_api)
     webapp.router.add_delete('/storage', delete_storage_api)
     webapp.router.add_post('/reload_storage', reload_storage_api)
+    webapp.router.add_post('/session_storage', save_session_storage_api)
     webapp.router.add_get('/system_storage', get_system_storage_api)
     webapp.router.add_post('/change_store_path', save_store_path_api)
     webapp.router.add_post('/storage_reset_event_send_map', storage_reset_event_send_map_api)

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import iterm2
 from iterm2.session import Session
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict
 
 import traceback
 from api.py_api import PyApi
+from common.session_data import SessionStorageData
 from common.storage_data import StorageData
 from iterm2.connection import Connection
 
@@ -29,9 +30,11 @@ class Iterm2Api:
 
 @singleton
 class ExecApi:
-    def __init__(self, app: App, connection: Connection, storage_data: StorageData, py_api: PyApi):
+    def __init__(self, app: App, connection: Connection, session_storage_data: SessionStorageData,
+                 storage_data: StorageData, py_api: PyApi):
         self.app: App = app
         self.connection: Connection = connection
+        self.session_storage_data: SessionStorageData = session_storage_data
         self.storage_data: StorageData = storage_data
         self.py_api: PyApi = py_api
         self.iterm2_api: Iterm2Api = Iterm2Api(app, connection)
@@ -50,6 +53,7 @@ class ExecApi:
             'PY': xpy_method,
             'PYX': self.py_api,
             'data': custom_variable_map,
+            'session_data': await self.session_data.get_storage(),
             'params': [] if params is None else params,
             'results': eval_results,
         })

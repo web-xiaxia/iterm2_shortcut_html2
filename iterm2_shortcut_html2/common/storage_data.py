@@ -32,8 +32,8 @@ INIT_CONFIG_JSON = {
 @singleton
 class StorageData:
 
-    def __init__(self, system_config_data: SystemStorageData):
-        self.system_config_data = system_config_data
+    def __init__(self, system_storage_data: SystemStorageData):
+        self.system_storage_data = system_storage_data
         self.storage = None
         self.temp_storage = {}
         self.last_bak_time = 0
@@ -97,7 +97,7 @@ class StorageData:
             return self.storage
 
         print(f"storage 打开了文件")
-        system_config_storage = await self.system_config_data.get_storage()
+        system_config_storage = await self.system_storage_data.get_storage()
         storage_full_path = os.path.join(system_config_storage.get('storage_path'), self.storage_file_name)
         if not os.path.exists(storage_full_path):
             with open(storage_full_path, 'w') as fp:
@@ -109,7 +109,7 @@ class StorageData:
 
     async def reload_storage(self, path):
         if not path:
-            system_config_storage = await self.system_config_data.get_storage()
+            system_config_storage = await self.system_storage_data.get_storage()
             path = os.path.join(system_config_storage.get('storage_path'), self.storage_file_name)
 
         if not os.path.exists(path):
@@ -129,7 +129,7 @@ class StorageData:
                 storage_str = json.dumps(storage)
             self.storage = json.loads(storage_str)
 
-        system_config_storage = await self.system_config_data.get_storage()
+        system_config_storage = await self.system_storage_data.get_storage()
         storage_full_path = os.path.join(system_config_storage.get('storage_path'), self.storage_file_name)
         if bak:
             storage_history_home = system_config_storage.get('storage_history_path')
@@ -151,7 +151,7 @@ class StorageData:
             fp.write(json.dumps(self.storage, sort_keys=True, indent=4))
 
     async def delete_storage(self):
-        system_config_storage = await self.system_config_data.get_storage()
+        system_config_storage = await self.system_storage_data.get_storage()
         storage_history_home = system_config_storage.get('storage_history_path')
         file_list = sorted(os.listdir(storage_history_home), key=lambda a: a, reverse=True)[120:]
         for file in file_list:

@@ -23,6 +23,35 @@
 </script>
 <script>
     const SYSTEM_SETTING_TBA_LIST = [{
+        "tab_id": "tab_0",
+        "title": "触发器",
+        "template_id": "system-setting-trigger-template",
+        "describe": `
+            <div class="help-box">
+                <button class="help-button" onclick="helpBoxTrigger(this)">打开帮助</button>
+                <div class="help-context" style="display: none;">
+                    <div>session auto：表示打开iterm2 tab时自动注册触发器</div>
+                    <div>action：Invoke Script Function 可使用 shortcut_html_send_text，shortcut_html_event,shortcut_html_event_feishu 等方法</div>
+                </div>
+            </div>
+        `,
+        "value_fun": function () {
+            if (STORAGE.custom_trigger == null) {
+                STORAGE.custom_trigger = []
+            }
+            return {
+                edit_type: 'text',
+                variable_list: STORAGE.custom_trigger,
+                trigger_action_list: [{
+                    'name': 'Invoke Script Function',
+                    'value': 'iTermRPCTrigger'
+                }]
+            }
+        },
+        "value_change_fun": function (variable, change_type) {
+            console.log(`触发器修改,name:${variable.name},value:${variable.value},change_type:${change_type}`)
+        }
+    }, {
         "tab_id": "tab_1",
         "title": "事件文本",
         "template_id": "system-setting-variable-template",
@@ -31,7 +60,8 @@
                 <button class="help-button" onclick="helpBoxTrigger(this)">打开帮助</button>
                 <div class="help-context" style="display: none;">
                     <div>事件可在Triggers中使用(当前页面脚本为python)，使用方法如下：</div>
-                    <div style="padding-top: 10px;">0.所有脚本可使用[[自定变量]][[自定py]]和内置方法</div>
+                    <div style="padding-top: 10px;">0.所有脚本可使用[[session变量]][[自定变量]][[自定py]]和内置方法</div>
+                    <div>0.0.[[session变量]]使用方式 session_data.get('变量名称')</div>
                     <div>0.1.[[自定变量]]使用方式 data.get('自定变量名称')</div>
                     <div>0.2.自定py&nbsp; PY.方法名称(参数) 如：PY.to_int([[变量]], 0)</div>
                     <div>0.3.内置方法</div>
@@ -51,8 +81,8 @@
                     <div>2.1.无惨获取文本 \\(shortcut_html_get_text(event_name:&nbsp;"事件名称"))</div>
                     <div>2.2.入参获取文本 \\(shortcut_html_get_textx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]</div>
                     <div style="padding-top: 10px;">3.触发事件(无返回值)，可在Triggers中使用。</div>
-                    <div>3.1.无参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称"))</div>
-                    <div>3.2.入参事件 shortcut_html_send_text(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]</div>
+                    <div>3.1.无参事件 shortcut_html_event(event_name:&nbsp;"事件名称"))</div>
+                    <div>3.2.入参事件 shortcut_html_eventx(event_name:&nbsp;"事件名称",&nbsp;params:&nbsp;[1,2,3]))  可以使用传入参数，使用方式params[0]</div>
                     <div style="padding-top: 10px;">4.触发事件发送飞书(可携带屏幕数据)，可在Triggers中使用。</div>
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用方式：shortcut_html_event_feishu(feishu_token: "token", title: "title", context:"title", screen_text_line=20, silence_second=1)</div>
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feishu_token 为机器人token，screen_text_line 附带屏幕文本行数  0为不携带。 silence_second(秒)单位时间内不重复发送信息</div>
@@ -278,6 +308,10 @@ JS.install('to_int', to_int)
 
     function changeCustomVariable(value_name, value) {
         changeVariable('custom_variable', value_name, value)
+    }
+
+    function changeSessionVariable(value_name, value) {
+        saveSessionStorage(value_name, value)
     }
 
     function changeVariable(variable_type, value_name, value) {

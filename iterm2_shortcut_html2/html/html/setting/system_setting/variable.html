@@ -54,12 +54,12 @@
                 {{/if}}
             </td>
             <td>
-                <button onclick="editSystemSettingVariable(this,'{{tab_id}}',{{index}})"> 修改</button>
+                <button onclick="editSystemSettingVariable(this,'{{tab_id}}')"> 修改</button>
                 <button onclick="moveSystemSettingVariable(this,'{{tab_id}}',-1)"
                         style="margin-left: 10px;">上移
                 </button>
                 <button onclick="moveSystemSettingVariable(this,'{{tab_id}}',1)">下移</button>
-                <button ondblclick="deleteSystemSettingVariable(this,'{{tab_id}}',{{index}})"
+                <button ondblclick="deleteSystemSettingVariable(this,'{{tab_id}}')"
                         style="margin-left: 20px;">删除
                 </button>
             </td>
@@ -93,10 +93,14 @@
         initSystemSettingTabButtonMain(tab_id)
     }
 
-    function editSystemSettingVariable(that, tab_id, index) {
+    function editSystemSettingVariable(that, tab_id) {
+        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
+        const index = parseInt(tableLineDom.attr("_index"))
+        if (index == null) {
+            return;
+        }
         const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
         const variable = tab_value.variable_list[index]
-        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
         const newValue = tableLineDom.find('.system-setting-variable-table-line-value')[0].value
         if (newValue !== variable.value) {
             variable.value = newValue
@@ -104,12 +108,16 @@
         }
     }
 
-    function deleteSystemSettingVariable(that, tab_id, index) {
+    function deleteSystemSettingVariable(that, tab_id) {
+        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
+        const index = parseInt(tableLineDom.attr("_index"))
+        if (index == null) {
+            return;
+        }
         const tab_value = SYSTEM_SETTING_TBA_MAP[tab_id].value_fun()
         const variable = tab_value.variable_list[index]
         tab_value.variable_list.splice(index, 1)
         SYSTEM_SETTING_TBA_MAP[tab_id].value_change_fun(variable, "delete")
-        const tableLineDom = $(that).parents('.system-setting-variable-table-line')
         tableLineDom.remove()
     }
 

@@ -307,6 +307,24 @@
         return storage
     }
 
+    function saveSessionStorage(key, value) {
+        $.ajax({
+            url: "/system_storage",
+            type: "POST",
+            async: false,
+            data: JSON.stringify({
+                'key': key,
+                'value': value
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+            },
+            error: function (message) {
+            }
+        })
+    }
+
+
     function changeStorePath(storage_path, storage_history_path, reload) {
         $.ajax({
             url: "/change_store_path",
