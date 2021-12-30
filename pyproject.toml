@@ -6,6 +6,7 @@ authors = ["web-xiaxia"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+iterm2 = "^1.30"
 
 
 [tool.poetry.dev-dependencies]
