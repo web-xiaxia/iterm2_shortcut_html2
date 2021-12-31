@@ -53,7 +53,7 @@ class ExecApi:
             'PY': xpy_method,
             'PYX': self.py_api,
             'data': custom_variable_map,
-            'session_data': await self.session_data.get_storage(),
+            'session_data': await self.session_storage_data.get_storage(),
             'params': [] if params is None else params,
             'results': eval_results,
         })

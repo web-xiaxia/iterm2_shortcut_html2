@@ -27,7 +27,7 @@ async def main(connection: Connection):
     storage_data: StorageData = StorageData(system_storage_data)
     session_storage_data: SessionStorageData = SessionStorageData(app)
     #
-    py_api: PyApi = PyApi(app, connection)
+    py_api: PyApi = PyApi(app, connection, storage_data)
     exec_api: ExecApi = ExecApi(app, connection, session_storage_data, storage_data, py_api)
     http_web_host = 'localhost'
     http_web_port = 9998

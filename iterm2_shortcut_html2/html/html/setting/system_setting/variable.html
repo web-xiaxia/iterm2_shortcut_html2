@@ -158,7 +158,7 @@
         const eventName = boxDom.find('.test-event-name-event_name')[0].value
         const r = sendTestEventName(eventName, eventParams.split('||'))
         boxDom.find('.test-event-name-result-status').text(r.status ? '测试成功，返回值如下：' : '测试失败，错误信息如下：')
-        boxDom.find('.test-event-name-result').text(r.status ? (r.data ? r.data.replace(/\n/g,'↵\n') : '无返回值') : r.message)
+        boxDom.find('.test-event-name-result').text(r.status ? (r.data + "" ? (r.data + "").replace(/\n/g, '↵\n') : '无返回值') : r.message)
     }
 </script>
 {% endblock %}
