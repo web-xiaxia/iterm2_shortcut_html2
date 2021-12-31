@@ -9,14 +9,16 @@ from iterm2.connection import Connection
 
 from iterm2.app import App
 from common import utils
+from common.storage_data import StorageData
 from common.utils import singleton
 
 
 @singleton
 class PyApi:
-    def __init__(self, app: App, connection: Connection):
+    def __init__(self, app: App, connection: Connection, storage_data: StorageData):
         self.app: App = app
         self.connection: Connection = connection
+        self.storage_data: StorageData = storage_data
 
     async def __send_text(self, app, send_text_context):
         if send_text_context:
@@ -139,10 +141,40 @@ class PyApi:
                 print(f'trigger decode error:{e}\n{json.dumps(trigger)}\n{traceback.format_exc()}')
 
         return triggers
-        # rpc_trigger = iterm2.RPCTrigger(
-        #     'xxx',
-        #     'shortcut_html_event_feishu(feishu_token: "d227490c-485a-4f0d-89c7-e2c14df5ffe4 ", title: "test", context:"test", screen_text_line: 20, silence_second: 10)',
-        #     False, True
-        # )
-        # profile.triggers.append(rpc_trigger.encode)
-        # await profile.async_set_triggers(profile.triggers)
+
+    async def get_custom_trigger_encode(self, trigger_name: str) -> Optional[Dict]:
+        custom_trigger = await self.storage_data.get_custom_trigger(trigger_name)
+        if not custom_trigger:
+            return None
+        if custom_trigger.get('action') == 'iTermRPCTrigger':
+            return iterm2.RPCTrigger(
+                regex=custom_trigger.get('regex'),
+                invocation=custom_trigger.get('parameter'),
+                instant=custom_trigger.get('partial'),
+                enabled=True
+            ).encode
+
+        return None
+
+    async def trigger_encode_md5(self, trigger: Dict) -> str:
+        trigger_kv_str_list = ['{}:{}'.format(k, v) for k, v in trigger.items()]
+        trigger_kv_str_list.sort(key=lambda a: a)
+        return await utils.md5('|'.join(trigger_kv_str_list))
+
+    async def register_trigger(self, trigger_name: str):
+        custom_trigger_encode = await self.get_custom_trigger_encode(trigger_name)
+        if not custom_trigger_encode:
+            print(f'未找到trigger：{trigger_name}')
+            return
+
+        custom_trigger_encode_md5 = await self.trigger_encode_md5(custom_trigger_encode)
+
+        session = self.app.current_terminal_window.current_tab.current_session
+        profile = await session.async_get_profile()
+        triggers = profile.triggers
+        for trigger in triggers:
+            if await self.trigger_encode_md5(trigger) == custom_trigger_encode_md5:
+                return
+
+        triggers.append(custom_trigger_encode)
+        await profile.async_set_triggers(profile.triggers)

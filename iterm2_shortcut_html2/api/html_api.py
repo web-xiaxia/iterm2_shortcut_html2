@@ -234,6 +234,12 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
             'status': await py_api.prompt(title, subtitle, '', default_value)
         }), request)
 
+    async def register_trigger_api(request):
+        data = await request.json()
+        trigger_name = data['name']
+        await py_api.register_trigger(trigger_name)
+        return await send_ok(request)
+
     async def test_event_name_api(request):
         data = await request.json()
         event_name = data['event_name']
@@ -293,6 +299,7 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
     webapp.router.add_post('/iterm2_alert', iterm2_alert_api)
     webapp.router.add_post('/iterm2_confirm', iterm2_confirm_api)
     webapp.router.add_post('/iterm2_prompt', iterm2_prompt_api)
+    webapp.router.add_post('/register_trigger', register_trigger_api)
     webapp.router.add_post('/test_event_name', test_event_name_api)
     webapp.router.add_get('/restart', restart_api)
     webapp.router.add_static('/', path=html_home)

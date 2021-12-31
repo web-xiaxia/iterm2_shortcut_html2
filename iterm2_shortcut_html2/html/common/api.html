@@ -123,6 +123,23 @@
         return d
     }
 
+    function registerTrigger(trigger_name){
+        $.ajax({
+            url: "/register_trigger",
+            type: "POST",
+            async: false,
+            data: JSON.stringify({
+                'name': trigger_name
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response_data) {
+            },
+            error: function (message) {
+            }
+        })
+    }
+
+
     function sendTestEventName(eventName, params) {
         let d = {
             'status': false,

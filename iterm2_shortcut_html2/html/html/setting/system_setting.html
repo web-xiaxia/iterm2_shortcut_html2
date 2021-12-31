@@ -30,7 +30,7 @@
             <div class="help-box">
                 <button class="help-button" onclick="helpBoxTrigger(this)">打开帮助</button>
                 <div class="help-context" style="display: none;">
-                    <div>session auto：表示打开iterm2 tab时自动注册触发器</div>
+                    <div>session auto：表示打开iterm2 tab时自动注册触发器，未选择可以在jsButton内注册</div>
                     <div>action：Invoke Script Function 可使用 shortcut_html_send_text，shortcut_html_event,shortcut_html_event_feishu 等方法</div>
                 </div>
             </div>
@@ -73,6 +73,7 @@
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回结果{ "status": True, "data": {"status": 200, "text": "", "headers": {"key":"value"}}, "message":
                     <div>0.3.6.PYX.screen_text 获取窗口文本(最后多少行) 使用方式：await PYX.screen_text(50) 获取最后50行 </div>
                     <div>0.3.7.PYX.send_feishu 发送飞书信息 使用方式：await PYX.send_feishu('token', 'title', 'context', 'note') </div>
+                    <div>0.3.8.PYX.register_trigger 注册触发器 使用方式：await PYX.register_trigger('触发器名称') </div>
             "错误信息"}}</div>
                     <div style="padding-top: 10px;">1.发送文本，需要脚本设置返回值，方式：results['event']&nbsp;=&nbsp;"结果"，例如：results['event']&nbsp;=&nbsp;1+1+1+1</div>
                     <div>1.1.无参发送文本 shortcut_html_send_text(event_name:&nbsp;"事件名称\") </div>

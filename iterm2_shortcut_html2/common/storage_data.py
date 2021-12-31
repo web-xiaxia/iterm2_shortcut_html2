@@ -111,6 +111,13 @@ class StorageData:
         self.temp_storage['custom_variable_map'] = CustomVariable(custom_variable_map, self)
         return self.temp_storage['custom_variable_map']
 
+    async def get_custom_trigger(self, trigger_name) -> Optional[Dict]:
+        storage = await self.get_storage()
+        for custom_trigger in storage.get('custom_trigger', []):
+            if custom_trigger.get('name') == trigger_name:
+                return custom_trigger
+        return None
+
     async def set_tab_index(self, tab_index):
         self.storage['tab_index'] = tab_index
 
