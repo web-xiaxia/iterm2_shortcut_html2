@@ -6,7 +6,7 @@ from common.system_storage_data import SystemStorageData
 from common.utils import singleton
 
 import shutil
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, List
 import json
 import os
 
@@ -117,6 +117,14 @@ class StorageData:
             if custom_trigger.get('name') == trigger_name:
                 return custom_trigger
         return None
+
+    async def get_session_auto_custom_trigger(self) -> List[Dict]:
+        storage = await self.get_storage()
+        session_auto_custom_trigger_list = []
+        for custom_trigger in storage.get('custom_trigger', []):
+            if custom_trigger.get('auto'):
+                session_auto_custom_trigger_list.append(custom_trigger)
+        return session_auto_custom_trigger_list
 
     async def set_tab_index(self, tab_index):
         self.storage['tab_index'] = tab_index

@@ -18,6 +18,9 @@ class SessionStorageData:
 
     async def delete_storage(self):
         session_id = self.app.current_window.current_tab.current_session.session_id
+        await self.delete_storage_by_session_id(session_id)
+
+    async def delete_storage_by_session_id(self, session_id: str):
         if session_id in self.storage:
             del self.storage[session_id]
 

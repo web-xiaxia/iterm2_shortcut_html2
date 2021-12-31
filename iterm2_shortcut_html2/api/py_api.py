@@ -142,8 +142,7 @@ class PyApi:
 
         return triggers
 
-    async def get_custom_trigger_encode(self, trigger_name: str) -> Optional[Dict]:
-        custom_trigger = await self.storage_data.get_custom_trigger(trigger_name)
+    async def get_trigger_encode(self, custom_trigger):
         if not custom_trigger:
             return None
         if custom_trigger.get('action') == 'iTermRPCTrigger':
@@ -155,6 +154,11 @@ class PyApi:
             ).encode
 
         return None
+
+    async def get_custom_trigger_encode(self, trigger_name: str) -> Optional[Dict]:
+        custom_trigger = await self.storage_data.get_custom_trigger(trigger_name)
+
+        return await self.get_trigger_encode(custom_trigger)
 
     async def trigger_encode_md5(self, trigger: Dict) -> str:
         trigger_kv_str_list = ['{}:{}'.format(k, v) for k, v in trigger.items()]
@@ -178,3 +182,30 @@ class PyApi:
 
         triggers.append(custom_trigger_encode)
         await profile.async_set_triggers(profile.triggers)
+
+    async def register_session_auto_trigger(self, sid: str):
+        session = self.app.get_session_by_id(sid)
+        if not session:
+            return
+
+        session_auto_custom_trigger_list = await self.storage_data.get_session_auto_custom_trigger()
+        if not session_auto_custom_trigger_list:
+            return
+
+        profile = await session.async_get_profile()
+        triggers = profile.triggers
+        has_trigger_md5_set = set()
+        for trigger in triggers:
+            trigger_md5 = await self.trigger_encode_md5(trigger)
+            has_trigger_md5_set.add(trigger_md5)
+
+        has_add = False
+        for session_auto_custom_trigger in session_auto_custom_trigger_list:
+            custom_trigger_encode = await self.get_trigger_encode(session_auto_custom_trigger)
+            if custom_trigger_encode:
+                trigger_md5 = await self.trigger_encode_md5(custom_trigger_encode)
+                if trigger_md5 not in has_trigger_md5_set:
+                    triggers.append(custom_trigger_encode)
+                    has_add = True
+        if has_add:
+            await profile.async_set_triggers(profile.triggers)

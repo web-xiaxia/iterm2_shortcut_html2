@@ -7,7 +7,7 @@ from api.py_api import PyApi
 from common.session_storage_data import SessionStorageData
 from common.system_storage_data import SystemStorageData
 
-from rpc import status_bar_rpc, web_view_tool_rpc, event_rpc
+from rpc import status_bar_rpc, web_view_tool_rpc, event_rpc, monitor_rpc
 
 from iterm2.connection import Connection
 from common.storage_data import StorageData
@@ -44,6 +44,8 @@ async def main(connection: Connection):
         system_storage_data, session_storage_data, storage_data, py_api, exec_api,
         main_home, html_home, http_web_host, http_web_port
     )
+    # 注册监听
+    await monitor_rpc.register(app, connection, session_storage_data, storage_data, py_api)
 
 
 iterm2.run_forever(main)
