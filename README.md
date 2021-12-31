@@ -4,7 +4,7 @@ iTerm2 自带的 Status Bar 可以添加按钮，但是显示范围太小，可�
 本项目使用 iTerm2 的 Python API 在 Status Bar 添加一个按钮，点击按钮后显示一个html，进行按钮分组显示和编辑
 ```
 ## 展示图
-![avatar](./dev/md/img.png)
+![image](https://raw.githubusercontent.com/web-xiaxia/iterm2_shortcut_html2/main/iterm2_shortcut_html2/html/image/readme.gif)
 
 ## 安装方法
 ```
