@@ -43,7 +43,10 @@ class MonitorHelper:
 
     async def init_window(self, w: Window):
         if w.window_id not in self.window_id_to_tab_ids:
-            await self.create_window_handler(w.window_id)
+            try:
+                await self.create_window_handler(w.window_id)
+            except Exception as e:
+                print(f'create_window_handler error:{e}')
             self.window_id_to_tab_ids[w.window_id] = set()
 
             for t in w.tabs:
@@ -61,7 +64,10 @@ class MonitorHelper:
             await self.init_window(t.window)
         else:
             if t.tab_id not in self.window_id_to_tab_ids[t.window.window_id]:
-                await self.create_tab_handler(t.tab_id)
+                try:
+                    await self.create_tab_handler(t.tab_id)
+                except Exception as e:
+                    print(f'create_tab_handler error:{e}')
                 self.window_id_to_tab_ids[t.window.window_id].add(t.tab_id)
                 self.tab_id_to_session_ids[t.tab_id] = set()
 
@@ -80,7 +86,10 @@ class MonitorHelper:
             await self.init_tab(s.tab)
         else:
             if s.session_id not in self.tab_id_to_session_ids[s.tab.tab_id]:
-                await self.create_session_handler(s.session_id)
+                try:
+                    await self.create_session_handler(s.session_id)
+                except Exception as e:
+                    print(f'create_session_handler error:{e}')
                 self.tab_id_to_session_ids[s.tab.tab_id].add(s.session_id)
 
             now_session_ids = set([fs.session_id for fs in s.tab.sessions])
@@ -100,7 +109,10 @@ class MonitorHelper:
             await self.close_tab(tid)
 
         del self.window_id_to_tab_ids[wid]
-        await self.close_window_handler(wid)
+        try:
+            await self.close_window_handler(wid)
+        except Exception as e:
+            print(f'close_window_handler error:{e}')
 
     async def close_tab(self, tid: str):
         if tid not in self.tab_id_to_session_ids:
@@ -112,10 +124,16 @@ class MonitorHelper:
             await self.close_session(sid)
 
         del self.tab_id_to_session_ids[tid]
-        await self.close_tab_handler(tid)
+        try:
+            await self.close_tab_handler(tid)
+        except Exception as e:
+            print(f'close_tab_handler error:{e}')
 
     async def close_session(self, sid: str):
-        await self.close_session_handler(sid)
+        try:
+            await self.close_session_handler(sid)
+        except Exception as e:
+            print(f'close_session_handler error:{e}')
 
     async def create_window_handler(self, wid: str):
         print(f'create_window_handler:{wid}')
