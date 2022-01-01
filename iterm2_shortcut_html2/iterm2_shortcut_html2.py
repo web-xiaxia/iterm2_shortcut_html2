@@ -34,7 +34,7 @@ async def main(connection: Connection):
     http_web_host = 'localhost'
     http_web_port = 9998
     http_web_index_url = f"http://{http_web_host}:{http_web_port}/"
-    os.system(f"lsof -i :{http_web_port} | awk '{{print $2}}' |grep -v PID| xargs kill -9")
+    # os.system(f"lsof -i :{http_web_port} | awk '{{print $2}}' |grep -v PID| xargs kill -9")
 
     # 注册状态栏
     await status_bar_rpc.register(connection, storage_data, http_web_index_url)
@@ -49,6 +49,6 @@ async def main(connection: Connection):
     )
     # 注册监听
     await monitor_rpc.register(app, connection, session_storage_data, storage_data, py_api)
-
+    print("iterm2_shortcut_html2 初始化完成")
 
 iterm2.run_forever(main)

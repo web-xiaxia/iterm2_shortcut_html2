@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import asyncio
 from typing import Dict, Set
 
 import iterm2
@@ -158,15 +159,19 @@ async def register(app: App, connection: Connection,
                    session_storage_data: SessionStorageData, storage_data: StorageData, py_api: PyApi):
     monitor_helper = MonitorHelper(app, connection, session_storage_data, storage_data, py_api)
     await monitor_helper.init()
-    #  iterm2.EachSessionOnceMonitor.async_foreach_session_create_task(app, monitor_helper.create_session_handler)
-    async with iterm2.FocusMonitor(connection) as monitor:
-        while True:
-            update = await monitor.async_get_next_update()
-            if update.application_active:
-                pass
-            elif update.window_changed:
-                await monitor_helper.window_changed(update.window_changed.window_id)
-            elif update.selected_tab_changed:
-                await monitor_helper.selected_tab_changed(update.selected_tab_changed.tab_id)
-            elif update.active_session_changed:
-                await monitor_helper.active_session_changed(update.active_session_changed.session_id)
+
+    async def focus_monitor_task():
+        #  iterm2.EachSessionOnceMonitor.async_foreach_session_create_task(app, monitor_helper.create_session_handler)
+        async with iterm2.FocusMonitor(connection) as monitor:
+            while True:
+                update = await monitor.async_get_next_update()
+                if update.application_active:
+                    pass
+                elif update.window_changed:
+                    await monitor_helper.window_changed(update.window_changed.window_id)
+                elif update.selected_tab_changed:
+                    await monitor_helper.selected_tab_changed(update.selected_tab_changed.tab_id)
+                elif update.active_session_changed:
+                    await monitor_helper.active_session_changed(update.active_session_changed.session_id)
+
+    asyncio.create_task(focus_monitor_task())
