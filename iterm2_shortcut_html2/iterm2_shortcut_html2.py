@@ -20,8 +20,10 @@ from os.path import abspath, dirname
 async def main(connection: Connection):
     # 定义工作目录
     app: App = await iterm2.async_get_app(connection)
+    main_file_name = os.path.split(__file__)[-1]
     main_home = abspath(dirname(__file__))
     html_home = os.path.join(main_home, 'html')
+
     # 存储信息
     system_storage_data: SystemStorageData = SystemStorageData(main_home)
     storage_data: StorageData = StorageData(system_storage_data)
@@ -32,6 +34,7 @@ async def main(connection: Connection):
     http_web_host = 'localhost'
     http_web_port = 9998
     http_web_index_url = f"http://{http_web_host}:{http_web_port}/"
+    os.system(f"lsof -i :{http_web_port} | awk '{{print $2}}' |grep -v PID| xargs kill -9")
 
     # 注册状态栏
     await status_bar_rpc.register(connection, storage_data, http_web_index_url)
@@ -42,7 +45,7 @@ async def main(connection: Connection):
     # 注册web
     await html_api.register(
         system_storage_data, session_storage_data, storage_data, py_api, exec_api,
-        main_home, html_home, http_web_host, http_web_port
+        main_file_name, main_home, html_home, http_web_host, http_web_port
     )
     # 注册监听
     await monitor_rpc.register(app, connection, session_storage_data, storage_data, py_api)

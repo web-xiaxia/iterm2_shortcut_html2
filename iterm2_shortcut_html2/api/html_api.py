@@ -24,7 +24,7 @@ BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}'''
 
 async def register(system_storage_data: SystemStorageData, session_storage_data: SessionStorageData,
                    storage_data: StorageData, py_api: PyApi, exec_api: ExecApi,
-                   main_home: str, html_home: str, http_web_host: str, http_web_port: int):
+                   main_file_name: str, main_home: str, html_home: str, http_web_host: str, http_web_port: int):
     async def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
         style_block = BLOCK_STYLE_PATTERN.findall(html)
         script_block = BLOCK_SCRIPT_PATTERN.findall(html)
@@ -252,11 +252,12 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
         }), request)
 
     async def restart_api(_):
+        env_python_path = os.path.join(main_home, '../iterm2env/versions/3.7.9/bin/python3')
+        main_file_path = f'{main_home}/{main_file_name}'
         os.system(
             "ps -ef | grep python | grep -v grep | grep iterm2_shortcut_html2.py | awk '{print $2}' | xargs kill -9  "
             "&& nohup /bin/bash /Applications/iTerm.app/Contents/Resources/it2_api_wrapper.sh "
-            + os.path.join(main_home, '../iterm2env/versions/3.7.9/bin/python3 ')
-            + main_home + "/iterm2_shortcut_html2.py 2>&1 &")
+            + env_python_path + ' ' + main_file_path + " 2>&1 &")
 
     async def command_history_api(request):
         status = True
