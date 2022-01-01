@@ -20,7 +20,6 @@ class MonitorHelper:
         self.session_storage_data: SessionStorageData = session_storage_data
         self.storage_data: StorageData = storage_data
         self.py_api: PyApi = py_api
-        self.init()
 
     async def init(self):
         for __w in self.app.terminal_windows:
@@ -56,7 +55,6 @@ class MonitorHelper:
         window_ids = self.window_id_to_tab_ids.copy().keys()
         for wid in window_ids:
             if wid not in now_window_ids:
-                del self.window_id_to_tab_ids[wid]
                 await self.close_window(wid)
 
     async def init_tab(self, t: Tab):
@@ -78,8 +76,8 @@ class MonitorHelper:
             tab_ids = self.window_id_to_tab_ids[t.window.window_id]
             for tid in tab_ids.copy():
                 if tid not in now_tab_ids:
-                    tab_ids.remove(tid)
                     await self.close_tab(tid)
+                    tab_ids.remove(tid)
 
     async def init_session(self, s: Session):
         if s.tab.tab_id not in self.tab_id_to_session_ids:
@@ -96,8 +94,8 @@ class MonitorHelper:
             session_ids = self.tab_id_to_session_ids[s.tab.tab_id]
             for sid in session_ids.copy():
                 if sid not in now_session_ids:
-                    session_ids.remove(sid)
                     await self.close_session(sid)
+                    session_ids.remove(sid)
 
     async def close_window(self, wid: str):
         if wid not in self.window_id_to_tab_ids:
@@ -105,8 +103,8 @@ class MonitorHelper:
 
         tab_ids = self.window_id_to_tab_ids[wid]
         for tid in tab_ids.copy():
-            tab_ids.remove(tid)
             await self.close_tab(tid)
+            tab_ids.remove(tid)
 
         del self.window_id_to_tab_ids[wid]
         try:
@@ -120,8 +118,8 @@ class MonitorHelper:
 
         session_ids = self.tab_id_to_session_ids[tid]
         for sid in session_ids.copy():
-            session_ids.remove(sid)
             await self.close_session(sid)
+            session_ids.remove(sid)
 
         del self.tab_id_to_session_ids[tid]
         try:
@@ -159,6 +157,8 @@ class MonitorHelper:
 async def register(app: App, connection: Connection,
                    session_storage_data: SessionStorageData, storage_data: StorageData, py_api: PyApi):
     monitor_helper = MonitorHelper(app, connection, session_storage_data, storage_data, py_api)
+    await monitor_helper.init()
+    #  iterm2.EachSessionOnceMonitor.async_foreach_session_create_task(app, monitor_helper.create_session_handler)
     async with iterm2.FocusMonitor(connection) as monitor:
         while True:
             update = await monitor.async_get_next_update()
