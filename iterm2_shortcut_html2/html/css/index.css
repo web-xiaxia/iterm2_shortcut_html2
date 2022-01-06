@@ -114,11 +114,6 @@ select, textarea, .button-span-box {
     border: 1px dashed white;
 }
 
-select {
-    border-radius: 5px;
-    padding: 5px 25px 5px 10px;
-}
-
 input, select, textarea {
     outline: none;
     margin-left: 3px;
@@ -177,11 +172,17 @@ input[type=checkbox].checkbox_underline2:checked:after {
 }
 
 select {
+    border-radius: 5px;
+    padding: 5px 25px 5px 10px;
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
     background: rgb(38, 37, 37) url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAbCAYAAABr/T8RAAADVklEQVRIS8VWPUsjYRBO4keM3wkiBCVmUXEvRDCFhUEQTyv9B9FOu7PTznSnXezOzpR33dnlCpUTQdKInKDED4Q3oLhqBE+Q3cQYPZ4XJ7zZ2+gai7yw2SzMzDPzPDOza7WU6VjLhGspPzBjrCaVSo1lMhk3WLBaren3sGGz2bRsNuu02WwFvrlcrgZxamtrWX9//y+KyStOJBJuxljk6uoqlE6n4cgvs6eiooLbPzw8cBc8I4Hn52dLLpfj97q6unRbW9vy6OjoHC8MP5ubm/NnZ2cLqqpyQzjhenp6MoUNUATHRQnDF/9fGOBxHA7H366uri/BYPAHB47FYiuKokw9Pj5yAwR4odsUMBnBj4BQgMgcYtvtdkt3d/fc0NDQEgfe3t6eSiaTX1VVdcMYRmIQsRqj6sQqiXaqmOgGjsvlOpRleaKvr+9PXsi1tbWIoiiz0AnAcCSt8J+eiRGRSmJHlIloJ19UK0lSeHh4eDGvsdhg19fXoUwmU5RqvZZULe5ELzUWgVdXV1taW1ujPp9vRpIkPi0Frbu/v//p5ORk5fb2NkhBcMfRN5xRHxhJUllZCYp/y7I86fP5lIJxEjsoHo+HMFr39/d8nkEVZa6nnvqA6Bf1ByBOfX096+joCKOTRRzDYV1fX184Pz+f1zSN60yViMAiE6SxvmK73Z72er1hdLF+PAyBGWPNBwcHy5eXlyEKJlKrB9CPEEnjdruj4+Pj00YzWXQ9iXobzTfRKs6qKElTU1Pc7/dPyrLM3gUM452dnbHT09Nvd3d3EulJwVElEqIORi9UVVVxWRobGw97enqmA4FAvNgGenMhb2xsRC4uLmaxTmkFUjMRMI0SgBsaGg7b29uXBgcHo6+tvTeBoffR0RGWy1Q2m82vQbHbKRGHw2HxeDz5JfEhYDiT3jc3N0HxxYGRoUZDtS0tLau9vb0TtCQ+DIwAu7u7nxOJxE9VVZsJnPRFAk6nM97Z2TmDPfwaYNEF8prT1tbWbDKZXNA0rYZem5hnl8vFvF7v3MDAwKoZ0P9WphmnWCz2HfscVaO5QLHH41miF7yZGCUB4xPp+Pg4kkqlJqAvvipGRkbCZgFLoloMvre3F8CzWU1Nrcz3Zl+K/ZtzXEpQMz5lA/4H9YwNOouX1S4AAAAASUVORK5CYII=') no-repeat scroll 95% center;
     background-size: 10px 10px;
+}
+
+select[multiple] {
+    background: none;
 }
 
 .button-color-white,
