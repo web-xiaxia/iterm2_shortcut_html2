@@ -48,7 +48,6 @@ class ExecApi:
         exec_code_str = "async def __ex():\n{}\nresults['__ex'] = __ex".format(
             ''.join(f'    {x}\n' for x in code.split('\n'))
         )
-        print(f'\n\n======= exec_code start =======\n\n\n{exec_code_str}\n\n\n======== exec_code end ========\n\n')
         exec(exec_code_str, {
             'ITERM2': self.iterm2_api,
             'PY': xpy_method,
@@ -59,7 +58,9 @@ class ExecApi:
             'results': eval_results,
         })
         await eval_results['__ex']()
-        return eval_results['event'] if 'event' in eval_results else ''
+        code_result_data = eval_results['event'] if 'event' in eval_results else ''
+        print(f'\n\n======= exec_code start =======\n\n\n{exec_code_str}\n\n\nresult：{code_result_data}\n\n======== exec_code end ========\n\n')
+        return code_result_data
 
     async def code_exec(self, code: str, params: Optional[list] = None) -> str:
         try:
