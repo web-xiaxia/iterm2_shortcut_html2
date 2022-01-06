@@ -58,7 +58,8 @@ class PyApi:
 
     async def send_hex_code(self, send_hex_code: str):
         session = self.app.current_terminal_window.current_tab.current_session
-        await session.async_inject(bytes(str(send_hex_code), encoding="utf-8"))
+        # https://iterm2.com/documentation-escape-codes.html
+        await session.async_inject(b'\x1b' + b']' + bytes(str(send_hex_code), encoding="utf-8") + b'\x07')
 
     async def selected_text(self):
         session = self.app.current_terminal_window.current_tab.current_session
