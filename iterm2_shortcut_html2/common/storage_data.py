@@ -248,3 +248,6 @@ class CustomVariable(object):
 
     def __getitem__(self, item):
         return super().__getattribute__('storage').get(item)
+
+    def get(self, key, default=None):
+        return super().__getattribute__('storage').get(key, default)

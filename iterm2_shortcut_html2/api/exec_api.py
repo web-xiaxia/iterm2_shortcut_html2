@@ -45,10 +45,11 @@ class ExecApi:
         custom_variable_map = await self.storage_data.get_custom_variable_map()
         xpy_method = await self.storage_data.get_xpy_method()
         eval_results = {}
-
-        exec("async def __ex():\n{}\nresults['__ex'] = __ex".format(
-            ''.join(f'   {x}\n' for x in code.split('\n'))
-        ), {
+        exec_code_str = "async def __ex():\n{}\nresults['__ex'] = __ex".format(
+            ''.join(f'    {x}\n' for x in code.split('\n'))
+        )
+        print(f'\n\n======= exec_code start =======\n\n\n{exec_code_str}\n\n\n======== exec_code end ========\n\n')
+        exec(exec_code_str, {
             'ITERM2': self.iterm2_api,
             'PY': xpy_method,
             'PYX': self.py_api,

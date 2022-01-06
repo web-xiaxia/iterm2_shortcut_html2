@@ -11,6 +11,8 @@ class SessionStorageData:
         self.storage = {}
 
     async def get_storage(self):
+        if not self.app.current_window:
+            return SessionStorage()
         session_id = self.app.current_window.current_tab.current_session.session_id
         if session_id not in self.storage:
             self.storage[session_id] = SessionStorage()
@@ -48,3 +50,6 @@ class SessionStorage(object):
 
     def __getitem__(self, item):
         return super().__getattribute__('storage').get(item)
+
+    def get(self, key, default=None):
+        return super().__getattribute__('storage').get(key, default)
