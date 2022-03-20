@@ -223,10 +223,10 @@ except Exception as e:
                 print(f'初始化PyMethod 失败，name:{data.get("name")}，error：{e}')
 
     def __getattr__(self, item):
-        return super().__getattribute__('method_map').get(item)
+        return super().__getattribute__('method_map_data').get(item)
 
     def install(self, key, value):
-        super().__getattribute__('method_map')[key] = value
+        super().__getattribute__('method_map_data')[key] = value
 
 
 class CustomVariable(object):
