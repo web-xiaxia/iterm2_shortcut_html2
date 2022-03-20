@@ -1,0 +1,98 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<!--编辑模板(弹框)-->
+<script id="main-button-type-show-markdown-template" type="text/html">
+    <div class="input-send-text-group-box"  style="display: block;">
+
+        <div class="input-send-text-group-context-box tab-button-main-md" style="zoom:{{(11-tab_group_button_size)/10}}">
+             {{@$imports.marked_parse(tab_button.markdown||"")}}
+        </div>
+
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-show-markdown-template" type="text/html">
+    <div class="input-send-text-group-box"
+         draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
+         style="display: block;"
+         onclick="settingEditButtonMarkdownWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
+        <div class="input-send-text-group-context-box tab-button-main-md" style="zoom:{{(11-tab_group_button_size)/10}}">
+               {{@$imports.marked_parse(tab_button.markdown||"")}}
+        </div>
+       
+    </div>
+
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-markdown-template" type="text/html">
+    <div>
+        <p>
+            按钮类型：markdown
+        </p>
+        <table>
+            <tr>
+                <td> Markdown：</td>
+                <td colspan="3">
+                    <textarea style="width: 100%;" class="setting-button-send-markdown"
+                              rows="8">{{button_info.markdown}}</textarea>
+                </td>
+            </tr>
+        </table>
+        <button onclick="settingEditButtonMarkdown(this,{{tab_index}},{{group_index}},{{button_index}})">保存</button>
+        {{include 'setting-button-operation-template'}}
+    </div>
+</script>
+<script>
+
+    function buttonMarkdown(tab_index, tab_group_index, button_index) {
+        const js = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].js
+        if (js) {
+            eval(`(function (custom_variable) {
+                ${js}
+            })`)(getCustomVariableData())
+        }
+    }
+
+    function settingEditButtonMarkdownWindow(tab_index, tab_group_index, button_index) {
+        const buttonInfo = button_index < 0 ? {"padding": 20} : STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        openFloatingWindow('setting-button-type-markdown-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_index": button_index,
+            "button_style_list": SETTING_BUTTON_STYLE,
+            "button_info": buttonInfo
+        }, "BUTTON(markdown)")
+    }
+
+    function settingEditButtonMarkdown(that, tab_index, tab_group_index, button_index) {
+        const floatContent = $(that).parents('.floating_window_float_content_box_content')
+        const markdown = floatContent.find(".setting-button-send-markdown")[0].value
+        if (button_index >= 0) {
+            const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+            button.markdown = markdown
+        } else {
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons.push({
+                "type": "markdown",
+                "markdown": markdown,
+            })
+        }
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    //注册
+    button_type_register(
+        "markdown", "markdown", "markdown",
+        "main-button-type-show-markdown-template", "setting-button-type-show-markdown-template", {},
+        settingEditButtonMarkdownWindow
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
+
