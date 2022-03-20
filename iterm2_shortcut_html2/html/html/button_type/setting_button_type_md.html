@@ -6,10 +6,11 @@
 {% block script %}
 <!--编辑模板(弹框)-->
 <script id="main-button-type-show-markdown-template" type="text/html">
-    <div class="input-send-text-group-box"  style="display: block;">
+    <div class="input-send-text-group-box" style="display: block;">
 
-        <div class="input-send-text-group-context-box tab-button-main-md" style="zoom:{{(11-tab_group_button_size)/10}}">
-             {{@$imports.marked_parse(tab_button.markdown||"")}}
+        <div class="input-send-text-group-context-box tab-button-main-md"
+             style="zoom:{{(11-tab_group_button_size)/10}}">
+            {{@$imports.marked_parse(tab_button.markdown||"")}}
         </div>
 
     </div>
@@ -20,10 +21,11 @@
          draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
          style="display: block;"
          onclick="settingEditButtonMarkdownWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
-        <div class="input-send-text-group-context-box tab-button-main-md" style="zoom:{{(11-tab_group_button_size)/10}}">
-               {{@$imports.marked_parse(tab_button.markdown||"")}}
+        <div class="input-send-text-group-context-box tab-button-main-md"
+             style="zoom:{{(11-tab_group_button_size)/10}}">
+            {{@$imports.marked_parse(tab_button.markdown||"")}}
         </div>
-       
+
     </div>
 
 </script>
@@ -33,12 +35,20 @@
         <p>
             按钮类型：markdown
         </p>
-        <table>
-            <tr>
-                <td> Markdown：</td>
-                <td colspan="3">
-                    <textarea style="width: 100%;" class="setting-button-send-markdown"
-                              rows="8">{{button_info.markdown}}</textarea>
+        <table class="setting-edit-md-table tab-button-main-md" style="height: 100%;   width: 100%;">
+
+            <tr style="height: 60%;">
+                <td style="height: 100%;">
+                    <div class="setting-button-send-markdown-show"
+                         style="vertical-align: top;width: 100%;height: 100%;">
+                        {{@$imports.marked_parse(button_info.markdown||"")}}
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 40%;">
+                <td style="height: 100%;">
+                <textarea class="setting-button-send-markdown" rows="20" style="width: 100%;height: 100%;margin: 0px"
+                          oninput="settingEditButtonMarkdownEditMdInput(this)">{{button_info.markdown}}</textarea>
                 </td>
             </tr>
         </table>
@@ -47,14 +57,8 @@
     </div>
 </script>
 <script>
-
-    function buttonMarkdown(tab_index, tab_group_index, button_index) {
-        const js = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index].js
-        if (js) {
-            eval(`(function (custom_variable) {
-                ${js}
-            })`)(getCustomVariableData())
-        }
+    function settingEditButtonMarkdownEditMdInput(that) {
+        $(that).parents('.floating_window_float_content_box_content').find('.setting-button-send-markdown-show').html(marked.parse(that.value))
     }
 
     function settingEditButtonMarkdownWindow(tab_index, tab_group_index, button_index) {
