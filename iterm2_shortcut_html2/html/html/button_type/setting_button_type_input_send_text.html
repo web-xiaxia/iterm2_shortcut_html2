@@ -138,7 +138,7 @@
             ) %>
             <!--按钮-->
             {{each tab_button.buttons one_button one_button_index }}
-            {{if one_button.after_value_name == button_input.value_name}}
+            {{if button_input.value_name && one_button.after_value_name == button_input.value_name}}
             {{each template_data.button_group_list button_group}}
             {{if (button_group.type=='button' && one_button.type == null)|| one_button.type == button_group.type }}
             <% include(button_group.main_template_id,
@@ -261,7 +261,7 @@
             ) %>
             <!--按钮-->
             {{each tab_button.buttons one_button one_button_index }}
-            {{if one_button.after_value_name == button_input.value_name}}
+            {{if button_input.value_name && one_button.after_value_name == button_input.value_name}}
             {{each template_data.button_group_list button_group}}
             {{if (button_group.type=='button' && one_button.type == null) || one_button.type == button_group.type }}
             <% include(button_group.setting_template_id,
