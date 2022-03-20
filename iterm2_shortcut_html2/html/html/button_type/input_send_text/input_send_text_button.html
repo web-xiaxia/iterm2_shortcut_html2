@@ -61,8 +61,11 @@
          group-type="button">
         <p class="setting-button-input-send-text-box-group-title">
             <span class="setting-button-input-send-text-box-group-title-span">按钮</span>
+            <span class="setting-button-input-send-text-box-group-title-name-span">
+                ({{one_button.name}})
+            </span>
             <button class="setting-button-input-send-text-box-group-title-button"
-                    onclick="settingButtonInputSendTextBoxGroupTitleButtonContext(this)">
+                    onclick="settingButtonInputSendTextBoxGroupTitleButtonContext(this,true)">
                 展开/收缩
             </button>
             {{include "setting-button-type-show-input-send-text-operation-button-template"}}
@@ -85,9 +88,17 @@
             </tr>
             <tr>
                 <td>按钮id</td>
-                <td><input type="text" class="setting-button-input-send-text-button_id"
-                           value="{{one_button.button_id}}"></td>
-                <td colspan="2">输入框Enter发送中使用</td>
+                <td>
+                    <input type="text" class="setting-button-input-send-text-button_id"
+                           value="{{one_button.button_id}}">
+                     <div class="bottom_edit_tips">输入框Enter发送中使用</div>
+                </td>
+
+                <td>变量显示</td>
+                <td><input type="text" class="setting-button-input-send-text-after_value_name"
+                           value="{{one_button.after_value_name}}">
+                     <div class="bottom_edit_tips">在变量后显示，如果变量没有折不会展示</div>
+                </td>
             </tr>
             <tr>
                 <td>联动</td>
@@ -126,6 +137,7 @@
         const buttonWidth = parseInt(buttonGroupDom.find(".setting-button-input-send-text-width")[0].value)
         const sendText = buttonGroupDom.find(".setting-button-input-send-text-send_text")[0].value
         const buttonId = buttonGroupDom.find(".setting-button-input-send-text-button_id")[0].value
+        const afterValueName= buttonGroupDom.find(".setting-button-input-send-text-after_value_name")[0].value
         const buttonLinkage = buttonGroupDom.find(".setting-button-input-send-text-send_text_linkage")[0].value
         const style = buttonGroupDom.find('.setting-button-input-send-text-son-style')[0].value
         const buttonMarginLeft = buttonGroupDom.find(".setting-button-input-send-text-send-margin_left")[0].value
@@ -137,6 +149,7 @@
             "width": buttonWidth,
             "send_text": sendText,
             "button_id": buttonId,
+            "after_value_name": afterValueName,
             "linkage": buttonLinkage,
             "style": style,
             "margin_left": buttonMarginLeft,

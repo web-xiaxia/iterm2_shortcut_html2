@@ -47,7 +47,13 @@
     }
 
     .setting-button-input-send-text-box-group-title-span {
-        min-width: 150px;
+        width: 70px;
+        font-size: 12px;
+        display: inline-block;
+    }
+
+    .setting-button-input-send-text-box-group-title-name-span {
+        width: 150px;
         font-size: 12px;
         display: inline-block;
     }
@@ -130,12 +136,9 @@
             'button_input':button_input
             }
             ) %>
-            {{/if}}
-            {{/each}}
-            {{/each}}
-
             <!--按钮-->
             {{each tab_button.buttons one_button one_button_index }}
+            {{if one_button.after_value_name == button_input.value_name}}
             {{each template_data.button_group_list button_group}}
             {{if (button_group.type=='button' && one_button.type == null)|| one_button.type == button_group.type }}
             <% include(button_group.main_template_id,
@@ -150,6 +153,31 @@
             ) %>
             {{/if}}
             {{/each}}
+            {{/if}}
+            {{/each}}
+            <!--按钮结束-->
+            {{/if}}
+            {{/each}}
+            {{/each}}
+
+            <!--按钮-->
+            {{each tab_button.buttons one_button one_button_index }}
+            {{if !one_button.after_value_name}}
+            {{each template_data.button_group_list button_group}}
+            {{if (button_group.type=='button' && one_button.type == null)|| one_button.type == button_group.type }}
+            <% include(button_group.main_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'one_button_index':one_button_index,
+            'tab_button':tab_button,
+            'one_button':one_button
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/if}}
             {{/each}}
         </div>
         {{if tab_button.margin_right}}
@@ -231,12 +259,9 @@
             'button_input':button_input
             }
             ) %>
-            {{/if}}
-            {{/each}}
-            {{/each}}
-
             <!--按钮-->
             {{each tab_button.buttons one_button one_button_index }}
+            {{if one_button.after_value_name == button_input.value_name}}
             {{each template_data.button_group_list button_group}}
             {{if (button_group.type=='button' && one_button.type == null) || one_button.type == button_group.type }}
             <% include(button_group.setting_template_id,
@@ -252,6 +277,32 @@
             ) %>
             {{/if}}
             {{/each}}
+            {{/if}}
+            {{/each}}
+            <!--按钮结束-->
+            {{/if}}
+            {{/each}}
+            {{/each}}
+
+            <!--按钮-->
+            {{each tab_button.buttons one_button one_button_index }}
+            {{if !one_button.after_value_name}}
+            {{each template_data.button_group_list button_group}}
+            {{if (button_group.type=='button' && one_button.type == null) || one_button.type == button_group.type }}
+            <% include(button_group.setting_template_id,
+            {
+            'tab_index':tab_index,
+            'tab_group_index':tab_group_index,
+            'tab_button_index':tab_button_index,
+            'button_input_index':button_input_index,
+            'one_button_index':one_button_index,
+            'tab_button':tab_button,
+            'one_button':one_button
+            }
+            ) %>
+            {{/if}}
+            {{/each}}
+            {{/if}}
             {{/each}}
         </div>
         {{if tab_button.margin_right}}
@@ -506,9 +557,25 @@
         contextDom.css({'display': display})
     }
 
-    function settingButtonInputSendTextBoxGroupTitleButtonContext(that) {
-        const contextDom = $(that).parents('.setting-button-input-send-text-box-group').find('.setting-button-input-send-text-box-group-context')
-        contextDom.css({'display': contextDom.css('display') === 'none' ? 'block' : 'none'})
+    function settingButtonInputSendTextBoxGroupTitleButtonContext(that, b) {
+        const boxDom = $(that).parents('.setting-button-input-send-text-box-group')
+        const contextDom = boxDom.find('.setting-button-input-send-text-box-group-context')
+        const dddd = contextDom.css('display') === 'none' ? 'block' : 'none';
+        contextDom.css({'display': dddd})
+        if (dddd == 'block') {
+            boxDom.find(".setting-button-input-send-text-box-group-title-name-span").html("")
+        } else {
+            let textName = "";
+            if (b) {
+                textName = "(" + boxDom.find('.setting-button-input-send-text-name').val() + ")"
+            } else {
+                textName = "(" + boxDom.find('.setting-button-input-send-text-input-group-value_name').val() + ")"
+            }
+            if ("(undefined)" == textName) {
+                textName = "";
+            }
+            boxDom.find(".setting-button-input-send-text-box-group-title-name-span").html(textName)
+        }
     }
 
     function settingEditButtonInputSendTextWindow(tab_index, tab_group_index, button_index) {
