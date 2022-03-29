@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+
 import iterm2
 from iterm2.session import Session
 from typing import Optional, Tuple
@@ -42,6 +44,8 @@ class ExecApi:
     async def og_code_exec(self, code: str, params: Optional[list] = None) -> str:
         if not code:
             return ''
+
+        print(f'\n\n======= exec_code params start =======\n{json.dumps(params)}\n======= exec_code params end =======')
         custom_variable_map = await self.storage_data.get_custom_variable_map()
         xpy_method = await self.storage_data.get_xpy_method()
         eval_results = {}
