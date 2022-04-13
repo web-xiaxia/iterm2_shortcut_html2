@@ -25,6 +25,12 @@ body {
     color: #d5d5d5;
 }
 
+.tab-button-main-md{
+    -moz-user-select:text;
+    -webkit-user-select: text;
+    user-select: text;
+}
+
 .dom-select-text {
     -moz-user-select: text;
     -webkit-user-select: text;
