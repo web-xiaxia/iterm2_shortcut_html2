@@ -356,7 +356,8 @@
                 <input class="setting-button-input-send-text-margin_right" type="number"
                        value="{{button_info.margin_right}}">
             </p>
-            <button onclick="settingEditButtonInputSendText(this,{{tab_index}},{{group_index}},{{button_index}})">保存
+            <button onclick="settingEditButtonInputSendText(this,{{tab_index}},{{group_index}},{{button_index}},false)">保存
+            <button onclick="settingEditButtonInputSendText(this,{{tab_index}},{{group_index}},{{button_index}},true)">复制
             </button>
             {{include 'setting-button-operation-template'}}
         </div>
@@ -591,7 +592,7 @@
         }, "BUTTON(输入发送文字)")
     }
 
-    function settingEditButtonInputSendText(that, tab_index, tab_group_index, button_index) {
+    function settingEditButtonInputSendText(that, tab_index, tab_group_index, button_index, copy_button) {
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
         const linkage = floatContent.find("[name=setting-button-input-send-text-linkage]")[0].checked
         const linkageOption = floatContent.find(".setting-button-input-send-text-input-group-linkage_option")[0].value
@@ -654,7 +655,7 @@
             }
         }
 
-        if (button_index >= 0) {
+        if (!copy_button && button_index >= 0) {
             const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
             button.linkage = linkage
             button.linkage_option = linkageOption

@@ -99,7 +99,8 @@
                            value="{{button_info.margin_right}}"></td>
             </tr>
         </table>
-        <button onclick="settingEditButtonJsButton(this,{{tab_index}},{{group_index}},{{button_index}})">保存</button>
+        <button onclick="settingEditButtonJsButton(this,{{tab_index}},{{group_index}},{{button_index}},false)">保存</button>
+        <button onclick="settingEditButtonJsButton(this,{{tab_index}},{{group_index}},{{button_index}},true)">复制</button>
         {{include 'setting-button-operation-template'}}
     </div>
 </script>
@@ -125,7 +126,7 @@
         }, "BUTTON(js)")
     }
 
-    function settingEditButtonJsButton(that, tab_index, tab_group_index, button_index) {
+    function settingEditButtonJsButton(that, tab_index, tab_group_index, button_index,copy_button) {
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
         const buttonStyle = floatContent.find(".setting-button-send-text-style")[0].value
         const name = floatContent.find(".setting-button-send-text-name")[0].value
@@ -133,7 +134,7 @@
         const buttonMarginLeft = floatContent.find(".setting-button-margin_left")[0].value
         const buttonMarginRight = floatContent.find(".setting-button-margin_right")[0].value
         const buttonWidth = parseInt(floatContent.find(".setting-button-width")[0].value)
-        if (button_index >= 0) {
+        if (!copy_button && button_index >= 0) {
             const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
             button.style = buttonStyle
             button.name = name

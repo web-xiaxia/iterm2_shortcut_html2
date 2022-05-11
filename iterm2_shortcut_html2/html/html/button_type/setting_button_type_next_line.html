@@ -42,7 +42,8 @@
         </p>
         <p>
             高度：<input class="setting-button-next-line-height" type="number" value="{{button_info.height}}">
-            <button onclick="settingEditButtonNextLine(this,{{tab_index}},{{group_index}},{{button_index}})">保存</button>
+            <button onclick="settingEditButtonNextLine(this,{{tab_index}},{{group_index}},{{button_index}},false)">保存</button>
+            <button onclick="settingEditButtonNextLine(this,{{tab_index}},{{group_index}},{{button_index}},true)">复制</button>
         </p>
         {{include 'setting-button-operation-template'}}
     </div>
@@ -58,13 +59,13 @@
         }, "BUTTON(换行)")
     }
 
-    function settingEditButtonNextLine(that, tab_index, tab_group_index, button_index) {
+    function settingEditButtonNextLine(that, tab_index, tab_group_index, button_index,copy_button) {
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
         let height = parseInt(floatContent.find(".setting-button-next-line-height")[0].value) || 0
         if (height < 3) {
             height = 3
         }
-        if (button_index >= 0) {
+        if (!copy_button && button_index >= 0) {
             const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
             button.height = height
         } else {

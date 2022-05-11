@@ -23,7 +23,8 @@
         </p>
         <p>
             间隔：<input class="setting-button-padding-padding" type="number" value="{{button_info.padding}}">
-            <button onclick="settingEditButtonPadding(this,{{tab_index}},{{group_index}},{{button_index}})">保存</button>
+            <button onclick="settingEditButtonPadding(this,{{tab_index}},{{group_index}},{{button_index}},false)">保存</button>
+            <button onclick="settingEditButtonPadding(this,{{tab_index}},{{group_index}},{{button_index}},true)">复制</button>
         </p>
         {{include 'setting-button-operation-template'}}
     </div>
@@ -39,13 +40,13 @@
         }, "BUTTON(间隔)")
     }
 
-    function settingEditButtonPadding(that, tab_index, tab_group_index, button_index) {
+    function settingEditButtonPadding(that, tab_index, tab_group_index, button_index,copy_button) {
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
         let padding = parseInt(floatContent.find(".setting-button-padding-padding")[0].value) || 5
         if (padding < 5) {
             padding = 5
         }
-        if (button_index >= 0) {
+        if (!copy_button && button_index >= 0) {
             const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
             button.padding = padding
         } else {
