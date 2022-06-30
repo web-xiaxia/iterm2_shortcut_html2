@@ -5,8 +5,28 @@
         border-style: dashed;
         font-size: 12px;
         cursor: pointer;
+        display: inline-block;
+        position: relative;
     }
-
+    .main-button-type-input-send-text-show-input-group-input-quick:hover  .main-button-type-input-send-text-show-input-group-input-quick-x{
+        display:block;
+    }
+    .main-button-type-input-send-text-show-input-group-input-quick-x{
+        position: absolute;
+        background: #2c2c2c;
+        border: 1px solid #bbbbbb;
+        border-radius: 5px;
+        left: -20px;
+        padding: 5px;
+        display: none;
+        z-index: 999;
+        opacity: 0.9;
+    }
+    .main-button-type-input-send-text-show-input-group-input-quick-x a{
+        white-space: nowrap;
+        padding: 3px;
+        display: inline-block;
+    }
     .main-button-type-input-send-text-show-input-group-input-quick-list a:nth-of-type(even) {
         color: #6fbac4;
     }
@@ -37,9 +57,14 @@
                    style="{{if button_input.width}}width: {{button_input.width}}px;{{/if}}"
                    oninput="inputSendTextInputChange(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})"
                    on-enter="{{if button_input.enter_input}}buttonInputEnterSendText(e,'{{button_input.enter_input}}'){{/if}}"
-            >{{if button_input.quick}}<span
+            >{{if button_input.quick}}<div
                 class="main-button-type-input-send-text-show-input-group-input-quick {{if button_input.style }}button-color-{{button_input.style}}{{else if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
-                onclick="inputSendTextInputButtonInputQuick(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})">Q</span>
+                onclick="inputSendTextInputButtonInputQuick(this,{{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}})">Q<div class="main-button-type-input-send-text-show-input-group-input-quick-x">
+                     {{each button_input.quick.split("||") quick index}}
+                        <a class="quick"
+                         href="javascript:inputSendTextInputButtonInputQuickSelect({{tab_index}},{{tab_group_index}},{{tab_button_index}},{{button_input_index}},{{index}},false)">{{quick}}</a>
+                    {{/each}}
+                </div></div>
             {{/if}}
         </div>
         {{if button_input.margin_right}}
