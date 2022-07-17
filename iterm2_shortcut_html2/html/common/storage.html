@@ -207,6 +207,11 @@
         })
     }
 
+    function syncStorageAndReload() {
+        syncStorageAjax()
+        location.reload()
+    }
+
     function storageResetEventSendMap() {
         if (SYNC_STORAGE_INFO.reset_event_send_map_set_timeout) {
             clearTimeout(SYNC_STORAGE_INFO.reset_event_send_map_set_timeout)
