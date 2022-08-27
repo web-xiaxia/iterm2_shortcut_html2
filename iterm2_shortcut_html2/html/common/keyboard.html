@@ -51,7 +51,9 @@
 
         //全局输入框
         if (!ACTIV_TAB_INFO.in_setting && !ACTIV_TAB_INFO.has_floating_window) {
-            if (STORAGE.floating_input_shell_mode === 'textarea') {
+            if (STORAGE.floating_input_shell_mode === 'none') {
+                //
+            }else if (STORAGE.floating_input_shell_mode === 'textarea') {
                 openInputShellText2()
             } else {
                 openInputShellText()

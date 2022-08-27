@@ -139,7 +139,27 @@
         <div id="setting-edit-window-tab-input-shell-mode" class="tab-button-main" style="display: none;">
             <p>命令行</p>
             <p>
-                {{if floating_input_shell_mode == 'textarea'}}
+                {{if floating_input_shell_mode == 'none'}}
+                 <label>
+                    <input name="floating_input_shell_mode" type="radio" value="none" checked>
+                    关闭
+                </label>
+                <br/>
+                <label>
+                    <input name="floating_input_shell_mode" type="radio" value="input">
+                    单行(enter发送，方向下键选择历史)
+                </label>
+                <br/>
+                <label>
+                    <input name="floating_input_shell_mode" type="radio" value="textarea">
+                    多行(command+enter发送，command+option+方向下键选择历史)
+                </label>
+                {{else if floating_input_shell_mode == 'textarea'}}
+                 <label>
+                    <input name="floating_input_shell_mode" type="radio" value="none">
+                    关闭
+                </label>
+                 <br/>
                 <label>
                     <input name="floating_input_shell_mode" type="radio" value="input">
                     单行(enter发送，方向下键选择历史)
@@ -150,6 +170,11 @@
                     多行(command+enter发送，command+option+方向下键选择历史)
                 </label>
                 {{else}}
+                  <label>
+                    <input name="floating_input_shell_mode" type="radio" value="none">
+                    关闭
+                </label>
+                 <br/>
                 <label>
                     <input name="floating_input_shell_mode" type="radio" value="input" checked>
                     单行(enter发送，方向下键选择历史)
@@ -388,7 +413,7 @@
 
     function settingEditFloatingInputShellMode(that) {
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
-        STORAGE.floating_input_shell_mode = floatContent.find("[name='floating_input_shell_mode']")[0].checked ? 'input' : 'textarea'
+        STORAGE.floating_input_shell_mode = floatContent.find("[name='floating_input_shell_mode']:checked").val()
         closeFloatingWindow()
     }
 
