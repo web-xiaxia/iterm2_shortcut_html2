@@ -142,6 +142,10 @@ select {
     width: 186px;
 }
 
+.floating_window table tr:first-child td:first-child{
+    min-width: 86px;
+}
+
 .button-span-box {
     display: inline-block;
     white-space: nowrap;
