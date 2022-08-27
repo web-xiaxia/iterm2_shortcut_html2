@@ -368,8 +368,7 @@ input[type="number"].button-color-blue {
     font-size:12px;
     -webkit-transform: scale(0.83)*/
 
-    font-size:12px;
-    zoom: 0.83;
+
 }
 
 .tab-button-group4 button,
@@ -381,6 +380,8 @@ input[type="number"].button-color-blue {
 .tab-button-group4 input[type="text"],
 .tab-button-group4 input[type="number"] {
     /* font-size: 10px;*/
+     font-size:12px;
+    zoom: 0.83;
 }
 
 .tab-button-group5{
@@ -389,8 +390,7 @@ input[type="number"].button-color-blue {
     font-size:12px;
     -webkit-transform: scale(0.75)*/
 
-    font-size:12px;
-    zoom: 0.75;
+
 }
 
 .tab-button-group5 button,
@@ -402,6 +402,8 @@ input[type="number"].button-color-blue {
 .tab-button-group5 input[type="text"],
 .tab-button-group5 input[type="number"] {
     /*font-size: 8px;*/
+      font-size:12px;
+    zoom: 0.75;
 }
 
 .tab-button-group1 button,
