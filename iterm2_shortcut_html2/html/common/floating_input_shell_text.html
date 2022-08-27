@@ -172,7 +172,7 @@
     }
 
     function openInputShellText(t) {
-        if (t) {
+        if (t && STORAGE.floating_input_shell_mode!=='none') {
             event.stopPropagation()
             closeFloatingWindow()
             STORAGE.floating_input_shell_mode = 'input'
@@ -181,7 +181,7 @@
     }
 
     function openInputShellText2(t = false) {
-        if (t) {
+        if (t && STORAGE.floating_input_shell_mode!=='none') {
             event.stopPropagation()
             closeFloatingWindow()
             STORAGE.floating_input_shell_mode = 'textarea'
