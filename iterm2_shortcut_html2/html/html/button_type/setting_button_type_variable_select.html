@@ -1,0 +1,221 @@
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+{% block script %}
+<!--显示模板-->
+<script id="main-button-type-show-variable-select-template" type="text/html">
+    <div class="input-send-text-group-box">
+        {{if tab_button.margin_left}}
+        <div class="input-send-text-margin-box"
+             style="width:{{tab_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if tab_button.title}}
+            <span class="title-span"
+                  style="{{if tab_button.title_width}}width: {{tab_button.title_width}}px;{{/if}} ">
+            {{tab_button.title}}
+            </span>
+            {{/if}}
+            <select class="{{if tab_button.style}}button-color-{{tab_button.style}}{{/if}}"
+                   style="{{if tab_button.width}}width:{{tab_button.width}}px;{{/if}}"
+                   onchange="changeVariable('{{tab_button.variable_type}}','{{tab_button.value_name}}',this.value)">
+                {{each tab_button.value_option_list option }}
+                {{if option == template_data.get_value(tab_button.variable_type,tab_button.value_name)}}
+                <option value="{{option}}" selected> {{option}}</option>
+                {{else}}
+                <option value="{{option}}"> {{option}}</option>
+                {{/if}}
+                {{/each}}
+            </select>
+        </div>
+        {{if tab_button.margin_right}}
+        <div class="input-send-text-margin-box"
+             style="width:{{tab_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板-->
+<script id="setting-button-type-show-variable-select-template" type="text/html">
+    <div class="input-send-text-group-box"
+         draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
+         onclick="settingEditVariableInputWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
+        {{if tab_button.margin_left}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'margin_left','width')"
+             style="width:{{tab_button.margin_left}}px;">
+        </div>
+        {{/if}}
+        <div class="input-send-text-group-context-box">
+            {{if tab_button.title}}
+            <span class="title-span drag-width"
+                  drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'title_width','width')"
+                  style="{{if tab_button.title_width}}width: {{tab_button.title_width}}px;{{/if}} ">
+            {{tab_button.title}}
+            </span>
+            {{/if}}
+            <select class="{{if tab_button.style}}button-color-{{tab_button.style}}{{/if}} drag-width"
+                   drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'width','width')"
+                   style="{{if tab_button.width}}width:{{tab_button.width}}px;{{/if}}}">
+                <option selected>{{template_data.get_value(tab_button.variable_type, tab_button.value_name)}}</option>
+            </select>
+        </div>
+        {{if tab_button.margin_right}}
+        <div class="input-send-text-margin-box drag-width"
+             drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'margin_right','width')"
+             style="width:{{tab_button.margin_right}}px;">
+        </div>
+        {{/if}}
+    </div>
+</script>
+<!--编辑模板(弹框)-->
+<script id="setting-button-type-variable-select-template" type="text/html">
+    <div>
+        <p>
+            按钮类型：输入框(修改变量)
+        </p>
+        <table>
+            <tr>
+                <td>变量名称：</td>
+                <td><input class="setting-button-value_name" type="text" value="{{button_info.value_name}}">
+                </td>
+                <td>变量类型：</td>
+                <td>
+                    <select class="setting-button-variable_type">
+                        {{each variable_type_list variable_type}}
+                        {{if variable_type.type == button_info.variable_type}}
+                        <option value="{{variable_type.type}}" selected>{{variable_type.name}}</option>
+                        {{else}}
+                        <option value="{{variable_type.type}}">{{variable_type.name}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                 <td>变量选项：</td>
+                <td colspan="3">
+                    <textarea class="setting-button-value_option_list" rows="5"
+                              style="width: 500px">{{button_info.value_option_list}}</textarea>
+                    <div class="bottom_edit_tips">使用 || 隔开</div>
+                </td>
+            </tr>
+            <tr>
+                <td>按钮颜色：</td>
+                <td>
+                    <select class="setting-button-style {{if button_info.style}}button-color-{{button_info.style}}{{/if}}"
+                            onchange="settingButtonStyleSelect(this)">
+                        {{each button_style_list button_style }}
+                        {{if button_info.style==button_style }}
+                        <option value="{{button_style}}" selected> {{button_style}}</option>
+                        {{else}}
+                        <option value="{{button_style}}"> {{button_style}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+                <td>下拉框宽度：</td>
+                <td>
+                    <input class="setting-button-width" type="number"
+                           value="{{button_info.width}}">
+                </td>
+            </tr>
+            <tr>
+                <td>标题：</td>
+                <td><input class="setting-button-title" type="text"
+                           value="{{button_info.title}}">
+                </td>
+                <td>标题宽度：</td>
+                <td>
+                    <input class="setting-button-title_width" type="number"
+                           value="{{button_info.title_width}}">
+                </td>
+            </tr>
+
+            <tr>
+                <td> 前间距</td>
+                <td><input class="setting-button-margin_left" type="number"
+                           value="{{button_info.margin_left}}"></td>
+                <td> 后间距：</td>
+                <td><input class="setting-button-margin_right" type="number"
+                           value="{{button_info.margin_right}}"></td>
+            </tr>
+        </table>
+        <button onclick="settingEditVariableInput(this,{{tab_index}},{{group_index}},{{button_index}},false)">保存</button>
+        <button onclick="settingEditVariableInput(this,{{tab_index}},{{group_index}},{{button_index}},true)">保存</button>
+        {{include 'setting-button-operation-template'}}
+    </div>
+</script>
+<script>
+
+
+    function settingEditVariableInputWindow(tab_index, tab_group_index, button_index) {
+        const buttonInfo = button_index < 0 ? {} : STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+        openFloatingWindow('setting-button-type-variable-select-template', {
+            "tab_index": tab_index,
+            "group_index": tab_group_index,
+            "button_index": button_index,
+            "button_style_list": SETTING_BUTTON_STYLE,
+            "button_info": buttonInfo,
+            "variable_type_list": VARIABLE_TYPE_LIST
+        }, "下拉框(修改变量)")
+    }
+
+    function settingEditVariableInput(that, tab_index, tab_group_index, button_index,copy_button) {
+        const floatContent = $(that).parents('.floating_window_float_content_box_content')
+        const valueName = floatContent.find(".setting-button-value_name")[0].value
+        const variableType = floatContent.find(".setting-button-variable_type")[0].value
+        const valueOption = floatContent.find(".setting-button-value_option_list")[0].value
+        const buttonStyle = floatContent.find(".setting-button-style")[0].value
+        const buttonWidth = parseInt(floatContent.find(".setting-button-width")[0].value)
+        const title = floatContent.find(".setting-button-title")[0].value
+        const titleWidth = floatContent.find(".setting-button-title_width")[0].value
+        const buttonMarginLeft = floatContent.find(".setting-button-margin_left")[0].value
+        const buttonMarginRight = floatContent.find(".setting-button-margin_right")[0].value
+        const valueOptionList = valueOption.split('||')
+        if (!copy_button && button_index >= 0) {
+            const button = STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
+            button.value_name = valueName
+            button.variable_type = variableType
+            button.style = buttonStyle
+            button.width = buttonWidth
+            button.title = title
+            button.title_width = titleWidth
+            button.margin_left = buttonMarginLeft
+            button.margin_right = buttonMarginRight
+            button.value_option_list = valueOptionList
+        } else {
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons.push({
+                "type": "variable_select",
+                "value_name": valueName,
+                "variable_type": variableType,
+                "style": buttonStyle,
+                "width": buttonWidth,
+                "title": title,
+                "title_width": titleWidth,
+                "margin_left": buttonMarginLeft,
+                "margin_right": buttonMarginRight,
+                "value_option_list": valueOptionList,
+            })
+        }
+
+        closeFloatingWindow()
+        initSettingTabBox(tab_index)
+    }
+
+    //注册
+    button_type_register(
+        "variable_select", "下拉框(修改变量)", "用于修改事件变量，可以输入内容进行变量快速更改。",
+        "main-button-type-show-variable-select-template", "setting-button-type-show-variable-select-template", {
+            'get_value': inputGetVariableValue
+        },
+        settingEditVariableInputWindow
+    )
+</script>
+{% endblock %}
+{% block context %}
+
+{% endblock %}
