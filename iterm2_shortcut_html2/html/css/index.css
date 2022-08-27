@@ -362,15 +362,9 @@ input[type="number"].button-color-blue {
     font-size: 13px;
 }
 
-.tab-button-group4{
-    /*transform-origin: 0 0;
-    width:120.5%;
-    font-size:12px;
-    -webkit-transform: scale(0.83)*/
-
-
+.tab-button-group4 {
+    line-height: 14px;
 }
-
 .tab-button-group4 button,
 .tab-button-group4 select,
 .tab-button-group4 .button-span-box,
@@ -380,19 +374,13 @@ input[type="number"].button-color-blue {
 .tab-button-group4 input[type="text"],
 .tab-button-group4 input[type="number"] {
     /* font-size: 10px;*/
-     font-size:12px;
+    font-size:12px;
     zoom: 0.83;
 }
 
-.tab-button-group5{
-    /*transform-origin: 0 0;
-    width:133.4%;
-    font-size:12px;
-    -webkit-transform: scale(0.75)*/
-
-
+.tab-button-group5 {
+    line-height: 12px;
 }
-
 .tab-button-group5 button,
 .tab-button-group5 select,
 .tab-button-group5 .button-span-box,
@@ -402,8 +390,9 @@ input[type="number"].button-color-blue {
 .tab-button-group5 input[type="text"],
 .tab-button-group5 input[type="number"] {
     /*font-size: 8px;*/
-      font-size:12px;
+    font-size:12px;
     zoom: 0.75;
+
 }
 
 .tab-button-group1 button,
