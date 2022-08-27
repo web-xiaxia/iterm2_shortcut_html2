@@ -9,7 +9,7 @@
     <div class="input-send-text-group-box" style="display: block;">
 
         <div class="input-send-text-group-context-box tab-button-main-md"
-             style="zoom:.85">
+             style="zoom:{{(11-tab_group_button_size)/10}}">
             {{@$imports.marked_parse(tab_button.markdown||"")}}
         </div>
 
@@ -22,7 +22,7 @@
          style="display: block;"
          onclick="settingEditButtonMarkdownWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
         <div class="input-send-text-group-context-box tab-button-main-md"
-             style="zoom:.85">
+             style="zoom:{{(11-tab_group_button_size)/10}}">
             {{@$imports.marked_parse(tab_button.markdown||"")}}
         </div>
 
