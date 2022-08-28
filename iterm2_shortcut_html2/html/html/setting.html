@@ -132,6 +132,7 @@
             <p>窗口大小</p>
             <p>宽：<input type="number" class="setting-edit-window-window_width" value="{{window_width}}"></p>
             <p>高：<input type="number" class="setting-edit-window-window_height" value="{{window_height}}"></p>
+            <p>宽(toolbelt)：<input type="number" class="setting-edit-window-toolbelt_window_width" value="{{toolbelt_window_width}}"></p>
             <p>
                 <button onclick="settingEditWindow(this)">保存</button>
             </p>
@@ -372,7 +373,7 @@
         if (ACTIV_TAB_INFO.drag_width) {
             initDragWidth('#setting-tab-button-box')
         }
-        const windowWidth = STORAGE.window_width || 950
+        const windowWidth = getWindowWidth()
         const tabSelectBoxDom = tabSelectBox[0]
         const selectSpanDomRect = selectSpanDom[0].getBoundingClientRect()
         tabSelectBoxDom.scrollLeft = tabSelectBoxDom.scrollLeft - (windowWidth - 180 - selectSpanDomRect.width) / 2 + selectSpanDomRect.left
@@ -383,6 +384,7 @@
         openFloatingWindow('setting-edit-window-template', {
             "window_width": STORAGE.window_width || 950,
             "window_height": STORAGE.window_height || 480,
+            "toolbelt_window_width": STORAGE.toolbelt_window_width || 710,
             "floating_input_shell_mode": STORAGE.floating_input_shell_mode,
             "save_storage_timeout": isNaN(STORAGE.save_storage_timeout) ? 1000 : STORAGE.save_storage_timeout,
             "system_storage": system_storage
@@ -400,14 +402,19 @@
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
         let windowWidth = parseInt(floatContent.find(".setting-edit-window-window_width")[0].value) || 950
         let windowHeight = parseInt(floatContent.find(".setting-edit-window-window_height")[0].value) || 480
+        let toolbeltWindowWidth = parseInt(floatContent.find(".setting-edit-window-toolbelt_window_width")[0].value) || 710
         if (windowWidth < 200) {
             windowWidth = 200
         }
         if (windowHeight < 200) {
             windowHeight = 200
         }
+        if (toolbeltWindowWidth < 200) {
+            toolbeltWindowWidth = 200
+        }
         STORAGE.window_width = windowWidth
         STORAGE.window_height = windowHeight
+        STORAGE.toolbelt_window_width = toolbeltWindowWidth
         closeFloatingWindow()
     }
 

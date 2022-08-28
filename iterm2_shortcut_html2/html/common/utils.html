@@ -1,5 +1,14 @@
 {% block script %}
 <script>
+    function getQueryString(name) {
+        const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        const r = window.location.search.substring(1).match(reg);
+        if (r != null) {
+            return decodeURIComponent(r[2]);
+        }
+        return null;
+    }
+
     function S4() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     }
@@ -39,6 +48,18 @@
             $(that).text('打开帮助')
         }
 
+    }
+
+    let windowWidthMode = null
+
+    function getWindowWidth() {
+        if (windowWidthMode == null) {
+            windowWidthMode = getQueryString("toolbelt") == "1" ? "toolbelt" : ""
+        }
+        if (windowWidthMode == "toolbelt"){
+            return STORAGE.toolbelt_window_width || 710
+        }
+        return STORAGE.window_width || 950
     }
 </script>
 {% endblock %}

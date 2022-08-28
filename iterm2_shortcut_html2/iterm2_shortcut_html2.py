@@ -39,7 +39,7 @@ async def main(connection: Connection):
     # 注册状态栏
     await status_bar_rpc.register(connection, storage_data, http_web_index_url)
     # 注册view_tool
-    await web_view_tool_rpc.register(connection, http_web_index_url)
+    await web_view_tool_rpc.register(connection, f'{http_web_index_url}?toolbelt=1')
     # 注册事件
     await event_rpc.register(connection, storage_data, http_web_index_url, py_api, exec_api)
     # 注册web

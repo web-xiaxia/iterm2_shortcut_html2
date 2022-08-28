@@ -49,7 +49,8 @@
         }
 
         $(function () {
-            $('body,#main-tab-foot-box-main').css({'min-width': (STORAGE.window_width || 950) + 'px'})
+            const windowWidth = getWindowWidth()
+            $('body,#main-tab-foot-box-main').css({'min-width': windowWidth + 'px'})
             if (window.location.hash === '#setting') {
                 template.defaults.imports.marked_parse = marked.parse
                 tabSetting()

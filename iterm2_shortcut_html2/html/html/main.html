@@ -269,7 +269,7 @@
                 'button_type_list': BUTTON_TYPE_LIST
             }))
         }
-        const windowWidth = STORAGE.window_width || 950
+        const windowWidth = getWindowWidth()
         const tabSelectBoxDom = tabSelectBox[0]
         const selectSpanDomRect = selectSpanDom[0].getBoundingClientRect()
         tabSelectBoxDom.scrollLeft = tabSelectBoxDom.scrollLeft - (windowWidth - 70 - selectSpanDomRect.width) / 2 + selectSpanDomRect.left

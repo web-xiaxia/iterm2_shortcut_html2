@@ -106,7 +106,7 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
 
         # 注册 view_tool
         await web_view_tool_rpc.register(
-            connection, f'{http_web_index_url}?toolbelt_tab_name={tab_name}&time={int(time.time() * 1000)}'
+            connection, f'{http_web_index_url}?toolbelt=1&toolbelt_tab_name={tab_name}&time={int(time.time() * 1000)}'
         )
 
     await shortcut_html_open_toolbelt.async_register(connection)
