@@ -3,8 +3,11 @@
     const KEYBOARD_KEY = {}
     document.onkeydown = function (e) {
         var code = e.keyCode
+        // console.log(e)
+        KEYBOARD_KEY.alt = e.altKey
         KEYBOARD_KEY.ctrl = e.ctrlKey
         KEYBOARD_KEY.meta = e.metaKey
+        KEYBOARD_KEY.shift = e.shiftKey
 
         if (ACTIV_TAB_INFO.drag_width) {
             const isQ = e.key === 'q' || e.key === 'Q'

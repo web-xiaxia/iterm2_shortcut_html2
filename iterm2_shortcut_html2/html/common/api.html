@@ -18,11 +18,16 @@
     }
 
     function sendText(text) {
-        $.post("/send_text", {
-            "send_text": text
-        }, function (data) {
-            //pass
-        })
+        if ((KEYBOARD_KEY.meta || KEYBOARD_KEY.ctrl) && KEYBOARD_KEY.alt) {
+            STORAGE.input_shell_text = text
+            openInputShellText2()
+        } else {
+            $.post("/send_text", {
+                "send_text": text
+            }, function (data) {
+                //pass
+            })
+        }
     }
 
     function sendHexCode(hxCode) {
@@ -123,7 +128,7 @@
         return d
     }
 
-    function registerTrigger(trigger_name){
+    function registerTrigger(trigger_name) {
         $.ajax({
             url: "/register_trigger",
             type: "POST",
