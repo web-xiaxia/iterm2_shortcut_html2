@@ -104,7 +104,7 @@
         const nowElement = document.activeElement
         const nowElementTagName = nowElement.tagName.toUpperCase()
         if (nowElementTagName === 'INPUT' || nowElementTagName === 'TEXTAREA') {
-            sendText(`${nowElement.value}\n`)
+            sendText(`${nowElement.value}\n`,false)
             nowElement.value = ""
             STORAGE.input_shell_text = ""
             initInputShellTextCommandHistory()

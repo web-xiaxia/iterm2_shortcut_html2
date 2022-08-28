@@ -17,8 +17,8 @@
         }, 1000)
     }
 
-    function sendText(text) {
-        if ((KEYBOARD_KEY.meta || KEYBOARD_KEY.ctrl) && KEYBOARD_KEY.alt) {
+    function sendText(text,openShellText) {
+        if ((openShellText==null || openShellText) && (KEYBOARD_KEY.meta || KEYBOARD_KEY.ctrl) && KEYBOARD_KEY.alt) {
             STORAGE.input_shell_text = text
             openInputShellText2()
         } else {
