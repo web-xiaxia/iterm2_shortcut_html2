@@ -79,7 +79,7 @@
 {% block script %}
 <script id="main-tab-select-template" type="text/html">
     {{each storage.tabs tab index}}
-    {{if storage.foot_box_id != tab.tab_id && !tab.hidden}}
+    {{if storage.foot_box_id != tab.tab_id && storage.toolbelt_foot_box_id != tab.tab_id && (!tab.hidden && window_mode == "" || !tab.toolbelt_hidden && window_mode == "toolbelt") }}
     <span onclick="tabSelectClick({{index}})">{{tab.name}}</span>
     {{else}}
     <span style="display: none;"></span>
@@ -155,11 +155,11 @@
     }
 
     function foot_box_close(foot_box_id, foot_box_padding, show) {
-        if (show && STORAGE.foot_box_id == null) {
+        if (show && getFootBoxId() == null) {
             $("#" + foot_box_id).css({"display": "none"})
             return
         }
-        const foot_box_height = STORAGE.foot_box_height || 200
+        const foot_box_height = getFootBoxHeight()
         $(`#${foot_box_id}`).addClass('main-tab-foot-box-close').css({
             "bottom": -foot_box_height + 'px',
             'height': foot_box_height + 'px'
@@ -169,11 +169,11 @@
     }
 
     function foot_box_open(foot_box_id, foot_box_padding, show) {
-        if (show && STORAGE.foot_box_id == null) {
+        if (show && getFootBoxId() == null) {
             $("#" + foot_box_id).css({"display": "none"})
             return
         }
-        const foot_box_height = STORAGE.foot_box_height || 200
+        const foot_box_height =  getFootBoxHeight()
         $("#" + foot_box_id).removeClass('main-tab-foot-box-close').css({
             "bottom": '0px',
             'height': foot_box_height + 'px'
@@ -183,18 +183,18 @@
     }
 
     function initMainTabBox() {
-        $("#main-tab-select").html(template('main-tab-select-template', {storage: STORAGE}))
+        $("#main-tab-select").html(template('main-tab-select-template', {storage: STORAGE,window_mode: ACTIV_TAB_INFO.windowMode}))
         tabSelectClick(getTabIndex())
         if (getFootBoxClose()) {
             foot_box_close('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
         } else {
             foot_box_open('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
         }
-        if (STORAGE.foot_box_id != null) {
+        if (getFootBoxId() != null) {
             let tab = null
             let tab_index = null
             for (let index in STORAGE.tabs) {
-                if (STORAGE.tabs[index].tab_id === STORAGE.foot_box_id) {
+                if (STORAGE.tabs[index].tab_id === getFootBoxId()) {
                     tab = STORAGE.tabs[index]
                     tab_index = index
                     break
@@ -231,7 +231,7 @@
         }
         const tab = STORAGE.tabs[index]
         if (tab) {
-            if (!tab.hidden && tab.tab_id !== STORAGE.foot_box_id) {
+            if (((!tab.hidden && ACTIV_TAB_INFO.windowMode=="") ||(!tab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode=="toolbelt"))&& tab.tab_id !== getFootBoxId()) {
                 return {tab, index}
             }
         }
@@ -239,7 +239,7 @@
         for (let i in STORAGE.tabs) {
             const tempTab = STORAGE.tabs[i]
             if (tempTab) {
-                if (!tempTab.hidden && tempTab.tab_id !== STORAGE.foot_box_id) {
+                if (((!tempTab.hidden && ACTIV_TAB_INFO.windowMode=="") ||(!tempTab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode=="toolbelt")) && tempTab.tab_id !== getFootBoxId()) {
                     return {'tab': tempTab, 'index': parseInt(i)}
                 }
             }

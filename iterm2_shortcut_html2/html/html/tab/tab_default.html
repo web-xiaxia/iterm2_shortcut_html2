@@ -72,12 +72,22 @@
             名字：<input type="text" class="setting-edit-tab-name" style="margin-right: 15px;" value="{{name}}">
             <label>
                 {{if hidden}}
-                隐藏：<input type="checkbox" class="setting-edit-tab-hidden" checked value="{{hidden}}">
+                <input type="checkbox" class="setting-edit-tab-hidden" checked value="{{hidden}}">
                 {{else}}
-                隐藏：<input type="checkbox" class="setting-edit-tab-hidden" value="{{hidden}}">
+                <input type="checkbox" class="setting-edit-tab-hidden" value="{{hidden}}">
                 {{/if}}
-                <span style="color: #939393">在主页面隐藏，编辑页面正常显示</span>
+                隐藏
             </label>
+            <label>
+                {{if toolbelt_hidden}}
+                <input type="checkbox" class="setting-edit-tab-toolbelt_hidden" checked value="{{toolbelt_hidden}}">
+                {{else}}
+                <input type="checkbox" class="setting-edit-tab-toolbelt_hidden" value="{{toolbelt_hidden}}">
+                {{/if}}
+                隐藏(toolbelt)
+            </label>
+
+              <span style="color: #939393">在主页面隐藏，编辑页面正常显示</span>
         </p>
         <p>
             <button onclick="settingEditTab(this, {{index}})">保存</button>
@@ -91,6 +101,7 @@
         openFloatingWindow('setting-tab-edit-template', {
             'name': STORAGE.tabs[index].name,
             'hidden': STORAGE.tabs[index].hidden,
+            'toolbelt_hidden': STORAGE.tabs[index].toolbelt_hidden,
             'index': index
         }, "编辑TAB")
     }
@@ -99,6 +110,7 @@
         const editBoxDom = $(that).parents('.setting-tab-edit-box')
         STORAGE.tabs[index].name = editBoxDom.find(".setting-edit-tab-name")[0].value
         STORAGE.tabs[index].hidden = editBoxDom.find(".setting-edit-tab-hidden")[0].checked
+        STORAGE.tabs[index].toolbelt_hidden = editBoxDom.find(".setting-edit-tab-toolbelt_hidden")[0].checked
         closeFloatingWindow()
         initSettingTabBox()
     }

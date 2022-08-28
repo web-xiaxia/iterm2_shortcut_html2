@@ -106,7 +106,7 @@
 {% block script %}
 <script id="setting-tab-select-template" type="text/html">
     {{each storage.tabs tab index}}
-    {{if storage.foot_box_id != tab.tab_id}}
+    {{if storage.foot_box_id != tab.tab_id && storage.toolbelt_foot_box_id != tab.tab_id }}
     <span _is_tab_select="true" _index="{{index}}" draggable="true" ondblclick="settingEditTabWindow({{index}})"
           onclick="settingTabSelectClick({{index}})">{{tab.name}}</span>
     {{else}}
@@ -132,7 +132,8 @@
             <p>窗口大小</p>
             <p>宽：<input type="number" class="setting-edit-window-window_width" value="{{window_width}}"></p>
             <p>高：<input type="number" class="setting-edit-window-window_height" value="{{window_height}}"></p>
-            <p>宽(toolbelt)：<input type="number" class="setting-edit-window-toolbelt_window_width" value="{{toolbelt_window_width}}"></p>
+            <p>宽(toolbelt)：<input type="number" class="setting-edit-window-toolbelt_window_width"
+                                   value="{{toolbelt_window_width}}"></p>
             <p>
                 <button onclick="settingEditWindow(this)">保存</button>
             </p>
@@ -141,7 +142,7 @@
             <p>命令行</p>
             <p>
                 {{if floating_input_shell_mode == 'none'}}
-                 <label>
+                <label>
                     <input name="floating_input_shell_mode" type="radio" value="none" checked>
                     关闭
                 </label>
@@ -156,11 +157,11 @@
                     多行(command+enter发送，command+option+方向下键选择历史)
                 </label>
                 {{else if floating_input_shell_mode == 'textarea'}}
-                 <label>
+                <label>
                     <input name="floating_input_shell_mode" type="radio" value="none">
                     关闭
                 </label>
-                 <br/>
+                <br/>
                 <label>
                     <input name="floating_input_shell_mode" type="radio" value="input">
                     单行(enter发送，方向下键选择历史)
@@ -171,11 +172,11 @@
                     多行(command+enter发送，command+option+方向下键选择历史)
                 </label>
                 {{else}}
-                  <label>
+                <label>
                     <input name="floating_input_shell_mode" type="radio" value="none">
                     关闭
                 </label>
-                 <br/>
+                <br/>
                 <label>
                     <input name="floating_input_shell_mode" type="radio" value="input" checked>
                     单行(enter发送，方向下键选择历史)
@@ -257,11 +258,11 @@
 </script>
 <script>
     function initSettingTabFootBox() {
-        if (STORAGE.foot_box_id != null) {
+        if (getFootBoxId() != null) {
             let tab = null
             let tab_index = null
             for (let index in STORAGE.tabs) {
-                if (STORAGE.tabs[index].tab_id === STORAGE.foot_box_id) {
+                if (STORAGE.tabs[index].tab_id === getFootBoxId()) {
                     tab = STORAGE.tabs[index]
                     tab_index = index
                     break
@@ -336,7 +337,7 @@
         }
         const tab = STORAGE.tabs[index]
         if (tab) {
-            if (tab.tab_id !== STORAGE.foot_box_id) {
+            if (tab.tab_id !== getFootBoxId()) {
                 return {tab, index}
             }
         }
@@ -351,7 +352,7 @@
 
     function settingTabSelectClick(tempIndex) {
         const {tab, index} = settingTabSelectClickFindTab(parseInt(tempIndex))
-        if (index !== STORAGE.setting_tab_index && STORAGE.tabs[index].tab_id !== STORAGE.foot_box_id) {
+        if (index !== STORAGE.setting_tab_index && STORAGE.tabs[index].tab_id !== getFootBoxId()) {
             STORAGE.setting_tab_index = index
         }
         const tabSelectBox = $("#setting-tab-select")
@@ -484,8 +485,8 @@
 
     function settingEditFootBoxWindow() {
         openFloatingWindow('setting-edit-foot-box-template', {
-            "foot_box_height": STORAGE.foot_box_height || 200,
-            "foot_box_id": STORAGE.foot_box_id,
+            "foot_box_height": getFootBoxHeight(),
+            "foot_box_id": getFootBoxId(),
             "tabs": STORAGE.tabs
         }, "编辑FootBox")
 
@@ -502,8 +503,7 @@
         if (footBoxHeight > windowHeight - 30) {
             footBoxHeight = windowHeight - 30
         }
-        STORAGE.foot_box_height = footBoxHeight
-        STORAGE.foot_box_id = footBoxId
+        setFootBox(footBoxId, footBoxHeight)
         initSettingTabFootBox()
         closeFloatingWindow()
         initSettingTabBox()

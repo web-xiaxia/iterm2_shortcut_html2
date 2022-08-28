@@ -67,9 +67,9 @@
 
     function getTabIndex() {
         if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
-            return STORAGE.tab_index || 0
+            return STORAGE.toolbelt_tab_index  || 0
         }
-        return STORAGE.toolbelt_tab_index || 0
+        return STORAGE.tab_index|| 0
     }
 
     function setFootBoxClose(c) {
@@ -85,6 +85,30 @@
             return STORAGE.toolbelt_foot_box_close
         }
         return STORAGE.foot_box_close
+    }
+
+    function setFootBox(footBoxId, footBoxHeight) {
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
+            STORAGE.toolbelt_foot_box_height = footBoxHeight
+            STORAGE.toolbelt_foot_box_id = footBoxId
+        } else {
+            STORAGE.foot_box_height = footBoxHeight
+            STORAGE.foot_box_id = footBoxId
+        }
+    }
+
+    function getFootBoxHeight() {
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
+            return STORAGE.toolbelt_foot_box_height || 200
+        }
+        return STORAGE.foot_box_height || 200
+    }
+
+    function getFootBoxId() {
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
+            return STORAGE.toolbelt_foot_box_id
+        }
+        return STORAGE.foot_box_id
     }
 
 </script>
