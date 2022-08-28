@@ -165,7 +165,7 @@
             'height': foot_box_height + 'px'
         })
         $("#" + foot_box_padding).css({"display": "none"})
-        STORAGE.foot_box_close = true
+        setFootBoxClose(true)
     }
 
     function foot_box_open(foot_box_id, foot_box_padding, show) {
@@ -179,13 +179,13 @@
             'height': foot_box_height + 'px'
         })
         $("#" + foot_box_padding).css({"display": "", 'height': foot_box_height + 'px'})
-        STORAGE.foot_box_close = false
+        setFootBoxClose(false)
     }
 
     function initMainTabBox() {
         $("#main-tab-select").html(template('main-tab-select-template', {storage: STORAGE}))
-        tabSelectClick(STORAGE.tab_index || 0)
-        if (STORAGE.foot_box_close) {
+        tabSelectClick(getTabIndex())
+        if (getFootBoxClose()) {
             foot_box_close('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
         } else {
             foot_box_open('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
@@ -223,8 +223,8 @@
     }
 
     function tabSelectClickFindTab(index) {
-        if (index == null | isNaN(index)) {
-            index = STORAGE.tab_index
+        if (index == null || isNaN(index)) {
+            index = getTabIndex()
         }
         if (isNaN(index) || index < 0 || index >= STORAGE.tabs.length) {
             index = 0
@@ -249,8 +249,8 @@
 
     function tabSelectClick(tempIndex) {
         const {tab, index} = tabSelectClickFindTab(parseInt(tempIndex))
-        if (index !== STORAGE.tab_index) {
-            STORAGE.tab_index = index
+        if (index !== getTabIndex()) {
+            setTabIndex(index)
         }
 
         ACTIV_TAB_INFO['name'] = tab.name

@@ -319,7 +319,7 @@
 
         settingTabSelectClick(selectIndex)
         initSettingTabFootBox()
-        if (STORAGE.foot_box_close) {
+        if (getFootBoxClose()) {
             foot_box_close('setting-tab-foot-box-main', 'setting-tab-foot-box-main-padding')
         } else {
             foot_box_open('setting-tab-foot-box-main', 'setting-tab-foot-box-main-padding')

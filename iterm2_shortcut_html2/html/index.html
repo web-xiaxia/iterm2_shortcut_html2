@@ -15,7 +15,8 @@
             'name': '',
             'in_setting': false,
             'has_floating_window': false,
-            'drag_width': false
+            'drag_width': false,
+            'windowMode': ""
         }
 
         function tabSetting() {
@@ -49,6 +50,9 @@
         }
 
         $(function () {
+            if (getQueryString("toolbelt") == "1") {
+                ACTIV_TAB_INFO.windowMode = "toolbelt"
+            }
             const windowWidth = getWindowWidth()
             $('body,#main-tab-foot-box-main').css({'min-width': windowWidth + 'px'})
             if (window.location.hash === '#setting') {

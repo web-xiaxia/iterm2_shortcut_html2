@@ -50,16 +50,42 @@
 
     }
 
-    let windowWidthMode = null
-
     function getWindowWidth() {
-        if (windowWidthMode == null) {
-            windowWidthMode = getQueryString("toolbelt") == "1" ? "toolbelt" : ""
-        }
-        if (windowWidthMode == "toolbelt"){
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
             return STORAGE.toolbelt_window_width || 710
         }
         return STORAGE.window_width || 950
     }
+
+    function setTabIndex(index) {
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
+            return STORAGE.toolbelt_tab_index = index
+        } else {
+            STORAGE.tab_index = index
+        }
+    }
+
+    function getTabIndex() {
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
+            return STORAGE.tab_index || 0
+        }
+        return STORAGE.toolbelt_tab_index || 0
+    }
+
+    function setFootBoxClose(c) {
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
+            STORAGE.toolbelt_foot_box_close = c
+        } else {
+            STORAGE.foot_box_close = c
+        }
+    }
+
+    function getFootBoxClose() {
+        if (ACTIV_TAB_INFO.windowMode == "toolbelt") {
+            return STORAGE.toolbelt_foot_box_close
+        }
+        return STORAGE.foot_box_close
+    }
+
 </script>
 {% endblock %}
