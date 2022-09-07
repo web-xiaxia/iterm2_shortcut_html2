@@ -42,7 +42,7 @@
 <script id="setting-button-type-show-variable-select-template" type="text/html">
     <div class="input-send-text-group-box"
          draggable="true" _index="{{tab_button_index}}" _parent_index="{{tab_group_index}}"
-         onclick="settingEditVariableInputWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
+         onclick="settingEditVariableSelectWindow({{tab_index}},{{tab_group_index}},{{tab_button_index}})">
         {{if tab_button.margin_left}}
         <div class="input-send-text-margin-box drag-width"
              drag-width="dragWidthButtonData({{tab_index}},{{tab_group_index}},{{tab_button_index}},'margin_left','width')"
@@ -144,15 +144,15 @@
                            value="{{button_info.margin_right}}"></td>
             </tr>
         </table>
-        <button onclick="settingEditVariableInput(this,{{tab_index}},{{group_index}},{{button_index}},false)">保存</button>
-        <button onclick="settingEditVariableInput(this,{{tab_index}},{{group_index}},{{button_index}},true)">保存</button>
+        <button onclick="settingEditVariableSelect(this,{{tab_index}},{{group_index}},{{button_index}},false)">保存</button>
+        <button onclick="settingEditVariableSelect(this,{{tab_index}},{{group_index}},{{button_index}},true)">保存</button>
         {{include 'setting-button-operation-template'}}
     </div>
 </script>
 <script>
 
 
-    function settingEditVariableInputWindow(tab_index, tab_group_index, button_index) {
+    function settingEditVariableSelectWindow(tab_index, tab_group_index, button_index) {
         const buttonInfo = button_index < 0 ? {} : STORAGE.tabs[tab_index].tab_groups[tab_group_index].buttons[button_index]
         openFloatingWindow('setting-button-type-variable-select-template', {
             "tab_index": tab_index,
@@ -164,7 +164,7 @@
         }, "下拉框(修改变量)")
     }
 
-    function settingEditVariableInput(that, tab_index, tab_group_index, button_index,copy_button) {
+    function settingEditVariableSelect(that, tab_index, tab_group_index, button_index,copy_button) {
         const floatContent = $(that).parents('.floating_window_float_content_box_content')
         const valueName = floatContent.find(".setting-button-value_name")[0].value
         const variableType = floatContent.find(".setting-button-variable_type")[0].value
@@ -212,7 +212,7 @@
         "main-button-type-show-variable-select-template", "setting-button-type-show-variable-select-template", {
             'get_value': inputGetVariableValue
         },
-        settingEditVariableInputWindow
+        settingEditVariableSelectWindow
     )
 </script>
 {% endblock %}
