@@ -23,13 +23,14 @@ async def main(connection: Connection):
     main_file_name = os.path.split(__file__)[-1]
     main_home = abspath(dirname(__file__))
     html_home = os.path.join(main_home, 'html')
+    osascript_home = os.path.join(main_home, 'osascript')
 
     # 存储信息
     system_storage_data: SystemStorageData = SystemStorageData(main_home)
     storage_data: StorageData = StorageData(system_storage_data)
     session_storage_data: SessionStorageData = SessionStorageData(app)
     #
-    py_api: PyApi = PyApi(app, connection, storage_data)
+    py_api: PyApi = PyApi(app, connection, storage_data,osascript_home)
     exec_api: ExecApi = ExecApi(app, connection, session_storage_data, storage_data, py_api)
     http_web_host = 'localhost'
     http_web_port = 9998

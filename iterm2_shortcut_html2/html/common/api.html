@@ -23,7 +23,8 @@
             openInputShellText2()
         } else {
             $.post("/send_text", {
-                "send_text": text
+                "send_text": text,
+                // "run_type": "warp",
             }, function (data) {
                 //pass
             })

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import subprocess
 import traceback
 
@@ -15,15 +16,23 @@ from common.utils import singleton
 
 @singleton
 class PyApi:
-    def __init__(self, app: App, connection: Connection, storage_data: StorageData):
+    def __init__(self, app: App, connection: Connection, storage_data: StorageData, osascript_home: str):
         self.app: App = app
         self.connection: Connection = connection
         self.storage_data: StorageData = storage_data
+        self.osascript_home: str = osascript_home
 
-    async def __send_text(self, app, send_text_context):
+    async def __send_text(self, app, send_text_context: str, run_type=""):
         if send_text_context:
-            session = app.current_terminal_window.current_tab.current_session
-            await session.async_send_text(send_text_context)
+            if run_type == 'warp':
+                warp_path = os.path.join( self.osascript_home, 'warp.scpt')
+                warp_send_text_context = send_text_context.replace("\\","\\\\").replace("\"","\\\"")
+                cmd = f'osascript {warp_path} "{warp_send_text_context}"'
+                print(cmd)
+                os.system(cmd)
+            else:
+                session = app.current_terminal_window.current_tab.current_session
+                await session.async_send_text(send_text_context)
 
     async def __alert(self, connection: Connection, title='', subtitle='', buttons=None) -> int:
         if not buttons:
@@ -53,8 +62,8 @@ class PyApi:
              f'defaultValue: {default_value}, ' +
              f'window_id: {json.dumps(None)})'))
 
-    async def send_text(self, send_text_context):
-        await self.__send_text(self.app, send_text_context)
+    async def send_text(self, send_text_context, run_type=""):
+        await self.__send_text(self.app, send_text_context,run_type)
 
     async def send_hex_code(self, send_hex_code: str):
         session = self.app.current_terminal_window.current_tab.current_session

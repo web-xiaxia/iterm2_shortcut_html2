@@ -157,7 +157,8 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
     async def send_text_api(request):
         data = await request.post()
         send_text_context = data['send_text']
-        await py_api.send_text(send_text_context)
+        run_type = data['run_type'] if 'run_type' in data else ''
+        await py_api.send_text(send_text_context, run_type)
         return await send_ok(request)
 
     async def send_hex_code_api(request):
