@@ -1,5 +1,6 @@
 {% block script %}
 <script>
+    var runType = ""
     function restartShortcut() {
         $.ajax({
             url: "/restart",
@@ -24,7 +25,7 @@
         } else {
             $.post("/send_text", {
                 "send_text": text,
-                // "run_type": "warp",
+                "run_type": runType,
             }, function (data) {
                 //pass
             })

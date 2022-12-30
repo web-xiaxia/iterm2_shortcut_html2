@@ -173,7 +173,7 @@
             $("#" + foot_box_id).css({"display": "none"})
             return
         }
-        const foot_box_height =  getFootBoxHeight()
+        const foot_box_height = getFootBoxHeight()
         $("#" + foot_box_id).removeClass('main-tab-foot-box-close').css({
             "bottom": '0px',
             'height': foot_box_height + 'px'
@@ -183,7 +183,10 @@
     }
 
     function initMainTabBox() {
-        $("#main-tab-select").html(template('main-tab-select-template', {storage: STORAGE,window_mode: ACTIV_TAB_INFO.windowMode}))
+        $("#main-tab-select").html(template('main-tab-select-template', {
+            storage: STORAGE,
+            window_mode: ACTIV_TAB_INFO.windowMode
+        }))
         tabSelectClick(getTabIndex())
         if (getFootBoxClose()) {
             foot_box_close('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
@@ -231,7 +234,7 @@
         }
         const tab = STORAGE.tabs[index]
         if (tab) {
-            if (((!tab.hidden && ACTIV_TAB_INFO.windowMode=="") ||(!tab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode=="toolbelt"))&& tab.tab_id !== getFootBoxId()) {
+            if (((!tab.hidden && ACTIV_TAB_INFO.windowMode == "") || (!tab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode == "toolbelt")) && tab.tab_id !== getFootBoxId()) {
                 return {tab, index}
             }
         }
@@ -239,7 +242,7 @@
         for (let i in STORAGE.tabs) {
             const tempTab = STORAGE.tabs[i]
             if (tempTab) {
-                if (((!tempTab.hidden && ACTIV_TAB_INFO.windowMode=="") ||(!tempTab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode=="toolbelt")) && tempTab.tab_id !== getFootBoxId()) {
+                if (((!tempTab.hidden && ACTIV_TAB_INFO.windowMode == "") || (!tempTab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode == "toolbelt")) && tempTab.tab_id !== getFootBoxId()) {
                     return {'tab': tempTab, 'index': parseInt(i)}
                 }
             }
@@ -276,7 +279,6 @@
     }
 
     $(function () {
-        template.defaults.imports.marked_parse = marked.parse
         initMainTabBox()
     })
 </script>

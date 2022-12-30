@@ -50,8 +50,15 @@
         }
 
         $(function () {
-            if (getQueryString("toolbelt") == "1") {
+            if (getQueryString("toolbelt") === "1") {
                 ACTIV_TAB_INFO.windowMode = "toolbelt"
+            }
+            if (getQueryString("windowModel") === "embed") {
+                $("#main-tab-select").css("padding-left", "48px")
+            }
+            const runTypeQueryString = getQueryString("runType")
+            if (runTypeQueryString) {
+                runType = runTypeQueryString
             }
             const windowWidth = getWindowWidth()
             $('body,#main-tab-foot-box-main').css({'min-width': windowWidth + 'px'})

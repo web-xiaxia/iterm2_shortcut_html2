@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
 import subprocess
+import time
 import traceback
 
 import iterm2
 import json
 from typing import Dict, Optional, Tuple, List
+
+import pyautogui
+import pyperclip
 from iterm2.connection import Connection
 
 from iterm2.app import App
@@ -25,11 +29,26 @@ class PyApi:
     async def __send_text(self, app, send_text_context: str, run_type=""):
         if send_text_context:
             if run_type == 'warp':
-                warp_path = os.path.join( self.osascript_home, 'warp.scpt')
-                warp_send_text_context = send_text_context.replace("\\","\\\\").replace("\"","\\\"")
-                cmd = f'osascript {warp_path} "{warp_send_text_context}"'
+                key_enter = False
+                send_text_context_rstrip = send_text_context.rstrip(" ")
+                if send_text_context_rstrip.endswith("\n"):
+                    key_enter = True
+                    send_text_context = send_text_context_rstrip[:-1]
+                warp_path = os.path.join(self.osascript_home, 'warp2.scpt')
+                cmd = f'osascript {warp_path}'
                 print(cmd)
                 os.system(cmd)
+                if send_text_context:
+                    pyperclip.copy(send_text_context)
+                    time.sleep(0.01)
+                    # pyperclip.paste()
+                    pyautogui.keyDown('command')
+                    pyautogui.press('v')
+                    # time.sleep(0.01)
+                    # pyautogui.keyUp('v')
+                    pyautogui.keyUp('command')
+                    if key_enter:
+                        pyautogui.press("enter")
             else:
                 session = app.current_terminal_window.current_tab.current_session
                 await session.async_send_text(send_text_context)
@@ -63,7 +82,7 @@ class PyApi:
              f'window_id: {json.dumps(None)})'))
 
     async def send_text(self, send_text_context, run_type=""):
-        await self.__send_text(self.app, send_text_context,run_type)
+        await self.__send_text(self.app, send_text_context, run_type)
 
     async def send_hex_code(self, send_hex_code: str):
         session = self.app.current_terminal_window.current_tab.current_session

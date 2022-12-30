@@ -7,6 +7,8 @@ authors = ["web-xiaxia"]
 [tool.poetry.dependencies]
 python = "^3.7"
 iterm2 = "^1.30"
+pyautogui = "^0.9.53"
+pyperclip = "^1.8.2"
 
 
 [tool.poetry.dev-dependencies]
