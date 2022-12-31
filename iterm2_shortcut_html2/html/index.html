@@ -50,6 +50,8 @@
         }
 
         $(function () {
+            template.defaults.imports.marked_parse = marked.parse
+
             if (getQueryString("toolbelt") === "1") {
                 ACTIV_TAB_INFO.windowMode = "toolbelt"
             }
@@ -63,7 +65,6 @@
             const windowWidth = getWindowWidth()
             $('body,#main-tab-foot-box-main').css({'min-width': windowWidth + 'px'})
             if (window.location.hash === '#setting') {
-                template.defaults.imports.marked_parse = marked.parse
                 tabSetting()
             }
         })
