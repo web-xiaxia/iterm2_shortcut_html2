@@ -279,6 +279,9 @@
     }
 
     $(function () {
+        if (getQueryString("toolbelt") === "1") {
+            ACTIV_TAB_INFO.windowMode = "toolbelt"
+        }
         initMainTabBox()
     })
 </script>

@@ -126,8 +126,8 @@ class StorageData:
                 session_auto_custom_trigger_list.append(custom_trigger)
         return session_auto_custom_trigger_list
 
-    async def set_tab_index(self, tab_index):
-        self.storage['tab_index'] = tab_index
+    async def set_toolbelt_tab_index(self, tab_index):
+        self.storage['toolbelt_tab_index'] = tab_index
 
     async def get_storage(self) -> Dict:
         if self.storage is not None:

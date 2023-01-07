@@ -87,15 +87,15 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
         selected_tab_index = None
         storage = await storage_data.get_storage()
         for tab_index, tab in enumerate(storage.get('tabs', [])):
-            if tab.get('name') == tab_name:
-                selected_tab = tab
-                selected_tab_index = tab_index
-                break
+                if tab.get('name') == tab_name:
+                    selected_tab = tab
+                    selected_tab_index = tab_index
+                    break
 
         if not selected_tab:
             return
 
-        await storage_data.set_tab_index(selected_tab_index)
+        await storage_data.set_toolbelt_tab_index(selected_tab_index)
         print(f'触发打开Toolbelt，index:{selected_tab_index}, tab_name:{tab_name}')
 
         # 打开 Toolbelt
