@@ -446,6 +446,7 @@ input[type="number"].button-color-blue {
 }
 
 .main-tab-foot-box {
+    --footboxtransition:0s;
     padding: 5px;
     width: 100%;
     background-color: rgb(28, 25, 25);
@@ -453,11 +454,14 @@ input[type="number"].button-color-blue {
     bottom: 0px;
     height: 200px;
     border-top: 1px solid rgb(143, 143, 143);
+    transition: transform var(--footboxtransition) cubic-bezier(.23,1,.32,1),box-shadow .3s cubic-bezier(.23,1,.32,1);
+    transform: translateY(0%);
+    overflow: inherit;
 }
 
-.main-tab-foot-box-close {
+/*.main-tab-foot-box-close {
     bottom: -200px;
-}
+}*/
 
 .main-tab-foot-box-main-button-box {
     position: fixed;

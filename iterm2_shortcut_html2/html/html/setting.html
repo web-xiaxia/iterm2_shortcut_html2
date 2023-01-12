@@ -320,11 +320,17 @@
 
         settingTabSelectClick(selectIndex)
         initSettingTabFootBox()
+
+        const boxEl = $("#setting-tab-foot-box-main")[0]
+        boxEl.style.setProperty("--footboxtransition", "0s")
         if (getFootBoxClose()) {
             foot_box_close('setting-tab-foot-box-main', 'setting-tab-foot-box-main-padding')
         } else {
             foot_box_open('setting-tab-foot-box-main', 'setting-tab-foot-box-main-padding')
         }
+        setTimeout(function (){
+            boxEl.style.setProperty("--footboxtransition", ".5s")
+        },20)
     }
 
     function settingTabSelectClickFindTab(index) {

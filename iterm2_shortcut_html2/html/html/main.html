@@ -2,6 +2,7 @@
 <style>
     #main-tab-foot-box-main {
         overflow: scroll;
+        overflow: inherit;
     }
 
     #main-tab-foot-box, #setting-tab-foot-box {
@@ -161,8 +162,7 @@
         }
         const foot_box_height = getFootBoxHeight()
         $(`#${foot_box_id}`).addClass('main-tab-foot-box-close').css({
-            "bottom": -foot_box_height + 'px',
-            'height': foot_box_height + 'px'
+            "transform": "translateY(100%)"
         })
         $("#" + foot_box_padding).css({"display": "none"})
         setFootBoxClose(true)
@@ -175,8 +175,8 @@
         }
         const foot_box_height = getFootBoxHeight()
         $("#" + foot_box_id).removeClass('main-tab-foot-box-close').css({
-            "bottom": '0px',
-            'height': foot_box_height + 'px'
+            "transform": "translateY(0%)",
+            'height': foot_box_height + 'px',
         })
         $("#" + foot_box_padding).css({"display": "", 'height': foot_box_height + 'px'})
         setFootBoxClose(false)
@@ -188,11 +188,16 @@
             window_mode: ACTIV_TAB_INFO.windowMode
         }))
         tabSelectClick(getTabIndex())
+        const boxEl = $("#main-tab-foot-box-main")[0]
+        boxEl.style.setProperty("--footboxtransition", "0s")
         if (getFootBoxClose()) {
             foot_box_close('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
         } else {
             foot_box_open('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
         }
+        setTimeout(function (){
+            boxEl.style.setProperty("--footboxtransition", ".5s")
+        },20)
         if (getFootBoxId() != null) {
             let tab = null
             let tab_index = null
