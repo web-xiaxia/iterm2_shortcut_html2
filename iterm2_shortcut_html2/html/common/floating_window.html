@@ -1,5 +1,21 @@
 {% block style %}
 <style>
+    @keyframes FloatingWindowIn {
+        from{
+            opacity: 0;
+        }
+        to{
+            opacity: 1;
+        }
+    }
+    @keyframes FloatingWindowOut {
+        from{
+            opacity: 1;
+        }
+        to{
+            opacity: 0;
+        }
+    }
     .floating_window {
         position: fixed;
         top: 0px;
@@ -13,6 +29,11 @@
         box-sizing: border-box;
         -moz-box-sizing: border-box; /* Firefox */
         -webkit-box-sizing: border-box; /* Safari */
+        transition: transform var(--footboxtransition) cubic-bezier(.23,1,.32,1),box-shadow .3s cubic-bezier(.23,1,.32,1);
+        animation: FloatingWindowIn 0.3s ease-in-out;
+    }
+    .floating_window_close{
+        animation: FloatingWindowOut 0.3s ease-in-out;
     }
 
     .floating_window .floating_window_background {
@@ -219,7 +240,10 @@
         const windowIndex = 'windowIndex' + windowDom.attr('window-index')
         const window_data = FLOATING_WINDOW_DATA[windowIndex]
         if (!window_data || !window_data.close_callback || window_data.close_callback()) {
-            windowDom.remove()
+            windowDom.addClass("floating_window_close")
+            windowDom[0].addEventListener('animationend',()=>{
+                windowDom.remove()
+            })
             delete FLOATING_WINDOW_DATA[windowIndex]
         }
         if ($('.floating_window:last').length === 0) {
