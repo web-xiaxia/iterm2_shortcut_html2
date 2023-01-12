@@ -240,10 +240,10 @@
         const windowIndex = 'windowIndex' + windowDom.attr('window-index')
         const window_data = FLOATING_WINDOW_DATA[windowIndex]
         if (!window_data || !window_data.close_callback || window_data.close_callback()) {
-            windowDom.addClass("floating_window_close")
             windowDom[0].addEventListener('animationend',()=>{
                 windowDom.remove()
             })
+            windowDom.addClass("floating_window_close")
             delete FLOATING_WINDOW_DATA[windowIndex]
         }
         if ($('.floating_window:last').length === 0) {

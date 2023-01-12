@@ -25,6 +25,27 @@ body {
     color: #d5d5d5;
 }
 
+@keyframes TabButtonMainIn {
+    from{
+        opacity: 0.5;
+    }
+    to{
+        opacity: 1;
+    }
+}
+@keyframes TabButtonMainOut {
+    from{
+        opacity: 0.5;
+    }
+    to{
+        opacity: 1;
+    }
+}
+.tab-button-main{
+    transition: transform var(--footboxtransition) cubic-bezier(.23,1,.32,1),box-shadow .3s cubic-bezier(.23,1,.32,1);
+    animation: TabButtonMainIn 0.35s ease-in-out;
+}
+
 .tab-button-main-md{
     -moz-user-select:text;
     -webkit-user-select: text;
