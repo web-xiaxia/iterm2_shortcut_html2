@@ -10,7 +10,7 @@
 
     JSONFormatter.prototype.htmlEncode = function(html) {
       if (html !== null) {
-        return html.toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return html.toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&amp;nbsp;/g,"&nbsp;");
       } else {
         return '';
       }
@@ -43,6 +43,7 @@
     };
 
     JSONFormatter.prototype.stringToHTML = function(value) {
+        value= value.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;")
       var multilineClass, newLinePattern;
       if (/^(http|https|file):\/\/[^\s]+$/i.test(value)) {
         return "<a href=\"" + (this.htmlEncode(value)) + "\"><span class=\"q\">\"</span>" + (this.jsString(value)) + "<span class=\"q\">\"</span></a>";
@@ -98,10 +99,14 @@
       hasContents = false;
       output = '';
       numProps = 0;
+      var keyArr=[]
       for (prop in object) {
+        keyArr.push(prop)
         numProps++;
       }
-      for (prop in object) {
+      keyArr.sort()
+      for (x in keyArr) {
+        prop  =keyArr[x]
         value = object[prop];
         hasContents = true;
         output += "<li><span class=\"prop\"><span class=\"q\">\"</span>" + (this.jsString(prop)) + "<span class=\"q\">\"</span></span>: " + (this.valueToHTML(value, level + 1));

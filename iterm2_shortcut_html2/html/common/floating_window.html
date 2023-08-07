@@ -225,7 +225,9 @@
         const tempWindowIndex = openFloatingWindowFull('floating-window-template', 'floating-json-window-template', {}, '', 'JSON', null)
         try {
             const v_json = JSON.parse(jsonStr)
-            $(`#json-window-json-box-${tempWindowIndex}`).JSONView(v_json)
+            $(`#json-window-json-box-${tempWindowIndex}`).JSONView(v_json,{
+                nl2br:true
+            })
         } catch (e) {
             $(`#json-window-json-box-${tempWindowIndex}`).text("解析失败: " + e + ", jsonStr: " + jsonStr)
         }
