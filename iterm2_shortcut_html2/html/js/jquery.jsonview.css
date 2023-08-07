@@ -8,13 +8,13 @@
   .jsonview .prop {
     font-weight: bold; }
   .jsonview .null {
-    color: red; }
+    color: #fc6b6b; }
   .jsonview .bool {
-    color: blue; }
+    color: rgb(116, 116, 249); }
   .jsonview .num {
-    color: blue; }
+    color: rgb(116, 116, 249); }
   .jsonview .string {
-    color: green;
+    color: #2ba22b;
     white-space: pre-wrap; }
     .jsonview .string .string-t {
       display: inline-block;
