@@ -6,7 +6,19 @@ from common import constants
 from common.storage_data import StorageData
 
 
-async def register(connection: Connection, storage_data: StorageData, http_web_index_url: str):
+async def register(connection: Connection, storage_data: StorageData,
+    http_web_index_url: str):
+
+    # 组装组件
+    component = iterm2.StatusBarComponent(
+        short_description=constants.SHORTCUT_HTML2_NAME,
+        detailed_description=constants.SHORTCUT_HTML2_NAME,
+        knobs=[],
+        exemplar=constants.SHORTCUT_HTML2_NAME,
+        update_cadence=None,
+        identifier=constants.TOOLBELT_SHORTCUT_IDENTIFIER
+    )
+
     @iterm2.RPC
     async def shortcut_html2_onclick(session_id):
         """
@@ -40,16 +52,6 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
         注册按钮名称
         """
         return ">>> 🖥 <<<"
-
-    # 组装组件
-    component = iterm2.StatusBarComponent(
-        short_description=constants.SHORTCUT_HTML2_NAME,
-        detailed_description=constants.SHORTCUT_HTML2_NAME,
-        knobs=[],
-        exemplar=constants.SHORTCUT_HTML2_NAME,
-        update_cadence=None,
-        identifier=constants.TOOLBELT_SHORTCUT_IDENTIFIER
-    )
 
     # 注册状态栏按钮
     await component.async_register(connection, shortcut_html2_coro, onclick=shortcut_html2_onclick)

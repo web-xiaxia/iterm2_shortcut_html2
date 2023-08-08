@@ -51,6 +51,12 @@
 
         $(function () {
             template.defaults.imports.marked_parse = marked.parse
+            if (getQueryString("json") === "1") {
+                var selectedText = iterm2SelectedText()
+                //var html = unescape(selectedText.replace(/\\u/g, '%u'))
+                openJsonWindow(selectedText)
+                return
+            }
             if (getQueryString("toolbelt") === "1") {
                 ACTIV_TAB_INFO.windowMode = "toolbelt"
             }

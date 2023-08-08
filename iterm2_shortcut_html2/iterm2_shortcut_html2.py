@@ -7,7 +7,7 @@ from api.py_api import PyApi
 from common.session_storage_data import SessionStorageData
 from common.system_storage_data import SystemStorageData
 
-from rpc import status_bar_rpc, web_view_tool_rpc, event_rpc, monitor_rpc
+from rpc import status_bar_rpc,status_bar2_rpc, web_view_tool_rpc, event_rpc, monitor_rpc
 
 from iterm2.connection import Connection
 from common.storage_data import StorageData
@@ -39,6 +39,8 @@ async def main(connection: Connection):
 
     # 注册状态栏
     await status_bar_rpc.register(connection, storage_data, http_web_index_url)
+    # 注册状态栏
+    await status_bar2_rpc.register(connection, storage_data, http_web_index_url)
     # 注册view_tool
     await web_view_tool_rpc.register(connection, f'{http_web_index_url}?toolbelt=1')
     # 注册事件
