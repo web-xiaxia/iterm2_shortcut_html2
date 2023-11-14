@@ -1,13 +1,59 @@
+{% block style %}
+<style>
+#keyboard-status{
+    position: fixed;
+    left: 0;
+    bottom:0;
+    z-index: 1600;
+    padding: 5px 10px ;
+    opacity: .5;
+    border-radius: 0 5px 5px 0;
+    background: rgba(0, 0, 0, 1);
+    display: none;
+}
+</style>
+{% endblock %}
 {% block script %}
 <script>
     const KEYBOARD_KEY = {}
-    document.onkeydown = function (e) {
-        var code = e.keyCode
-        // console.log(e)
+
+
+    function showKeyboardStatus(){
+        const keyboardStatusDiv=$("#keyboard-status")
+        var showStr=[]
+        if (KEYBOARD_KEY.meta){
+            showStr.push("command")
+        }
+        if (KEYBOARD_KEY.ctrl){
+            showStr.push("control")
+        }
+        if ( KEYBOARD_KEY.alt){
+            showStr.push("option")
+        }
+        if ( KEYBOARD_KEY.shift){
+            showStr.push("shift")
+        }
+        if (showStr.length>0){
+            keyboardStatusDiv.text(showStr.join(" + "))
+            keyboardStatusDiv.css({"display":"block"})
+        }else{
+            keyboardStatusDiv.css({"display":"none"})
+        }
+    }
+    function initKeyboard(e){
         KEYBOARD_KEY.alt = e.altKey
         KEYBOARD_KEY.ctrl = e.ctrlKey
         KEYBOARD_KEY.meta = e.metaKey
         KEYBOARD_KEY.shift = e.shiftKey
+        showKeyboardStatus()
+    }
+    document.onkeydown = function (e){
+        initKeyboard(e)
+        keyDownFunc(e)
+    }
+    function keyDownFunc(e) {
+        var code = e.keyCode
+        // console.log(e)
 
         if (ACTIV_TAB_INFO.drag_width) {
             const isQ = e.key === 'q' || e.key === 'Q'
@@ -110,9 +156,15 @@
         // }
     }
     document.onkeyup = function (e) {
-        var code = e.keyCode
-        KEYBOARD_KEY.ctrl = e.ctrlKey
-        KEYBOARD_KEY.meta = e.metaKey
+        initKeyboard(e)
+        keyUpFunc(e)
+    }
+    function keyUpFunc(e) {
     }
 </script>
+{% endblock %}
+{% block context %}
+    <div id="keyboard-status">
+asdasdas
+    </div>
 {% endblock %}
