@@ -98,9 +98,15 @@
             <tr>
                  <td>变量选项：</td>
                 <td colspan="3">
+                    {{if button_info.value_option_list }}
                     <textarea class="setting-button-value_option_list" rows="5"
                               style="width: 500px">{{button_info.value_option_list.join("||")}}</textarea>
                     <div class="bottom_edit_tips">使用 || 隔开</div>
+                    {{else}}
+                    <textarea class="setting-button-value_option_list" rows="5"
+                              style="width: 500px"></textarea>
+                    <div class="bottom_edit_tips">使用 || 隔开</div>
+                    {{/if}}
                 </td>
             </tr>
             <tr>
