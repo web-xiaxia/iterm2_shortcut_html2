@@ -32,7 +32,7 @@ async def main(connection: Connection):
     #
     py_api: PyApi = PyApi(app, connection, storage_data,osascript_home)
     exec_api: ExecApi = ExecApi(app, connection, session_storage_data, storage_data, py_api)
-    http_web_host = 'localhost'
+    http_web_host = '127.0.0.1'
     http_web_port = 9998
     http_web_index_url = f"http://{http_web_host}:{http_web_port}/"
     # os.system(f"lsof -i :{http_web_port} | awk '{{print $2}}' |grep -v PID| xargs kill -9")
