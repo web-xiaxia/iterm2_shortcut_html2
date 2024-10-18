@@ -16,6 +16,7 @@
                 {{/if}}
                 {{/each}}
             </select>
+            联动变量：<input type="text" class="setting-button-linkage" value="{{linkage}}">
             <button onclick="settingSaveButtonGroup(this,{{tab_index}},{{group_index}})">保存</button>
         </p>
         {{if group_index >= 0}}
@@ -60,15 +61,17 @@
             "tab_index": tab_index,
             "button_size_list": [1, 2, 3, 4, 5],
             "button_size": 5,
+            "linkage": "",
             "group_index": -1
         }, "增加GROUP")
     }
 
-    function settingEditButtonGroupWindow(that, tab_index, tab_group_index, button_size) {
+    function settingEditButtonGroupWindow(that, tab_index, tab_group_index, button_size,button_linkage) {
         openFloatingWindow('setting-button-group-template', {
             "tab_index": tab_index,
             "button_size_list": [1, 2, 3, 4, 5],
             "button_size": button_size,
+            "linkage": button_linkage,
             "group_index": tab_group_index,
             "tabs": STORAGE.tabs
         }, "编辑GROUP")
@@ -93,11 +96,14 @@
 
     function settingSaveButtonGroup(that, tab_index, tab_group_index) {
         const groupSize = $(that).siblings(".setting-button-group-size")[0].value
+        const linkage = $(that).siblings(".setting-button-linkage")[0].value
         if (tab_group_index >= 0) {
             STORAGE.tabs[tab_index].tab_groups[tab_group_index].button_size = groupSize
+            STORAGE.tabs[tab_index].tab_groups[tab_group_index].linkage = linkage
         } else {
             STORAGE.tabs[tab_index].tab_groups.push({
                 'button_size': groupSize,
+                'linkage': linkage,
                 'buttons': []
             })
         }

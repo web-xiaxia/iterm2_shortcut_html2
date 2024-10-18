@@ -7,6 +7,7 @@
 <script id="main-tab-button-group-default-template" type="text/html">
     <div class="tab-button-main">
         {{each tab.tab_groups tab_group tab_group_index}}
+        {{ if !tab_group.linkage || custom_variable[tab_group.linkage] != "false"}}
         <div class="tab-button-group tab-button-group{{if tab_group.button_size}}{{tab_group.button_size}}{{/if}}">
             {{each tab_group.buttons tab_button tab_button_index}}
             {{each button_type_list button_type}}
@@ -25,6 +26,7 @@
             {{/each}}
             {{/each}}
         </div>
+        {{/if}}
         {{/each}}
     </div>
 </script>
@@ -54,7 +56,7 @@
             {{/each}}
             {{/each}}
             <span class="setting-tab-button-group-button title-label"
-                  onclick="settingEditButtonGroupWindow(this,{{tab_index}},{{tab_group_index}},{{tab_group.button_size}})">
+                  onclick="settingEditButtonGroupWindow(this,{{tab_index}},{{tab_group_index}},{{tab_group.button_size}},'{{tab_group.linkage}}')">
                 编辑
             </span>
             <span class="setting-tab-button-group-button title-label"
@@ -87,7 +89,7 @@
                 隐藏(toolbelt)
             </label>
 
-              <span style="color: #939393">在主页面隐藏，编辑页面正常显示</span>
+            <span style="color: #939393">在主页面隐藏，编辑页面正常显示</span>
         </p>
         <p>
             <button onclick="settingEditTab(this, {{index}})">保存</button>

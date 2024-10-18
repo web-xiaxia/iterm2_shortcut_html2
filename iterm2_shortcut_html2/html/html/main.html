@@ -106,7 +106,8 @@
     const BUTTON_TYPE_LIST = []
     const BUTTON_TYPE_MAPPING = {}
 
-    function button_type_register(button_type, button_type_name, button_type_describe, main_template_id, setting_template_id, template_data, edit_window_fun) {
+    function button_type_register(button_type, button_type_name, button_type_describe, main_template_id,
+        setting_template_id, template_data, edit_window_fun) {
         const buttonTypeData = {
             "type": button_type,
             "name": button_type_name,
@@ -123,7 +124,8 @@
     const INPUT_SEND_TEXT_INPUT_GROUP_LIST = []
     const INPUT_SEND_TEXT_INPUT_GROUP_MAPPING = {}
 
-    function input_send_text_input_group_register(input_group_type, input_group_type_name, main_template_id, setting_template_id, edit_template_id, input_data_fun, input_value_fun) {
+    function input_send_text_input_group_register(input_group_type, input_group_type_name, main_template_id,
+        setting_template_id, edit_template_id, input_data_fun, input_value_fun) {
         const inputGroupTypeData = {
             "type": input_group_type,
             "name": input_group_type_name,
@@ -141,7 +143,8 @@
     const INPUT_SEND_TEXT_BUTTON_GROUP_LIST = []
     const INPUT_SEND_TEXT_BUTTON_GROUP_MAPPING = {}
 
-    function input_send_text_button_group_register(button_group_type, button_group_type_name, main_template_id, setting_template_id, edit_template_id, input_data_fun) {
+    function input_send_text_button_group_register(button_group_type, button_group_type_name, main_template_id,
+        setting_template_id, edit_template_id, input_data_fun) {
         const buttonGroupTypeData = {
             "type": button_group_type,
             "name": button_group_type_name,
@@ -195,9 +198,9 @@
         } else {
             foot_box_open('main-tab-foot-box-main', 'main-tab-foot-box-main-padding', true)
         }
-        setTimeout(function (){
+        setTimeout(function () {
             boxEl.style.setProperty("--footboxtransition", ".5s")
-        },20)
+        }, 20)
         if (getFootBoxId() != null) {
             let tab = null
             let tab_index = null
@@ -214,6 +217,7 @@
                 if (tabTypeInfo) {
                     $("#main-tab-foot-box").html(template(tabTypeInfo.main_template_id, {
                         'storage': STORAGE,
+                        'custom_variable': getCustomVariableData(),
                         'tab_index': tab_index,
                         'tab': tab,
                         'button_type_list': BUTTON_TYPE_LIST
@@ -239,7 +243,8 @@
         }
         const tab = STORAGE.tabs[index]
         if (tab) {
-            if (((!tab.hidden && ACTIV_TAB_INFO.windowMode == "") || (!tab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode == "toolbelt")) && tab.tab_id !== getFootBoxId()) {
+            if (((!tab.hidden && ACTIV_TAB_INFO.windowMode == "") || (!tab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode
+                == "toolbelt")) && tab.tab_id !== getFootBoxId()) {
                 return {tab, index}
             }
         }
@@ -247,7 +252,8 @@
         for (let i in STORAGE.tabs) {
             const tempTab = STORAGE.tabs[i]
             if (tempTab) {
-                if (((!tempTab.hidden && ACTIV_TAB_INFO.windowMode == "") || (!tempTab.toolbelt_hidden && ACTIV_TAB_INFO.windowMode == "toolbelt")) && tempTab.tab_id !== getFootBoxId()) {
+                if (((!tempTab.hidden && ACTIV_TAB_INFO.windowMode == "") || (!tempTab.toolbelt_hidden
+                    && ACTIV_TAB_INFO.windowMode == "toolbelt")) && tempTab.tab_id !== getFootBoxId()) {
                     return {'tab': tempTab, 'index': parseInt(i)}
                 }
             }
@@ -273,6 +279,7 @@
             $("#main-tab-button-box").html(template(tabTypeInfo.main_template_id, {
                 'storage': STORAGE,
                 'tab_index': index,
+                'custom_variable': getCustomVariableData(),
                 'tab': tab,
                 'button_type_list': BUTTON_TYPE_LIST
             }))
@@ -280,7 +287,8 @@
         const windowWidth = getWindowWidth()
         const tabSelectBoxDom = tabSelectBox[0]
         const selectSpanDomRect = selectSpanDom[0].getBoundingClientRect()
-        tabSelectBoxDom.scrollLeft = tabSelectBoxDom.scrollLeft - (windowWidth - 70 - selectSpanDomRect.width) / 2 + selectSpanDomRect.left
+        tabSelectBoxDom.scrollLeft = tabSelectBoxDom.scrollLeft - (windowWidth - 70 - selectSpanDomRect.width) / 2
+            + selectSpanDomRect.left
     }
 
     $(function () {
