@@ -13,6 +13,7 @@ from iterm2.connection import Connection
 
 from iterm2.app import App
 
+from common import utils
 from common.utils import singleton
 
 
@@ -56,6 +57,7 @@ class ExecApi:
             'ITERM2': self.iterm2_api,
             'PY': xpy_method,
             'PYX': self.py_api,
+            "UTILS": utils,
             'data': custom_variable_map,
             'session_data': await self.session_storage_data.get_storage(),
             'params': [] if params is None else params,

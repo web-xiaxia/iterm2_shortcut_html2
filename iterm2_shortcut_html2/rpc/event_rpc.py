@@ -15,7 +15,7 @@ from common.storage_data import StorageData
 
 
 async def register(connection: Connection, storage_data: StorageData, http_web_index_url: str, py_api: PyApi,
-                   exec_api: ExecApi):
+    exec_api: ExecApi):
     LAST_EVENT_NAME_TIME = {}
 
     async def time_key_can_not_run(time_key, silence_second: float = 1):
@@ -39,6 +39,16 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
         if screen_text_line > 0:
             note = await py_api.screen_text(screen_text_line)
         await utils.send_feishu(feishu_token, title, context, note=note)
+
+    @iterm2.RPC
+    async def shortcut_html_event_text_sub(name: str, screen_text_line=1, silence_second: float = 1):
+        time_key = await utils.md5(f'{name}-{screen_text_line}-{silence_second}')
+        if await time_key_can_not_run(f'text_sub_{time_key}', silence_second=silence_second):
+            return
+        if screen_text_line < 0:
+            screen_text_line = 1
+        note = await py_api.screen_text(screen_text_line)
+        await exec_api.event_name_exec(name, [note])
 
     await shortcut_html_event_feishu.async_register(connection)
 
@@ -87,10 +97,10 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
         selected_tab_index = None
         storage = await storage_data.get_storage()
         for tab_index, tab in enumerate(storage.get('tabs', [])):
-                if tab.get('name') == tab_name:
-                    selected_tab = tab
-                    selected_tab_index = tab_index
-                    break
+            if tab.get('name') == tab_name:
+                selected_tab = tab
+                selected_tab_index = tab_index
+                break
 
         if not selected_tab:
             return
