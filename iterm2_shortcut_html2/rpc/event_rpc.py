@@ -48,7 +48,7 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
         if screen_text_line < 0:
             screen_text_line = 1
         note = await py_api.screen_text(screen_text_line)
-        await exec_api.event_name_exec(name, [note])
+        await exec_event_name(name, [note])
 
     await shortcut_html_event_feishu.async_register(connection)
 
