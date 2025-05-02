@@ -1,0 +1,201 @@
+:root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
+}
+
+a:hover {
+    color: #535bf2;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    font-size: 12px;
+}
+
+select, input {
+    background-color: transparent;
+    border: 1px dashed white;
+}
+textarea{
+    background-color: transparent;
+}
+
+input[type=text] {
+    border: 1px dashed white;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+}
+
+button {
+    font-size: 1em;
+    cursor: pointer;
+    background: rgb(38, 37, 37);
+    border: 1px solid white;
+    border-radius: 0.4em;
+    padding: 0.1em 0.4em;
+    margin: 0.1em 0.1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+button:hover {
+    background: rgb(65 70 74);
+}
+
+.button-type-text {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 0.4em 0.6em;
+}
+
+input[type=checkbox].button-type-text, input[type=radio].button-type-text {
+    padding: 0.4em 0.1em;
+}
+
+.button-type-text:hover {
+    background: rgb(65 70 74);
+    border-radius: 0.3em;
+}
+
+
+/* 关闭按钮 */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #ccc;
+    padding: 0;
+    height: auto;
+}
+
+.close-btn:hover {
+    color: white;
+}
+
+/* 取消按钮 */
+.cancel-btn {
+    background-color: #333;
+    color: #eee;
+    border: 1px solid #555;
+}
+
+.cancel-btn:hover {
+    background-color: #444;
+}
+
+/* 保存按钮 */
+.save-btn {
+    background-color: #2a6c2e;
+    color: white;
+    border: none;
+}
+
+.save-btn:hover {
+    background-color: #3c8940;
+}
+
+
+#app {
+    flex-grow: 1;
+}
+
+.form-row input, .form-row textarea, .form-row select {
+    border: 1px dashed #FFFFFF;
+    color: #eee;
+    border-radius: 3px;
+    padding: 3px 6px;
+    font-size: 0.85rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-shadow: none;
+    width: 10em;
+}
+
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.4em 0.6em;
+}
+
+.form-group.half {
+    margin-bottom: 0;
+}
+
+.form-label {
+    width: 70px;
+    text-align: right;
+    padding-right: 10px;
+    flex: 0 0 70px;
+}
+
+
+.app-settings * {
+    pointer-events: none;
+}
+
+.app-settings .handle-click, .app-settings .button-group-box, .app-settings .button-group-settings-box, .app-settings .handle-button-delete, .app-settings .button-box-edit-span {
+    pointer-events: auto;
+}
+
+.app-settings .tab-select *, .app-settings .button-group-settings-box *, .app-settings .button-group-add-box *, .app-settings .modal *, .app-settings .floating-actions *, .app-settings .resize-handle {
+    pointer-events: auto;
+}
+
+.app-settings-edit-width * {
+    pointer-events: none;
+}
+
+.app-settings-edit-width .tab-select * {
+    pointer-events: none;
+}
+
+.app-settings-edit-width .right-content * {
+    pointer-events: auto;
+}
+
+.app-settings-edit-width .edit-width-model {
+    pointer-events: auto;
+}
+
+.app-settings-edit-width .button-box-edit-span {
+    pointer-events: auto;
+}
+
+
+.edit-width-model {
+    background-color: #626262 !important;
+    cursor: pointer !important;
+}
+
+.edit-width-model:hover {
+    background-color: #1a80ba;
+}
