@@ -7,7 +7,7 @@ from api.py_api import PyApi
 from common.session_storage_data import SessionStorageData
 from common.system_storage_data import SystemStorageData
 
-from rpc import status_bar_rpc,status_bar2_rpc, web_view_tool_rpc, event_rpc, monitor_rpc
+from rpc import status_bar_rpc, status_bar2_rpc, web_view_tool_rpc, event_rpc, monitor_rpc
 
 from iterm2.connection import Connection
 from common.storage_data import StorageData
@@ -23,6 +23,7 @@ async def main(connection: Connection):
     main_file_name = os.path.split(__file__)[-1]
     main_home = abspath(dirname(__file__))
     html_home = os.path.join(main_home, 'html')
+    html2_home = os.path.join(main_home, 'html2')
     osascript_home = os.path.join(main_home, 'osascript')
 
     # 存储信息
@@ -30,11 +31,11 @@ async def main(connection: Connection):
     storage_data: StorageData = StorageData(system_storage_data)
     session_storage_data: SessionStorageData = SessionStorageData(app)
     #
-    py_api: PyApi = PyApi(app, connection, storage_data,osascript_home)
+    py_api: PyApi = PyApi(app, connection, storage_data, osascript_home)
     exec_api: ExecApi = ExecApi(app, connection, session_storage_data, storage_data, py_api)
     http_web_host = '127.0.0.1'
     http_web_port = 9998
-    http_web_index_url = f"http://{http_web_host}:{http_web_port}/"
+    http_web_index_url = f"http://{http_web_host}:{http_web_port}/index.html"
     # os.system(f"lsof -i :{http_web_port} | awk '{{print $2}}' |grep -v PID| xargs kill -9")
 
     # 注册状态栏
@@ -48,10 +49,11 @@ async def main(connection: Connection):
     # 注册web
     await html_api.register(
         system_storage_data, session_storage_data, storage_data, py_api, exec_api,
-        main_file_name, main_home, html_home, http_web_host, http_web_port
+        main_file_name, main_home, html_home, html2_home, http_web_host, http_web_port
     )
     # 注册监听
     await monitor_rpc.register(app, connection, session_storage_data, storage_data, py_api)
     print("iterm2_shortcut_html2 初始化完成")
+
 
 iterm2.run_forever(main)

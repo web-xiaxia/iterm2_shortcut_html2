@@ -1,5 +1,15 @@
 export function sendText(text: string): void {
-    console.log("sendText:", text);
+    const resp=commonSendHttp({
+        url: "/api/send_text",
+        method: "POST",
+        headers:{
+            "Content-Type": "application/json",
+        },
+        json_data: {
+            "send_text": text,
+        },
+    })
+    console.log(resp)
 }
 
 
@@ -15,22 +25,46 @@ export function executeShell(code: string, ...args: any[]): string {
     return ""
 }
 
+export function sendHttp(httpRequest: HttpRequest): HttpResponse {
+    return commonSendHttp({
+        url: "/api/proxy",
+        method: "POST",
+        json_data: httpRequest,
+    })
+}
+
 export interface HttpRequest {
     url: string
     method: string
-    headers: { [key: string]: any }
-    params: { [key: string]: any }
-    data: any
-    jsonData: any
+    headers?: { [key: string]: any }
+    params?: { [key: string]: any }
+    data?: any
+    json_data?: any
 }
 
 export interface HttpResponse {
     status: boolean
     message: string
+    data?: any
 }
 
-export function sendHttp(httpRequest: HttpRequest): HttpResponse | any {
-    let d = {"status": false, "message": "未成功"}
-    //todo
-    return d
+
+function commonSendHttp(httpRequest: HttpRequest): HttpResponse {
+    const xhr = new XMLHttpRequest();
+    xhr.open(httpRequest.method, httpRequest.url, false);
+    for (const header in httpRequest.headers) {
+        xhr.setRequestHeader(header, httpRequest.headers[header]);
+    }
+    try {
+        xhr.send(httpRequest.json_data ? JSON.stringify(httpRequest.json_data) : httpRequest.data);
+        if (xhr.status >= 200 && xhr.status < 300) {
+            const data = JSON.parse(xhr.responseText);
+            return {status: true, message: '成功', data: data};
+        } else {
+            return {status: false, message: `请求失败: 状态码 ${xhr.status}`};
+        }
+    } catch (error) {
+        console.error('HTTP 请求出错:', error);
+        return {status: false, message: '请求失败: ' + error};
+    }
 }

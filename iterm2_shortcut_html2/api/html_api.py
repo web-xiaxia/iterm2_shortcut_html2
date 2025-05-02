@@ -24,7 +24,7 @@ BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}'''
 
 async def register(system_storage_data: SystemStorageData, session_storage_data: SessionStorageData,
                    storage_data: StorageData, py_api: PyApi, exec_api: ExecApi,
-                   main_file_name: str, main_home: str, html_home: str, http_web_host: str, http_web_port: int):
+                   main_file_name: str, main_home: str, html_home: str, html_home2: str,http_web_host: str, http_web_port: int):
     async def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
         style_block = BLOCK_STYLE_PATTERN.findall(html)
         script_block = BLOCK_SCRIPT_PATTERN.findall(html)
@@ -72,7 +72,7 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
         return await send_html(json.dumps({'status': True}), request)
 
     async def main_page(request):
-        with open(os.path.join(html_home, './index.html'), 'r') as fp:
+        with open(os.path.join(html_home, './index_old.html'), 'r') as fp:
             html_text = fp.read()
             return await send_html(await include_html_util(html_text), request, content_type='text/html')
 
@@ -281,30 +281,30 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
 
     webapp = web.Application()
     webapp.router.add_get('/', main_page)
-    webapp.router.add_get('/storage', get_storage_api)
-    webapp.router.add_post('/storage', save_storage_api)
-    webapp.router.add_delete('/storage', delete_storage_api)
-    webapp.router.add_post('/reload_storage', reload_storage_api)
-    webapp.router.add_post('/session_storage', save_session_storage_api)
-    webapp.router.add_get('/system_storage', get_system_storage_api)
-    webapp.router.add_post('/change_store_path', save_store_path_api)
-    webapp.router.add_post('/storage_reset_event_send_map', storage_reset_event_send_map_api)
-    webapp.router.add_post('/storage_reset_custom_variable_map', storage_reset_custom_variable_map_api)
-    webapp.router.add_post('/storage_reset_py_method', storage_reset_py_method_api)
-    webapp.router.add_post('/proxy', proxy_api)
-    webapp.router.add_get('/command_history', command_history_api)
-    webapp.router.add_post('/send_text', send_text_api)
-    webapp.router.add_post('/send_hex_code', send_hex_code_api)
-    webapp.router.add_post('/exec_shell', exec_shell_api)
-    webapp.router.add_get('/selected_text', selected_text_api)
-    webapp.router.add_post('/path_file', path_file_api)
-    webapp.router.add_post('/iterm2_alert', iterm2_alert_api)
-    webapp.router.add_post('/iterm2_confirm', iterm2_confirm_api)
-    webapp.router.add_post('/iterm2_prompt', iterm2_prompt_api)
-    webapp.router.add_post('/register_trigger', register_trigger_api)
-    webapp.router.add_post('/test_event_name', test_event_name_api)
-    webapp.router.add_get('/restart', restart_api)
-    webapp.router.add_static('/', path=html_home)
+    webapp.router.add_get('/api/storage', get_storage_api)
+    webapp.router.add_post('/api/storage', save_storage_api)
+    webapp.router.add_delete('/api/storage', delete_storage_api)
+    webapp.router.add_post('/api/reload_storage', reload_storage_api)
+    webapp.router.add_post('/api/session_storage', save_session_storage_api)
+    webapp.router.add_get('/api/system_storage', get_system_storage_api)
+    webapp.router.add_post('/api/change_store_path', save_store_path_api)
+    webapp.router.add_post('/api/storage_reset_event_send_map', storage_reset_event_send_map_api)
+    webapp.router.add_post('/api/storage_reset_custom_variable_map', storage_reset_custom_variable_map_api)
+    webapp.router.add_post('/api/storage_reset_py_method', storage_reset_py_method_api)
+    webapp.router.add_post('/api/proxy', proxy_api)
+    webapp.router.add_get('/api/command_history', command_history_api)
+    webapp.router.add_post('/api/send_text', send_text_api)
+    webapp.router.add_post('/api/send_hex_code', send_hex_code_api)
+    webapp.router.add_post('/api/exec_shell', exec_shell_api)
+    webapp.router.add_get('/api/selected_text', selected_text_api)
+    webapp.router.add_post('/api/path_file', path_file_api)
+    webapp.router.add_post('/api/iterm2_alert', iterm2_alert_api)
+    webapp.router.add_post('/api/iterm2_confirm', iterm2_confirm_api)
+    webapp.router.add_post('/api/iterm2_prompt', iterm2_prompt_api)
+    webapp.router.add_post('/api/register_trigger', register_trigger_api)
+    webapp.router.add_post('/api/test_event_name', test_event_name_api)
+    webapp.router.add_get('/api/restart', restart_api)
+    webapp.router.add_static('/', path=html_home2)
     runner = web.AppRunner(webapp)
     await runner.setup()
     site = web.TCPSite(runner, http_web_host, http_web_port)
