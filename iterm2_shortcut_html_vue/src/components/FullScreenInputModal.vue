@@ -29,7 +29,7 @@ const handleKeydown = (e: KeyboardEvent) => {
     if (props.appSessionStatus.fullScreenInputValue) {
       if (e.key === 'Enter') {
         if (!props.appStatus.fullScreenInputTypeTextarea|| e.metaKey) {
-          props.executeContext.execute.sendText(props.appSessionStatus.fullScreenInputValue)
+          props.executeContext.exec.sendText(props.appSessionStatus.fullScreenInputValue)
           props.appSessionStatus.fullScreenInputValue = ""
         }
       }

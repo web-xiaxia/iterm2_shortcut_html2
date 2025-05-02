@@ -6,7 +6,7 @@ export const AppButtonVariableRefreshConfigList = <AppButtonVariableRefreshInfo[
     title: "js代码",
     inputType: "textarea",
     refresh: (executeContext: AppExecuteContext, refreshValue: string) => {
-        executeContext.execute.executeJs(refreshValue)
+        executeContext.exec.executeJs(refreshValue)
     },
     getOptions: () => []
 }, {
@@ -15,7 +15,7 @@ export const AppButtonVariableRefreshConfigList = <AppButtonVariableRefreshInfo[
     title: "配置名称",
     inputType: "variable",
     refresh: (executeContext: AppExecuteContext, refreshValue: string) => {
-        executeContext.execute.executeJsWithConfig(refreshValue)
+        executeContext.exec.executeJsWithConfig(refreshValue)
     },
     getOptions: (appConfig: AppExecuteVariable) => Object.keys(appConfig.js)
 }, {
@@ -24,7 +24,7 @@ export const AppButtonVariableRefreshConfigList = <AppButtonVariableRefreshInfo[
     title: "py代码",
     inputType: "textarea",
     refresh: (executeContext: AppExecuteContext, refreshValue: string) => {
-        executeContext.execute.executePy(refreshValue)
+        executeContext.exec.executePy(refreshValue)
     },
     getOptions: () => []
 }, {
@@ -33,7 +33,7 @@ export const AppButtonVariableRefreshConfigList = <AppButtonVariableRefreshInfo[
     title: "配置名称",
     inputType: "variable",
     refresh: (executeContext: AppExecuteContext, refreshValue: string) => {
-        executeContext.execute.executePyWithConfig(refreshValue)
+        executeContext.exec.executePyWithConfig(refreshValue)
     },
     getOptions: (appConfig: AppExecuteVariable) => Object.keys(appConfig.py)
 }, {
@@ -42,7 +42,7 @@ export const AppButtonVariableRefreshConfigList = <AppButtonVariableRefreshInfo[
     title: "shell代码",
     inputType: "textarea",
     refresh: (executeContext: AppExecuteContext, refreshValue: string) => {
-        executeContext.execute.executeShell(refreshValue)
+        executeContext.exec.executeShell(refreshValue)
     },
     getOptions: () => []
 }, {
@@ -51,7 +51,7 @@ export const AppButtonVariableRefreshConfigList = <AppButtonVariableRefreshInfo[
     title: "配置名称",
     inputType: "variable",
     refresh: (executeContext: AppExecuteContext, refreshValue: string) => {
-        executeContext.execute.executeShellWithConfig(refreshValue)
+        executeContext.exec.executeShellWithConfig(refreshValue)
     },
     getOptions: (appConfig: AppExecuteVariable) => Object.keys(appConfig.shell)
 }]

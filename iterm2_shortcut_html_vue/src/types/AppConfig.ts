@@ -79,30 +79,6 @@ export interface AppVariableHistoryInfo {
 
 export type AppVariableHistoryStore = { [key: string]: AppVariableHistoryInfo }
 
-export interface AppExecuteVariableContextOfJs {
-    getValue: (key: string) => string
-    setValue: (key: string, value: string) => void
-    getValues: (key: string) => string[]
-    setValues: (key: string, value: string[]) => void
-    getOptions: (key: string) => string[]
-    setOptions: (key: string, value: string[]) => void
-}
-
-export interface AppExecuteJsContextOfJs {
-    execute: (name: string, ...args: any[]) => any
-}
-
-export interface AppExecutePyContextOfJs {
-    execute: (name: string, ...args: any[]) => string
-}
-
-export interface AppExecuteShellContextOfJs {
-    execute: (name: string, ...args: any[]) => string
-}
-
-export interface AppExecuteFuncContextOfJs {
-    sendText: (text: string) => void
-}
 
 export interface AppExecuteKeyInfo {
     command: boolean
@@ -113,32 +89,40 @@ export interface AppExecuteKeyInfo {
     code: string
 }
 
-export interface AppExecuteContext {
-    jsContext: AppExecuteJsContext
-    executeVariable: AppExecuteVariable
-    execute: AppExecute
+export interface AppExecute {
+    sendText: (text: string, ...args: any[]) => void
+    sendTextWithVariable: (name: string, ...args: any[]) => void
+    executeJs: (text: string) => any
+    executeJsWithConfig: (name: string, ...args: any[]) => any
+    executePy: (text: string) => string
+    executePyWithConfig: (name: string, ...args: any[]) => string
+    executeShell: (text: string) => string
+    executeShellWithConfig: (name: string, ...args: any[]) => string
+}
+
+export interface AppExecuteContextBase {
+    variable: AppExecuteVariableTool
+    exec: AppExecute
     keyboard: AppExecuteKeyInfo
 }
 
-export interface AppExecute {
-    sendText: (str: string) => void
-    sendTextWithVariable: (name: string) => void
-    executeJs: (str: string) => void
-    executeJsWithConfig: (name: string) => void
-    executePy: (str: string) => void
-    executePyWithConfig: (name: string) => void
-    executeShell: (str: string) => void
-    executeShellWithConfig: (name: string) => void
+export interface AppExecuteContext extends AppExecuteContextBase {
+    jsContext: AppExecuteJsContext
+    executeVariable: AppExecuteVariable
 }
 
-export interface AppExecuteJsContext {
-    VARIABLE: AppExecuteVariableContextOfJs
-    JS: AppExecuteJsContextOfJs
-    PY: AppExecutePyContextOfJs
-    SHELL: AppExecuteShellContextOfJs
-    FUNC: AppExecuteFuncContextOfJs
-    KEYBOARD: AppExecuteKeyInfo
+export interface AppExecuteJsContext extends AppExecuteContextBase {
 }
+
+export interface AppExecuteVariableTool {
+    getValue: (key: string) => string
+    setValue: (key: string, value: string) => void
+    getValues: (key: string) => string[]
+    setValues: (key: string, value: string[]) => void
+    getOptions: (key: string) => string[]
+    setOptions: (key: string, value: string[]) => void
+}
+
 
 export interface AppExecuteVariable {
     variable: AppVariableStore

@@ -7,7 +7,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "文本内容",
     inputType: "textarea",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.sendText(executeValue)
+        executeContext.exec.sendText(executeValue,"fullScreenInput")
     },
     getOptions: () => []
 }, {
@@ -16,7 +16,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "变量",
     inputType: "variable",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.sendTextWithVariable(executeValue)
+        executeContext.exec.sendTextWithVariable(executeValue,"fullScreenInput")
     },
     getOptions: (appConfig: AppExecuteVariable) => Object.keys(appConfig.variable)
 }, {
@@ -25,7 +25,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "js代码",
     inputType: "textarea",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.executeJs(executeValue)
+        executeContext.exec.executeJs(executeValue)
     },
     getOptions: () => []
 }, {
@@ -34,7 +34,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "配置名称",
     inputType: "variable",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.executeJsWithConfig(executeValue)
+        executeContext.exec.executeJsWithConfig(executeValue)
     },
     getOptions: (appConfig: AppExecuteVariable) => Object.keys(appConfig.js)
 }, {
@@ -43,7 +43,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "py代码",
     inputType: "textarea",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.executePy(executeValue)
+        executeContext.exec.executePy(executeValue)
     },
     getOptions: () => []
 }, {
@@ -52,7 +52,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "配置名称",
     inputType: "variable",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.executePyWithConfig(executeValue)
+        executeContext.exec.executePyWithConfig(executeValue)
     },
     getOptions: (appConfig: AppExecuteVariable) => Object.keys(appConfig.py)
 }, {
@@ -61,7 +61,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "shell代码",
     inputType: "textarea",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.executeShell(executeValue)
+        executeContext.exec.executeShell(executeValue)
     },
     getOptions: () => []
 }, {
@@ -70,7 +70,7 @@ export const AppButtonTypeButtonTypeList = <AppButtonTypeButtonTypeInfo[]>[{
     title: "配置名称",
     inputType: "variable",
     send: (executeContext: AppExecuteContext, executeValue: string) => {
-        executeContext.execute.executeShellWithConfig(executeValue)
+        executeContext.exec.executeShellWithConfig(executeValue)
     },
     getOptions: (appConfig: AppExecuteVariable) => Object.keys(appConfig.shell)
 }]
