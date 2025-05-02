@@ -311,19 +311,19 @@ const handleMoveToTab = (groupIndex: number) => {
       <div class="font-preview">
         <h4>字体大小预览：</h4>
         <div class="preview-item">
-          <span class="font-level1">字体大小 1 (18px) - 大标题</span>
+          <span class="font-level1">字体大小 1 - 大标题</span>
         </div>
         <div class="preview-item">
-          <span class="font-level2">字体大小 2 (16px) - 小标题</span>
+          <span class="font-level2">字体大小 2 - 小标题</span>
         </div>
         <div class="preview-item">
-          <span class="font-level3">字体大小 3 (14px) - 正常文本</span>
+          <span class="font-level3">字体大小 3 - 正常文本</span>
         </div>
         <div class="preview-item">
-          <span class="font-level4">字体大小 4 (12px) - 小文本</span>
+          <span class="font-level4">字体大小 4 - 小文本</span>
         </div>
         <div class="preview-item">
-          <span class="font-level5">字体大小 5 (10px) - 极小文本</span>
+          <span class="font-level5">字体大小 5 - 极小文本</span>
         </div>
       </div>
       <div class="modal-footer">
@@ -405,23 +405,23 @@ const handleMoveToTab = (groupIndex: number) => {
 
 
 .font-level1 {
-  font-size: 18px;
-}
-
-.font-level2 {
   font-size: 16px;
 }
 
-.font-level3 {
+.font-level2 {
   font-size: 14px;
 }
 
-.font-level4 {
+.font-level3 {
   font-size: 12px;
 }
 
-.font-level5 {
+.font-level4 {
   font-size: 10px;
+}
+
+.font-level5 {
+  font-size: 8px;
 }
 
 .font-preview {
