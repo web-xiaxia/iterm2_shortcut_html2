@@ -68,7 +68,7 @@ class PyApi:
              f'window_id: {json.dumps(None)})'))
 
     async def __prompt(self, connection: Connection, title='', subtitle='', placeholder='',
-                       default_value='') -> Optional[str]:
+        default_value='') -> Optional[str]:
         title = json.dumps(title, ensure_ascii=False)
         subtitle = json.dumps(subtitle, ensure_ascii=False)
         placeholder = json.dumps(placeholder, ensure_ascii=False)
@@ -108,6 +108,7 @@ class PyApi:
                     res = shell_result[i].decode('utf-8').strip('\r\n')
                     result.append(res)
                 return True, result
+        return False, []
 
     async def alert(self, title='', subtitle=''):
         await self.__alert(self.connection, title=title, subtitle=subtitle)

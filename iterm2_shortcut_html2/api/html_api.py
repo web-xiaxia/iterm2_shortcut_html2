@@ -23,8 +23,8 @@ BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}'''
 
 
 async def register(system_storage_data: SystemStorageData, session_storage_data: SessionStorageData,
-                   storage_data: StorageData, py_api: PyApi, exec_api: ExecApi,
-                   main_file_name: str, main_home: str, html_home: str, html_home2: str,http_web_host: str, http_web_port: int):
+    storage_data: StorageData, py_api: PyApi, exec_api: ExecApi,
+    main_file_name: str, main_home: str, html_home: str, html_home2: str, http_web_host: str, http_web_port: int):
     async def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
         style_block = BLOCK_STYLE_PATTERN.findall(html)
         script_block = BLOCK_SCRIPT_PATTERN.findall(html)
@@ -155,19 +155,19 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
         return await send_html(json.dumps(r), request)
 
     async def send_text_api(request):
-        data = await request.post()
+        data = await request.json()
         send_text_context = data['send_text']
         run_type = data['run_type'] if 'run_type' in data else ''
         await py_api.send_text(send_text_context, run_type)
         return await send_ok(request)
 
     async def send_hex_code_api(request):
-        data = await request.post()
+        data = await request.json()
         await py_api.send_hex_code(data['send_hex_code'])
         return await send_ok(request)
 
     async def exec_shell_api(request):
-        data = await request.post()
+        data = await request.json()
         shell_text = data['shell']
         status, result = await py_api.exec_shell(shell_text)
 
@@ -183,7 +183,7 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
         }), request)
 
     async def path_file_api(request):
-        data = await request.post()
+        data = await request.json()
         dir_path = data['dir_path']
         select_mode = data['select_mode']
         try:
@@ -211,7 +211,7 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
             }), request)
 
     async def iterm2_alert_api(request):
-        data = await request.post()
+        data = await request.json()
         title = data['title']
         subtitle = data['subtitle']
         await py_api.alert(title=title, subtitle=subtitle)
@@ -304,7 +304,7 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
     webapp.router.add_post('/api/register_trigger', register_trigger_api)
     webapp.router.add_post('/api/test_event_name', test_event_name_api)
     webapp.router.add_get('/api/restart', restart_api)
-    webapp.router.add_static('/', path=html_home2)
+    webapp.router.add_static('/', path=html_home)
     runner = web.AppRunner(webapp)
     await runner.setup()
     site = web.TCPSite(runner, http_web_host, http_web_port)
