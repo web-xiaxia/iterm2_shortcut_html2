@@ -35,7 +35,7 @@ async def main(connection: Connection):
     exec_api: ExecApi = ExecApi(app, connection, session_storage_data, storage_data, py_api)
     http_web_host = '127.0.0.1'
     http_web_port = 9998
-    http_web_index_url = f"http://{http_web_host}:{http_web_port}/index.html"
+    http_web_index_url = f"http://{http_web_host}:{http_web_port}/html2/index.html"
     # os.system(f"lsof -i :{http_web_port} | awk '{{print $2}}' |grep -v PID| xargs kill -9")
 
     # 注册状态栏

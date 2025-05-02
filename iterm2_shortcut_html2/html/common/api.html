@@ -3,7 +3,7 @@
     var runType = ""
     function restartShortcut() {
         $.ajax({
-            url: "/restart",
+            url: "/api/restart",
             type: "GET",
             async: false,
             success: function (response_data) {
@@ -23,19 +23,19 @@
             STORAGE.input_shell_text = text
             openInputShellText2()
         } else {
-            $.post("/send_text", {
+            $.post("/api/send_text", JSON.stringify({
                 "send_text": text,
                 "run_type": runType,
-            }, function (data) {
+            }), function (data) {
                 //pass
             })
         }
     }
 
     function sendHexCode(hxCode) {
-        $.post("/send_hex_code", {
+        $.post("/api/send_hex_code", JSON.stringify({
             "send_hex_code": "" + hxCode
-        }, function (data) {
+        }), function (data) {
             //pass
         })
     }
@@ -43,7 +43,7 @@
     function iterm2SelectedText() {
         let selected_text = null
         $.ajax({
-            url: "/selected_text",
+            url: "/api/selected_text",
             type: "GET",
             async: false,
             contentType: "application/json; charset=utf-8",
@@ -60,13 +60,13 @@
     function execShell(shellText) {
         let returnData = {}  // {'status': true, 'result': ["",""], }
         $.ajax({
-            url: "/exec_shell",
+            url: "/api/exec_shell",
             type: "POST",
             async: false,
-            data: {
+            data: JSON.stringify({
                 "executable": "/bin/zsh",
                 "shell": shellText
-            },
+            }),
             success: function (response_data) {
                 returnData = response_data
             },
@@ -115,7 +115,7 @@
     function sendHttp(httpRequest) {
         let d = {"status": false, "message": "未成功"}
         $.ajax({
-            url: "/proxy",
+            url: "/api/proxy",
             type: "POST",
             async: false,
             data: JSON.stringify(httpRequest),
@@ -132,7 +132,7 @@
 
     function registerTrigger(trigger_name) {
         $.ajax({
-            url: "/register_trigger",
+            url: "/api/register_trigger",
             type: "POST",
             async: false,
             data: JSON.stringify({
@@ -153,7 +153,7 @@
             'message': "请求出错"
         }
         $.ajax({
-            url: "/test_event_name",
+            url: "/api/test_event_name",
             type: "POST",
             async: false,
             data: JSON.stringify({

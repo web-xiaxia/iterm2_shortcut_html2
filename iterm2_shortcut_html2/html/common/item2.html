@@ -13,17 +13,17 @@
 
     if (IN_ITERM2) {
         window.alert = function (message) {
-            $.post("/iterm2_alert", {
+            $.post("/iterm2_alert", JSON.stringify({
                 'title': message,
                 'subtitle': ""
-            }, function (data) {
+            }), function (data) {
                 //pass
             })
         }
         window.confirm = function (message) {
             let b = false
             $.ajax({
-                url: "/iterm2_confirm",
+                url: "/api/iterm2_confirm",
                 type: "POST",
                 async: false,
                 data: JSON.stringify({
@@ -46,7 +46,7 @@
         window.prompt = function (message, _default = "") {
             let b = ''
             $.ajax({
-                url: "/iterm2_prompt",
+                url: "/api/iterm2_prompt",
                 type: "POST",
                 async: false,
                 data: JSON.stringify({

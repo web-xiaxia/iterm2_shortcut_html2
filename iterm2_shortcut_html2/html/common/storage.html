@@ -126,7 +126,7 @@
     function storageAjax() {
         let storage = null
         $.ajax({
-            url: "/storage",
+            url: "/api/storage",
             type: "GET",
             async: false,
             contentType: "application/json; charset=utf-8",
@@ -142,7 +142,7 @@
 
     function deleteStorageAjax() {
         $.ajax({
-            url: "/storage",
+            url: "/api/storage",
             type: "delete",
             success: function (response_data) {
 
@@ -189,7 +189,7 @@
         }
 
         $.ajax({
-            url: "/storage",
+            url: "/api/storage",
             type: "POST",
             async: false,
             data: JSON.stringify({
@@ -221,7 +221,7 @@
                 clearTimeout(SYNC_STORAGE_INFO.reset_event_send_map_set_timeout)
             }
             $.ajax({
-                url: "/storage_reset_event_send_map",
+                url: "/api/storage_reset_event_send_map",
                 type: "POST",
                 async: false,
                 data: JSON.stringify({}),
@@ -242,7 +242,7 @@
                 clearTimeout(SYNC_STORAGE_INFO.reset_event_custom_variable_map_set_timeout)
             }
             $.ajax({
-                url: "/storage_reset_custom_variable_map",
+                url: "/api/storage_reset_custom_variable_map",
                 type: "POST",
                 async: false,
                 data: JSON.stringify({}),
@@ -262,7 +262,7 @@
                 clearTimeout(SYNC_STORAGE_INFO.reset_event_py_method_set_timeout)
             }
             $.ajax({
-                url: "/storage_reset_py_method",
+                url: "/api/storage_reset_py_method",
                 type: "POST",
                 async: false,
                 data: JSON.stringify({}),
@@ -275,7 +275,7 @@
 
     function reloadStorage(path) {
         $.ajax({
-            url: "/reload_storage",
+            url: "/api/reload_storage",
             type: "post",
             async: false,
             data: JSON.stringify({
@@ -298,7 +298,7 @@
     function getSystemStorage() {
         let storage = null
         $.ajax({
-            url: "/system_storage",
+            url: "/api/system_storage",
             type: "GET",
             async: false,
             contentType: "application/json; charset=utf-8",
@@ -314,7 +314,7 @@
 
     function saveSessionStorage(key, value) {
         $.ajax({
-            url: "/session_storage",
+            url: "/api/session_storage",
             type: "POST",
             async: false,
             data: JSON.stringify({
@@ -332,7 +332,7 @@
 
     function changeStorePath(storage_path, storage_history_path, reload) {
         $.ajax({
-            url: "/change_store_path",
+            url: "/api/change_store_path",
             type: "post",
             async: false,
             data: JSON.stringify({
