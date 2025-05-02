@@ -1,4 +1,5 @@
 import {AppButtonEditConfig, AppButtonInfo, AppButtonInfoType, AppButtonInfoTypeRefreshInfo, AppButtonInfoTypeVariableInfo, AppButtonInfoTypeWidthEdit, AppKvStrStore, AppVariableEventStore, AppVariableStore} from "./AppButton.ts";
+import {HttpRequest, HttpResponse} from "@/api/execute.ts";
 
 export interface AppButtonTypeButtonTypeInfo {
     key: string
@@ -98,6 +99,7 @@ export interface AppExecute {
     executePyWithConfig: (name: string, ...args: any[]) => string
     executeShell: (text: string) => string
     executeShellWithConfig: (name: string, ...args: any[]) => string
+    sendHttp: (req: HttpRequest) => HttpResponse | any
 }
 
 export interface AppExecuteContextBase {
