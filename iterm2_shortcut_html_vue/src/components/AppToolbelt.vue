@@ -12,16 +12,10 @@ const props = defineProps<{
   variableHistory: AppVariableHistoryStore,
 }>();
 
-if (!props.appConfig.toolbelt) {
-  props.appConfig.toolbelt = {
-    height: 200,
-  }
-}
-
 // 计算样式
 const toolbeltStyle = computed(() => {
   return {
-    height: !props.appStatus.hideToolbelt ? `${props.appConfig.toolbelt.height}px` : '0',
+    height: !props.appStatus.hideToolbelt ? `${props.appStatus.toolbeltHeight || 150}px` : '0',
     transition: isDragging.value ? 'none' : 'height 0.3s ease-out'
   };
 });
@@ -95,7 +89,7 @@ const handleMouseDown = (e: MouseEvent) => {
 
   isDragging.value = true;
   startY.value = e.clientY;
-  startHeight.value = props.appConfig.toolbelt.height;
+  startHeight.value = props.appStatus.toolbeltHeight || 150;
 
   // 添加鼠标样式
   document.body.style.cursor = 'ns-resize';
@@ -113,7 +107,7 @@ const handleMouseMove = (e: MouseEvent) => {
   newHeight = Math.max(100, Math.min(newHeight, window.innerHeight * 0.8));
 
   // 更新工具栏高度
-  props.appConfig.toolbelt.height = newHeight;
+  props.appStatus.toolbeltHeight = newHeight;
 };
 
 const handleMouseUp = () => {
@@ -201,7 +195,7 @@ onUnmounted(() => {
           <label>高度设置 (px):</label>
           <input
               type="number"
-              v-model.number="props.appConfig.toolbelt.height"
+              v-model.number="props.appStatus.toolbeltHeight"
               min="100"
               max="500"
           />

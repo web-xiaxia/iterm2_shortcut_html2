@@ -10,6 +10,8 @@ export function getAppStatus(): AppStatus {
     return {
         index: 0,
         fullScreenInputTypeTextarea: false,
+        hideToolbelt: false,
+        toolbeltHeight: 150
     }
 }
 
@@ -23,15 +25,12 @@ export function getAppVariableHistoryStore(): AppVariableHistoryStore {
     if (item) {
         return JSON.parse(item);
     }
-    return {
-
-    }
+    return {}
 }
 
 export function setAppVariableHistoryStore(appStatus: AppVariableHistoryStore) {
     localStorage.setItem("appVariableHistory", JSON.stringify(appStatus));
 }
-
 
 
 export function getAppConfig(): AppConfig {
@@ -116,9 +115,6 @@ export function getAppConfig(): AppConfig {
                 }],
             }]
         }],
-        toolbelt: {
-            height: 200,
-        },
         variable: {
             "xxx": {
                 values: ["xxx"],

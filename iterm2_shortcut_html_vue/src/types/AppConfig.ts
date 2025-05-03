@@ -21,7 +21,8 @@ export interface AppButtonVariableRefreshInfo {
 
 export interface AppStatus {
     index: number
-    hideToolbelt?: boolean
+    hideToolbelt: boolean
+    toolbeltHeight: number
     fullScreenInputTypeTextarea: boolean
 }
 
@@ -138,5 +139,4 @@ export interface AppExecuteVariable {
 
 export interface AppConfig extends AppExecuteVariable {
     tabs: AppTab[]
-    toolbelt: AppToolbelt
 }
