@@ -13,11 +13,15 @@ import FullScreenInputModal from "./components/FullScreenInputModal.vue"
 import KeyModifiersDisplay from "./components/KeyModifiersDisplay.vue"
 import MoveGroupModal from "./components/MoveGroupModal.vue"
 import {appVariableHistoryFunc, appVariablesChange, appVariablesRefreshFunc} from '@/AppVariablesRefresh'
+import {debounce} from "lodash";
 
 // 配置信息
 const appConfig = ref<AppConfig>(getAppConfig())
-watch(appConfig, (newVal: AppConfig) => {
+const debounceSetAppConfig = debounce((newVal: AppConfig) => {
   setAppConfig(newVal);
+}, 900)
+watch(appConfig, (newVal: AppConfig) => {
+  debounceSetAppConfig(newVal);
 }, {deep: true});
 
 // 状态
@@ -50,7 +54,7 @@ const appExecuteContext = newAppExecuteContext(appSessionStatus, appExecuteVaria
 
 // 变量刷新
 const appVariablesRefresh = appVariablesRefreshFunc(appConfig, appExecuteContext)
-const appVariableHistory = appVariableHistoryFunc(appExecuteContext,appVariableHistoryStore)
+const appVariableHistory = appVariableHistoryFunc(appExecuteContext, appVariableHistoryStore)
 appVariablesChange(appConfig)(function (newVal: string[]) {
   appVariablesRefresh(newVal);
   appVariableHistory(newVal);
