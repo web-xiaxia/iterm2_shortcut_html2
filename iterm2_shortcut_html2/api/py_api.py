@@ -14,16 +14,16 @@ from iterm2.connection import Connection
 
 from iterm2.app import App
 from common import utils
-from common.storage_data import StorageData
+from common.storage_data import StorageHelper
 from common.utils import singleton
 
 
 @singleton
 class PyApi:
-    def __init__(self, app: App, connection: Connection, storage_data: StorageData, osascript_home: str):
+    def __init__(self, app: App, connection: Connection, storage_data: StorageHelper, osascript_home: str):
         self.app: App = app
         self.connection: Connection = connection
-        self.storage_data: StorageData = storage_data
+        self.storage_data: StorageHelper = storage_data
         self.osascript_home: str = osascript_home
 
     async def __send_text(self, app, send_text_context: str, run_type=""):
@@ -172,7 +172,7 @@ class PyApi:
 
         return triggers
 
-    async def get_trigger_encode(self, custom_trigger):
+    async def get_trigger_encode(self, custom_trigger: Dict):
         if not custom_trigger:
             return None
         if custom_trigger.get('action') == 'iTermRPCTrigger':
@@ -186,9 +186,9 @@ class PyApi:
         return None
 
     async def get_custom_trigger_encode(self, trigger_name: str) -> Optional[Dict]:
-        custom_trigger = await self.storage_data.get_custom_trigger(trigger_name)
+        custom_trigger = await self.storage_data.get_custom_trigger()
 
-        return await self.get_trigger_encode(custom_trigger)
+        return await self.get_trigger_encode(custom_trigger.get(trigger_name))
 
     async def trigger_encode_md5(self, trigger: Dict) -> str:
         trigger_kv_str_list = ['{}:{}'.format(k, v) for k, v in trigger.items()]

@@ -11,10 +11,9 @@ from iterm2.connection import Connection
 
 import iterm2
 from common import constants, utils
-from common.storage_data import StorageData
 
 
-async def register(connection: Connection, storage_data: StorageData, http_web_index_url: str, py_api: PyApi,
+async def register(connection: Connection, http_web_index_url: str, py_api: PyApi,
     exec_api: ExecApi):
     LAST_EVENT_NAME_TIME = {}
 
@@ -31,7 +30,7 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
 
     @iterm2.RPC
     async def shortcut_html_event_feishu(feishu_token: str, title: str, context: str, screen_text_line=0,
-                                         silence_second: float = 1):
+        silence_second: float = 1):
         time_key = await utils.md5(f'{feishu_token}-{title}-{context}-{screen_text_line}-{silence_second}')
         if await time_key_can_not_run(f'feishu_{time_key}', silence_second=silence_second):
             return
@@ -93,20 +92,6 @@ async def register(connection: Connection, storage_data: StorageData, http_web_i
     async def shortcut_html_open_toolbelt(tab_name):
         if await time_key_can_not_run(f'toolbelt_{tab_name}'):
             return
-        selected_tab = None
-        selected_tab_index = None
-        storage = await storage_data.get_storage()
-        for tab_index, tab in enumerate(storage.get('tabs', [])):
-            if tab.get('name') == tab_name:
-                selected_tab = tab
-                selected_tab_index = tab_index
-                break
-
-        if not selected_tab:
-            return
-
-        await storage_data.set_toolbelt_tab_index(selected_tab_index)
-        print(f'触发打开Toolbelt，index:{selected_tab_index}, tab_name:{tab_name}')
 
         # 打开 Toolbelt
         menu_item_state = await iterm2.MainMenu.async_get_menu_item_state(connection,

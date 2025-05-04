@@ -10,7 +10,7 @@ export function appVariablesChange(appConfig: Ref<AppConfig>) {
     const changedVariables = ref<string[]>([])
 
     watchEffect(() => {
-        const currentVariable = appConfig.value.variable
+        const currentVariable = appConfig.value.variable||{}
         if (needInitLastVariable) {
             needInitLastVariable = false
             lastVariable.value = JSON.parse(JSON.stringify(currentVariable))

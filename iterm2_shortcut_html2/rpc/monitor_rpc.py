@@ -7,19 +7,16 @@ from iterm2 import Connection, App, Window, Tab, Session
 
 from api.py_api import PyApi
 from common.session_storage_data import SessionStorageData
-from common.storage_data import StorageData
 
 
 class MonitorHelper:
 
-    def __init__(self, app: App, connection: Connection, session_storage_data: SessionStorageData,
-                 storage_data: StorageData, py_api: PyApi):
+    def __init__(self, app: App, connection: Connection, session_storage_data: SessionStorageData, py_api: PyApi):
         self.window_id_to_tab_ids: Dict[str, Set[str]] = {}
         self.tab_id_to_session_ids: Dict[str, Set[str]] = {}
         self.app: App = app
         self.connection: Connection = connection
         self.session_storage_data: SessionStorageData = session_storage_data
-        self.storage_data: StorageData = storage_data
         self.py_api: PyApi = py_api
 
     async def init(self):
@@ -156,8 +153,8 @@ class MonitorHelper:
 
 
 async def register(app: App, connection: Connection,
-                   session_storage_data: SessionStorageData, storage_data: StorageData, py_api: PyApi):
-    monitor_helper = MonitorHelper(app, connection, session_storage_data, storage_data, py_api)
+    session_storage_data: SessionStorageData, py_api: PyApi):
+    monitor_helper = MonitorHelper(app, connection, session_storage_data, py_api)
     await monitor_helper.init()
 
     async def focus_monitor_task():

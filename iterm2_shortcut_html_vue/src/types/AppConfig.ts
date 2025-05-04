@@ -1,5 +1,5 @@
 import {AppButtonEditConfig, AppButtonInfo, AppButtonInfoType, AppButtonInfoTypeRefreshInfo, AppButtonInfoTypeVariableInfo, AppButtonInfoTypeWidthEdit, AppKvStrStore, AppVariableEventStore, AppVariableStore} from "./AppButton.ts";
-import {HttpRequest, HttpResponse} from "@/api/execute.ts";
+import {HttpRequest, HttpResponse} from "@/api/common.ts";
 
 export interface AppButtonTypeButtonTypeInfo {
     key: string

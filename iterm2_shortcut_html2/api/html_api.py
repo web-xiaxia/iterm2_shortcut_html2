@@ -1,61 +1,20 @@
 # -*- coding: utf-8 -*-
 from api.exec_api import ExecApi
 from api.py_api import PyApi
-import re
 
 import sqlite3
 from common import utils
 from common.session_storage_data import SessionStorageData
-from common.system_storage_data import SystemStorageData
-from common.storage_data import StorageData
-from typing import Tuple, List
 
 import json
 import os
 
 from aiohttp import web
 
-CONTEXT_INCLUDE_PATTERN = re.compile(r'''(<context-include src=["|'](.*?)["|']/>)''')
-HTML_INCLUDE_PATTERN = re.compile(r'''(<html-include src=["|'](.*?)["|']/>)''')
-BLOCK_STYLE_PATTERN = re.compile(r'''{% block style %}(.*?){% endblock %}''', re.DOTALL)
-BLOCK_SCRIPT_PATTERN = re.compile(r'''{% block script %}(.*?){% endblock %}''', re.DOTALL)
-BLOCK_CONTEXT_PATTERN = re.compile(r'''{% block context %}(.*?){% endblock %}''', re.DOTALL)
+from common.storage_data import StorageHelper
 
 
-async def register(system_storage_data: SystemStorageData, session_storage_data: SessionStorageData,
-    storage_data: StorageData, py_api: PyApi, exec_api: ExecApi,
-    main_file_name: str, main_home: str, html_home: str, html_home2: str, http_web_host: str, http_web_port: int):
-    async def include_block(html: str) -> Tuple[List[str], List[str], List[str]]:
-        style_block = BLOCK_STYLE_PATTERN.findall(html)
-        script_block = BLOCK_SCRIPT_PATTERN.findall(html)
-        context_block = BLOCK_CONTEXT_PATTERN.findall(html)
-
-        return style_block, script_block, context_block
-
-    async def include_html_util(html_text: str) -> str:
-        html_text_return = html_text
-        for include_html, include_html_path in CONTEXT_INCLUDE_PATTERN.findall(html_text):
-            with open(os.path.join(html_home, include_html_path), 'r') as fp:
-                html_text_return = html_text_return.replace(include_html, fp.read())
-
-        has_include_html_path = set()
-        style_block_list = []
-        script_block_list = []
-        context_block_list = []
-        for include_html, include_html_path in HTML_INCLUDE_PATTERN.findall(html_text):
-            if include_html_path not in has_include_html_path:
-                with open(os.path.join(html_home, include_html_path), 'r') as fp:
-                    html_text_return = html_text_return.replace(include_html, "")
-                    style_block, script_block, context_block = await include_block(fp.read())
-                    style_block_list += style_block
-                    script_block_list += script_block
-                    context_block_list += context_block
-
-        html_text_return = html_text_return.replace('{% block style %}{% endblock %}', '\n'.join(style_block_list))
-        html_text_return = html_text_return.replace('{% block script %}{% endblock %}', '\n'.join(script_block_list))
-        html_text_return = html_text_return.replace('{% block context %}{% endblock %}', '\n'.join(context_block_list))
-        return html_text_return
-
+async def register(session_storage_data: SessionStorageData, storage_data: StorageHelper, py_api: PyApi, exec_api: ExecApi, main_home: str, html_home: str, http_web_host: str, http_web_port: int):
     async def send_html(txt, request, content_type='application/json; charset=utf-8'):
         binary = txt.encode('utf8')
         resp = web.StreamResponse()
@@ -71,40 +30,12 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
     async def send_ok(request):
         return await send_html(json.dumps({'status': True}), request)
 
-    async def main_page(request):
-        with open(os.path.join(html_home, './index_old.html'), 'r') as fp:
-            html_text = fp.read()
-            return await send_html(await include_html_util(html_text), request, content_type='text/html')
-
     async def get_storage_api(request):
-        try:
-            return await send_html(json.dumps(await storage_data.get_storage(), sort_keys=True, indent=4), request)
-        except Exception:
-            return await send_html("{}", request)
+        return await send_html(await storage_data.read(), request)
 
     async def save_storage_api(request):
         data = await request.json()
-        storage_data_version_id = data.get('storage_data_version_id')
-        new_storage = data.get('storage')
-        bak = data.get('bak')
-        if bak:
-            print(f"{new_storage.get('storage_data_version_id')} , {storage_data_version_id}")
-
-        storage = await storage_data.get_storage()
-        if storage_data_version_id != storage.get('storage_data_version_id'):
-            return await send_error(request, "保存失败，请刷新或重新打开页面")
-
-        await storage_data.set_storage(new_storage, bak=bak)
-        return await send_ok(request)
-
-    async def delete_storage_api(request):
-        await storage_data.delete_storage()
-        return await send_ok(request)
-
-    async def reload_storage_api(request):
-        data = await request.json()
-        path = data.get('path')
-        await storage_data.reload_storage(path)
+        await storage_data.save(json.dumps(data))
         return await send_ok(request)
 
     async def save_session_storage_api(request):
@@ -112,34 +43,6 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
         key = data.get('key')
         value = data.get('value')
         await session_storage_data.set_storage(key, value)
-        return await send_ok(request)
-
-    async def get_system_storage_api(request):
-        return await send_html(json.dumps(await system_storage_data.get_storage(), sort_keys=True, indent=4), request)
-
-    async def save_store_path_api(request):
-        data = await request.json()
-        storage_path = data.get('storage_path')
-        storage_history_path = data.get('storage_history_path')
-        reload = bool(data.get('reload'))
-        await system_storage_data.set_storage_path(storage_path, storage_history_path)
-        if storage_path:
-            if reload:
-                await storage_data.reload_storage(storage_path + "/storage.json")
-            else:
-                await storage_data.set_storage(None, bak=True)
-        return await send_ok(request)
-
-    async def storage_reset_event_send_map_api(request):
-        await storage_data.reset_event_send_map()
-        return await send_ok(request)
-
-    async def storage_reset_custom_variable_map_api(request):
-        await storage_data.reset_custom_variable_map()
-        return await send_ok(request)
-
-    async def storage_reset_py_method_api(request):
-        await storage_data.reset_xpy_method()
         return await send_ok(request)
 
     async def proxy_api(request):
@@ -173,6 +76,16 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
 
         return await send_html(json.dumps({
             'status': status,
+            'result': result,
+        }), request)
+
+    async def exec_py_api(request):
+        data = await request.json()
+        py_text = data['py']
+        agrs = data['agrs']
+        result = await exec_api.code_exec(py_text, agrs)
+        return await send_html(json.dumps({
+            'status': True,
             'result': result,
         }), request)
 
@@ -252,14 +165,6 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
             'message': message,
         }), request)
 
-    async def restart_api(_):
-        env_python_path = os.path.join(main_home, '../iterm2env/versions/3.7.9/bin/python3')
-        main_file_path = f'{main_home}/{main_file_name}'
-        os.system(
-            "ps -ef | grep python | grep -v grep | grep iterm2_shortcut_html2.py | awk '{print $2}' | xargs kill -9  "
-            "&& nohup /bin/bash /Applications/iTerm.app/Contents/Resources/it2_api_wrapper.sh "
-            + env_python_path + ' ' + main_file_path + " 2>&1 &")
-
     async def command_history_api(request):
         status = True
         message = ""
@@ -280,22 +185,15 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
         }), request)
 
     webapp = web.Application()
-    webapp.router.add_get('/', main_page)
     webapp.router.add_get('/api/storage', get_storage_api)
     webapp.router.add_post('/api/storage', save_storage_api)
-    webapp.router.add_delete('/api/storage', delete_storage_api)
-    webapp.router.add_post('/api/reload_storage', reload_storage_api)
     webapp.router.add_post('/api/session_storage', save_session_storage_api)
-    webapp.router.add_get('/api/system_storage', get_system_storage_api)
-    webapp.router.add_post('/api/change_store_path', save_store_path_api)
-    webapp.router.add_post('/api/storage_reset_event_send_map', storage_reset_event_send_map_api)
-    webapp.router.add_post('/api/storage_reset_custom_variable_map', storage_reset_custom_variable_map_api)
-    webapp.router.add_post('/api/storage_reset_py_method', storage_reset_py_method_api)
     webapp.router.add_post('/api/proxy', proxy_api)
     webapp.router.add_get('/api/command_history', command_history_api)
     webapp.router.add_post('/api/send_text', send_text_api)
     webapp.router.add_post('/api/send_hex_code', send_hex_code_api)
     webapp.router.add_post('/api/exec_shell', exec_shell_api)
+    webapp.router.add_post('/api/exec_py', exec_py_api)
     webapp.router.add_get('/api/selected_text', selected_text_api)
     webapp.router.add_post('/api/path_file', path_file_api)
     webapp.router.add_post('/api/iterm2_alert', iterm2_alert_api)
@@ -303,7 +201,6 @@ async def register(system_storage_data: SystemStorageData, session_storage_data:
     webapp.router.add_post('/api/iterm2_prompt', iterm2_prompt_api)
     webapp.router.add_post('/api/register_trigger', register_trigger_api)
     webapp.router.add_post('/api/test_event_name', test_event_name_api)
-    webapp.router.add_get('/api/restart', restart_api)
     webapp.router.add_static('/', path=html_home)
     runner = web.AppRunner(webapp)
     await runner.setup()

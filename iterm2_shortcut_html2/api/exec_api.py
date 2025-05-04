@@ -3,17 +3,17 @@ import json
 
 import iterm2
 from iterm2.session import Session
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any, Coroutine
 
 import traceback
 from api.py_api import PyApi
 from common.session_storage_data import SessionStorageData
-from common.storage_data import StorageData
 from iterm2.connection import Connection
 
 from iterm2.app import App
 
 from common import utils
+from common.storage_data import StorageHelper
 from common.utils import singleton
 
 
@@ -34,11 +34,11 @@ class Iterm2Api:
 @singleton
 class ExecApi:
     def __init__(self, app: App, connection: Connection, session_storage_data: SessionStorageData,
-                 storage_data: StorageData, py_api: PyApi):
+        storage_data: StorageHelper, py_api: PyApi):
         self.app: App = app
         self.connection: Connection = connection
         self.session_storage_data: SessionStorageData = session_storage_data
-        self.storage_data: StorageData = storage_data
+        self.storage_data: StorageHelper = storage_data
         self.py_api: PyApi = py_api
         self.iterm2_api: Iterm2Api = Iterm2Api(app, connection)
 
@@ -48,14 +48,13 @@ class ExecApi:
 
         print(f'\n\n======= exec_code params start =======\n{json.dumps(params)}\n======= exec_code params end =======')
         custom_variable_map = await self.storage_data.get_custom_variable_map()
-        xpy_method = await self.storage_data.get_xpy_method()
         eval_results = {}
         exec_code_str = "async def __ex():\n{}\nresults['__ex'] = __ex".format(
             ''.join(f'    {x}\n' for x in code.split('\n'))
         )
         exec(exec_code_str, {
             'ITERM2': self.iterm2_api,
-            'PY': xpy_method,
+            'PY': self.name_exec,
             'PYX': self.py_api,
             "UTILS": utils,
             'data': custom_variable_map,
@@ -67,6 +66,15 @@ class ExecApi:
         code_result_data = eval_results['event'] if 'event' in eval_results else ''
         print(f'\n\n======= exec_code start =======\n\n\n{exec_code_str}\n\n\nresult：{code_result_data}\n\n======== exec_code end ========\n\n')
         return code_result_data
+
+    async def name_exec(self, name: str, params: Optional[list] = None) -> str:
+        if not name:
+            return ''
+        xpy_method = await self.storage_data.load_py()
+        py_code = xpy_method.get(name)
+        if not py_code:
+            return ''
+        return await self.code_exec(py_code, params)
 
     async def code_exec(self, code: str, params: Optional[list] = None) -> str:
         try:

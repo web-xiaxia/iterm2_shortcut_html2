@@ -20,7 +20,7 @@ export default defineConfig({
         target: 'esnext',
         minify: 'terser',
         sourcemap: true,
-        outDir: "../iterm2_shortcut_html2/html/html2",
+        outDir: "../iterm2_shortcut_html2/html",
         emptyOutDir: true
     },
     optimizeDeps: {

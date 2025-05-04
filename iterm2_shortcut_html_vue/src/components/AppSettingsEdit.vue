@@ -81,7 +81,7 @@ const editSettings = computed<boolean>({
 })
 
 // 固定的标签数组
-const settingTabs = ref(['变量', '变量监听', 'js', 'py', 'shell', '事件', '触发']);
+const settingTabs = ref(['变量', '变量监听', 'js', 'py', 'shell', '事件', '触发', '系统配置']);
 // 当前选中的标签索引
 const currentTabIndex = ref(0);
 
@@ -178,6 +178,11 @@ watch(showSettingsModal, (newValue) => {
         <!-- 触发器配置标签页 -->
         <div v-else-if="currentTabIndex === 6" class="tab-pane">
           <SettingsTrigger :appConfig="appConfig"/>
+        </div>
+
+        <!-- 系统配置 -->
+        <div v-else-if="currentTabIndex === 7" class="tab-pane">
+          <SettingsConfig />
         </div>
       </div>
     </div>
