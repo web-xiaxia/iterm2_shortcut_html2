@@ -3,9 +3,10 @@ from iterm2.connection import Connection
 
 import iterm2
 from common import constants
+from common.system_storage_data import SystemStorageHelper
 
 
-async def register(connection: Connection, http_web_index_url: str):
+async def register(connection: Connection, system_storage_data: SystemStorageHelper, http_web_index_url: str):
     # 组装组件
     component = iterm2.StatusBarComponent(
         short_description=constants.SHORTCUT_HTML2_NAME,
@@ -23,12 +24,12 @@ async def register(connection: Connection, http_web_index_url: str):
         """
         window_width = 950
         window_height = 480
-        # try:
-        #     storage = await storage_data.get_storage()
-        #     window_width = storage.get('window_width', 950)
-        #     window_height = storage.get('window_height', 480)
-        # except Exception:
-        #     pass
+        try:
+            storage = await system_storage_data.get_config()
+            window_width = storage.window_width or 950
+            window_height = storage.window_height or 480
+        except Exception:
+            pass
         await component.async_open_popover(
             session_id,
             f'''

@@ -38,9 +38,9 @@ async def main(connection: Connection):
     # os.system(f"lsof -i :{http_web_port} | awk '{{print $2}}' |grep -v PID| xargs kill -9")
 
     # 注册状态栏
-    await status_bar_rpc.register(connection, http_web_index_url)
+    await status_bar_rpc.register(connection, system_storage_data,http_web_index_url)
     # 注册状态栏
-    await status_bar2_rpc.register(connection, http_web_index_url)
+    await status_bar2_rpc.register(connection,system_storage_data, http_web_index_url)
     # 注册view_tool
     await web_view_tool_rpc.register(connection, f'{http_web_index_url}?toolbelt=1')
     # 注册事件
