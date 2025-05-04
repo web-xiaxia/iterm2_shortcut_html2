@@ -22,6 +22,12 @@ export interface SettingsSystemConfig {
     window_width: number
     window_height: number
 }
+export function getInitSettingsSystemConfig(){
+    return {
+        window_height: 480,
+        window_width: 950
+    }
+}
 
 export function getSystemConfig(): SettingsSystemConfig {
     let config = commonSendHttp({
@@ -29,17 +35,8 @@ export function getSystemConfig(): SettingsSystemConfig {
         method: "GET",
         data: {},
     }).data as SettingsSystemConfig
-    if (!config) {
-        config = {
-            window_height: 480,
-            window_width: 950
-        }
-    }
     if (!config.window_height) {
-        config.window_height = 480
-    }
-    if (!config.window_width) {
-        config.window_width = 950
+        config = getInitSettingsSystemConfig()
     }
     return config
 }

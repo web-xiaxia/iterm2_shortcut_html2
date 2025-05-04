@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
 import {onMounted, ref, watch} from "vue";
-import {getSystemConfig, saveSystemConfig,type SettingsSystemConfig} from "@/api/config.ts";
+import {getInitSettingsSystemConfig, getSystemConfig, saveSystemConfig, type SettingsSystemConfig} from "@/api/config.ts";
 import {debounce} from "lodash";
 
 
-const systemConfig = ref<SettingsSystemConfig>(getSystemConfig());
+const systemConfig = ref<SettingsSystemConfig>(getInitSettingsSystemConfig());
 onMounted(() => {
   systemConfig.value = getSystemConfig()
 })
