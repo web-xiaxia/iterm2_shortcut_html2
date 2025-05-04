@@ -9,6 +9,7 @@ import SettingsVariable from './settings/SettingsVariable.vue';
 import SettingsVariableEvent from './settings/SettingsVariableEvent.vue';
 import SettingsCodeConfig from './settings/SettingsCodeConfig.vue';
 import SettingsTrigger from './settings/SettingsTrigger.vue';
+import SettingsSystemConfig from "@/components/settings/SettingsSystemConfig.vue";
 
 const props = defineProps<{
   appConfig: AppConfig,
@@ -182,7 +183,7 @@ watch(showSettingsModal, (newValue) => {
 
         <!-- 系统配置 -->
         <div v-else-if="currentTabIndex === 7" class="tab-pane">
-          <SettingsConfig />
+          <SettingsSystemConfig/>
         </div>
       </div>
     </div>
@@ -206,6 +207,8 @@ watch(showSettingsModal, (newValue) => {
   display: flex;
   background-color: rgb(28, 25, 25);
   overflow-x: auto;
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
   white-space: nowrap;
   position: relative;
   border-radius: 0.3em 0.3em 0 0;
@@ -602,8 +605,6 @@ watch(showSettingsModal, (newValue) => {
 }
 
 :deep(.form-group) {
-  display: flex;
-  flex-direction: column;
   margin-bottom: 10px;
 }
 </style>

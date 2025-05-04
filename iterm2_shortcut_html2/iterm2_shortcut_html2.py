@@ -6,6 +6,7 @@ from api import html_api
 from api.py_api import PyApi
 from common.session_storage_data import SessionStorageData
 from common.storage_data import StorageHelper
+from common.system_storage_data import SystemStorageHelper
 
 from rpc import status_bar_rpc, status_bar2_rpc, web_view_tool_rpc, event_rpc, monitor_rpc
 
@@ -20,11 +21,13 @@ async def main(connection: Connection):
     # 定义工作目录
     app: App = await iterm2.async_get_app(connection)
     main_home = abspath(dirname(__file__))
+    storage_config_home = os.path.join(main_home, 'storage_config')
     html_home = os.path.join(main_home, 'html')
     osascript_home = os.path.join(main_home, 'osascript')
 
     # 存储信息
-    storage_data: StorageHelper = StorageHelper(main_home)
+    storage_data: StorageHelper = StorageHelper(storage_config_home)
+    system_storage_data: StorageHelper = SystemStorageHelper(storage_config_home)
     session_storage_data: SessionStorageData = SessionStorageData(app)
     #
     py_api: PyApi = PyApi(app, connection, storage_data, osascript_home)
@@ -44,7 +47,7 @@ async def main(connection: Connection):
     await event_rpc.register(connection, http_web_index_url, py_api, exec_api)
     # 注册web
     await html_api.register(
-        session_storage_data, storage_data, py_api, exec_api,
+        session_storage_data, storage_data,system_storage_data, py_api, exec_api,
         main_home, html_home, http_web_host, http_web_port
     )
     # 注册监听

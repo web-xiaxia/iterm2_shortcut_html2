@@ -12,9 +12,10 @@ import os
 from aiohttp import web
 
 from common.storage_data import StorageHelper
+from common.system_storage_data import SystemStorageHelper
 
 
-async def register(session_storage_data: SessionStorageData, storage_data: StorageHelper, py_api: PyApi, exec_api: ExecApi, main_home: str, html_home: str, http_web_host: str, http_web_port: int):
+async def register(session_storage_data: SessionStorageData, storage_data: StorageHelper, system_storage_data: SystemStorageHelper, py_api: PyApi, exec_api: ExecApi, main_home: str, html_home: str, http_web_host: str, http_web_port: int):
     async def send_html(txt, request, content_type='application/json; charset=utf-8'):
         binary = txt.encode('utf8')
         resp = web.StreamResponse()
@@ -29,6 +30,14 @@ async def register(session_storage_data: SessionStorageData, storage_data: Stora
 
     async def send_ok(request):
         return await send_html(json.dumps({'status': True}), request)
+
+    async def get_system_config_api(request):
+        return await send_html(await system_storage_data.read(), request)
+
+    async def save_system_config_api(request):
+        data = await request.json()
+        await system_storage_data.save(json.dumps(data))
+        return await send_ok(request)
 
     async def get_storage_api(request):
         return await send_html(await storage_data.read(), request)
@@ -188,6 +197,8 @@ async def register(session_storage_data: SessionStorageData, storage_data: Stora
     webapp.router.add_get('/api/storage', get_storage_api)
     webapp.router.add_post('/api/storage', save_storage_api)
     webapp.router.add_post('/api/session_storage', save_session_storage_api)
+    webapp.router.add_get('/api/system_config', get_system_config_api)
+    webapp.router.add_post('/api/system_config', save_system_config_api)
     webapp.router.add_post('/api/proxy', proxy_api)
     webapp.router.add_get('/api/command_history', command_history_api)
     webapp.router.add_post('/api/send_text', send_text_api)
