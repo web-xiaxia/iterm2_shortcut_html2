@@ -42,6 +42,7 @@ const getInputTitleByType = computed<string>(() => {
         </select>
       </div>
     </div>
+    <slot name="type-remarks"></slot>
   </div>
   <div class="form-row">
     <div class="form-group">

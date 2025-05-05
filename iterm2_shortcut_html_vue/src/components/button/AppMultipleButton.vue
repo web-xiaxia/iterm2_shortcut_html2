@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {ButtonEditorCommonProps, ButtonEditorVariableProps, ButtonProps} from "@/types/AppConfig.ts";
+import {ButtonEditorButtonTypeProps, ButtonEditorCommonProps, ButtonEditorVariableProps, ButtonProps} from "@/types/AppConfig.ts";
 import {type AppButtonTypeMultipleButton, GetAppVariableRef} from "@/types/AppButton.ts";
 import type {CSSProperties} from 'vue';
 import {computed, ref} from "vue";
@@ -11,6 +11,7 @@ import CommonSelect from "../common/CommonSelect.vue";
 import AppEditorVariable from "./AppEditorVariable.vue";
 import AppEditorVariableRefresh from "@/components/button/AppEditorVariableRefresh.vue";
 import type {ButtonEditorRefreshProps} from "@/types/AppConfig.ts";
+import AppEditorButtonType from "@/components/button/AppEditorButtonType.vue";
 
 const props = defineProps<ButtonProps<AppButtonTypeMultipleButton>>();
 const editorCommonProp = computed<ButtonEditorCommonProps>(() => ({
@@ -20,6 +21,9 @@ const editorVariableProp = computed<ButtonEditorVariableProps>(() => ({
   buttonProps: props,
 }))
 const editorRefreshProp = computed<ButtonEditorRefreshProps>(() => ({
+  buttonProps: props,
+}))
+const editorButtonTypeProp = computed<ButtonEditorButtonTypeProps>(() => ({
   buttonProps: props,
 }))
 const variableInfo = GetAppVariableRef(props.button.buttonInfo, props.executeContext.executeVariable.variable)
@@ -32,28 +36,7 @@ const buttonStyle = computed<CSSProperties>(() => {
   }
 });
 
-const buttonTypeList = AppButtonTypeButtonTypeList;
 const buttonTypeTitleMap = AppButtonTypeButtonTypeMap;
-
-
-const getOptionsByType = computed<string[]>(() => {
-  const refreshType = props.button.buttonInfo.type
-  const config = buttonTypeTitleMap.get(refreshType)
-  if (!config) return []
-  return config.getOptions(props.executeContext.executeVariable)
-})
-const getInputTypeByType = computed<"input" | "textarea" | "variable">(() => {
-  const refreshType = props.button.buttonInfo.type
-  const config = buttonTypeTitleMap.get(refreshType)
-  if (!config) return "input"
-  return config.inputType
-})
-const getInputTitleByType = computed<string>(() => {
-  const refreshType = props.button.buttonInfo.type
-  const config = buttonTypeTitleMap.get(refreshType)
-  if (!config) return "内容"
-  return config.title
-})
 
 const showModal = ref(false);
 
@@ -101,40 +84,13 @@ function handleClick(v: string) {
     <AppEditorCommon v-bind="editorCommonProp"/>
     <AppEditorVariable v-bind="editorVariableProp"/>
     <AppEditorVariableRefresh v-bind="editorRefreshProp"/>
-    <div class="form-row">
-      <div class="form-group">
-        <div class="form-label">按钮类型</div>
-        <div class="form-input">
-          <select v-model="props.button.buttonInfo.type">
-            <option v-for="buttonType in  buttonTypeList" :value="buttonType.key">
-              {{ buttonType.name }}
-            </option>
-          </select>
+    <AppEditorButtonType v-bind="editorButtonTypeProp">
+      <template #type-remarks>
+        <div style="display: flex; align-items: center;" v-pre>
+          文本类型内容{{value}}替换为当前选中内容
         </div>
-      </div>
-      <div style="display: flex; align-items: center;" v-pre>
-        文本类型内容{{value}}替换为当前选中内容
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <div class="form-label">{{ getInputTitleByType }}</div>
-        <div class="form-input" style="">
-          <input v-if="getInputTypeByType == 'input'" v-model="props.button.buttonInfo.value">
-          <CommonSelect
-              v-else-if="getInputTypeByType == 'variable'"
-              :modelValue="props.button.buttonInfo.value"
-              :options="getOptionsByType"
-              :hideAdd="true"
-              :hideRemove="true"
-              width="14.8em"
-              height="2.2em"
-              @update:modelValue="(newVal:string)=>props.button.buttonInfo.value=newVal"
-          />
-          <textarea autocapitalize="off" style="width: 37.3em" v-else v-model="props.button.buttonInfo.value" rows="7"></textarea>
-        </div>
-      </div>
-    </div>
+      </template>
+    </AppEditorButtonType>
 
   </Modal>
 </template>
