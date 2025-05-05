@@ -179,7 +179,7 @@ const addVariableToEditing = () => {
                 height="2.2em"
                 @update:modelValue="(newVal:string)=>newEventValue=newVal"
             />
-            <textarea style="width: 37.3em" v-else v-model="newEventValue" rows="7"></textarea>
+            <textarea autocapitalize="off" style="width: 37.3em" v-else v-model="newEventValue" rows="7"></textarea>
           </div>
           
           <div v-if="newEventType && newEventValue" class="monitor-section">
@@ -272,7 +272,7 @@ const addVariableToEditing = () => {
                 height="2.2em"
                 @update:modelValue="(newVal:string)=>{if(editingEvent){editingEvent.refreshValue=newVal}}"
             />
-            <textarea style="width: 37.3em" v-else v-model="editingEvent.refreshValue" rows="7"></textarea>
+            <textarea autocapitalize="off" style="width: 37.3em" v-else v-model="editingEvent.refreshValue" rows="7"></textarea>
           </div>
           
           <div class="monitor-section">

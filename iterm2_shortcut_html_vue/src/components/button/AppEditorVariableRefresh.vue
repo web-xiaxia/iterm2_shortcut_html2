@@ -90,7 +90,7 @@ const removeVariable = (index: number) => {
             height="2.2em"
             @update:modelValue="(newVal:string)=>props.buttonProps.button.buttonInfo.refreshValue=newVal"
         />
-        <textarea style="width: 37.3em" v-else v-model="props.buttonProps.button.buttonInfo.refreshValue" rows="7"></textarea>
+        <textarea autocapitalize="off" style="width: 37.3em" v-else v-model="props.buttonProps.button.buttonInfo.refreshValue" rows="7"></textarea>
       </div>
     </div>
   </div>

@@ -131,7 +131,7 @@ function handleClick(v: string) {
               height="2.2em"
               @update:modelValue="(newVal:string)=>props.button.buttonInfo.value=newVal"
           />
-          <textarea style="width: 37.3em" v-else v-model="props.button.buttonInfo.value" rows="7"></textarea>
+          <textarea autocapitalize="off" style="width: 37.3em" v-else v-model="props.button.buttonInfo.value" rows="7"></textarea>
         </div>
       </div>
     </div>

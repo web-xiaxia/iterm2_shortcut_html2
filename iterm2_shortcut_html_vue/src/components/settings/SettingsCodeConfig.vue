@@ -85,6 +85,7 @@ const handleConfigChange = (key: string, event: Event) => {
             class="config-input"
         />
         <textarea
+            autocapitalize="off"
             v-model="newConfigValue"
             placeholder="配置值"
             class="config-input"
@@ -119,6 +120,7 @@ const handleConfigChange = (key: string, event: Event) => {
         <div class="config-key">{{ key }}</div>
         <div class="config-value">
           <textarea
+              autocapitalize="off"
               :value="value"
               @change="(e) => handleConfigChange(key, e)"
               rows="2"

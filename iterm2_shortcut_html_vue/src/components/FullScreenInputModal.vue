@@ -73,6 +73,7 @@ onUnmounted(() => {
           <button class="button-type-text" @click="props.appStatus.fullScreenInputTypeTextarea=!props.appStatus.fullScreenInputTypeTextarea">{{ props.appStatus.fullScreenInputTypeTextarea ? '切换单行':'切换多行' }}</button>
         </div>
         <textarea
+            autocapitalize="off"
             v-if="props.appStatus.fullScreenInputTypeTextarea"
             ref="fullScreenTextarea"
             v-model="props.appSessionStatus.fullScreenInputValue"
