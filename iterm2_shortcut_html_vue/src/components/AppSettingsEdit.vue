@@ -206,7 +206,6 @@ watch(showSettingsModal, (newValue) => {
 .tabs-header {
   display: flex;
   background-color: rgb(28, 25, 25);
-  overflow-x: auto;
   scrollbar-width: none;
   scrollbar-color: transparent transparent;
   white-space: nowrap;
@@ -223,8 +222,11 @@ watch(showSettingsModal, (newValue) => {
 }
 
 .tabs-item-box {
-  padding: 0.3em 2em 0;
+  padding: 0.3em 0 0;
   display: flex;
+  overflow-x: auto;
+  margin: 0 2em;
+  position: relative;
 }
 
 .tab-item {
@@ -244,7 +246,9 @@ watch(showSettingsModal, (newValue) => {
   border: 1px solid rgb(143, 143, 143);
   border-bottom: 1px solid rgb(38, 37, 37);
   background-color: rgb(38, 37, 37);
-  position: relative;
+  position: sticky;
+  left: 0;
+  right: 0;
   z-index: 21;
 }
 

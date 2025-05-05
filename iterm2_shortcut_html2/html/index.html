@@ -4,75 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>X</title>
-    <script>
-        const IN_ITERM2 = inIterm2()
-
-        function inIterm2() {
-            try {
-                return iterm2Invoke ? true : false
-            } catch (e) {
-                //
-            }
-            return false
-        }
-
-        if (IN_ITERM2) {
-            window.alert = function (message) {
-                $.post("/iterm2_alert", {
-                    'title': message,
-                    'subtitle': ""
-                }, function (data) {
-                    //pass
-                })
-            }
-            window.confirm = function (message) {
-                let b = false
-                $.ajax({
-                    url: "/iterm2_confirm",
-                    type: "POST",
-                    async: false,
-                    data: JSON.stringify({
-                        'title': message,
-                        'subtitle': "",
-                        'buttons': ['ok', 'cancel']
-                    }),
-                    contentType: "application/json; charset=utf-8",
-                    success: function (response_data) {
-                        if (response_data.status === 1000) {
-                            b = true
-                        }
-                    },
-                    error: function (message) {
-
-                    }
-                })
-                return b
-            }
-            window.prompt = function (message, _default = "") {
-                let b = ''
-                $.ajax({
-                    url: "/iterm2_prompt",
-                    type: "POST",
-                    async: false,
-                    data: JSON.stringify({
-                        'title': message,
-                        'subtitle': "",
-                        'default_value': _default
-                    }),
-                    contentType: "application/json; charset=utf-8",
-                    success: function (response_data) {
-                        b = response_data.status
-                    },
-                    error: function (message) {
-
-                    }
-                })
-                return b
-            }
-
-        }
-    </script>
-  <script type="module" crossorigin src="/assets/index-B3bRCfs_.js"></script>
+  <script type="module" crossorigin src="/assets/index-BQdKoUt1.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/@vue-BaXaCSUu.js">
   <link rel="modulepreload" crossorigin href="/assets/uuid-BvGqTgtF.js">
   <link rel="modulepreload" crossorigin href="/assets/marked-CvOaKklW.js">
@@ -81,7 +13,7 @@
   <link rel="modulepreload" crossorigin href="/assets/js-yaml-C2UU_f0v.js">
   <link rel="modulepreload" crossorigin href="/assets/lodash-DL1LYhQl.js">
   <link rel="stylesheet" crossorigin href="/assets/highlight-BfC0goYb.css">
-  <link rel="stylesheet" crossorigin href="/assets/index-CNNUb6rZ.css">
+  <link rel="stylesheet" crossorigin href="/assets/index-C_KokYqO.css">
 </head>
 <body>
 <div id="app"></div>

@@ -56,6 +56,7 @@ class PyApi:
     async def __alert(self, connection: Connection, title='', subtitle='', buttons=None) -> int:
         if not buttons:
             buttons = []
+
         title = json.dumps(title, ensure_ascii=False)
         subtitle = json.dumps(subtitle, ensure_ascii=False)
         buttons = json.dumps(buttons, ensure_ascii=False)
@@ -65,7 +66,7 @@ class PyApi:
             (f'iterm2.alert(title: {title}, ' +
              f'subtitle: {subtitle}, ' +
              f'buttons: {buttons}, ' +
-             f'window_id: {json.dumps(None)})'))
+             f'window_id: {self.app.current_window.window_id})'))
 
     async def __prompt(self, connection: Connection, title='', subtitle='', placeholder='',
         default_value='') -> Optional[str]:
@@ -79,7 +80,7 @@ class PyApi:
              f'subtitle: {subtitle}, ' +
              f'placeholder: {placeholder}, ' +
              f'defaultValue: {default_value}, ' +
-             f'window_id: {json.dumps(None)})'))
+             f'window_id: {self.app.current_window.window_id})'))
 
     async def send_text(self, send_text_context, run_type=""):
         await self.__send_text(self.app, send_text_context, run_type)

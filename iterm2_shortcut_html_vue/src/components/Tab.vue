@@ -208,7 +208,7 @@ const handleDragLeave = (index: number) => {
 .tab-select {
   flex-grow: 1;
   overflow: scroll;
-  padding: 4px 0 0 0;
+  padding: 4px 0 0 2em;
   background-color: rgb(28, 25, 25);
   white-space: nowrap;
   overflow-x: hidden;
@@ -217,7 +217,9 @@ const handleDragLeave = (index: number) => {
   justify-content: space-between;
   align-items: end;
   width: 100%;
+  max-width: 100vw;
   position: relative;
+  box-sizing: border-box;
 }
 
 .tab-select .left-content {
@@ -225,6 +227,8 @@ const handleDragLeave = (index: number) => {
   overflow-x: auto; /* 水平滚动 */
   white-space: nowrap; /* 防止内容换行 */
   min-width: 0; /* 关键！允许收缩小于内容宽度 */
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
 }
 
 .tab-select .right-content {
@@ -246,7 +250,6 @@ const handleDragLeave = (index: number) => {
 
 .tab-select .left-content::before {
   content: '';
-  padding-left: 20px;
 }
 
 .tab-select .left-content::after {
@@ -280,7 +283,9 @@ const handleDragLeave = (index: number) => {
 }
 
 .tab-select .tab-item.activity {
-  position: relative;
+  position: sticky;
+  left: 0;
+  right: 0;
   border: 1px solid rgb(143, 143, 143);
   border-bottom: 1px solid rgb(38, 37, 37);
   z-index: 21;
@@ -316,6 +321,7 @@ const handleDragLeave = (index: number) => {
   width: 100%;
   position: absolute;
   bottom: 0;
+  left: 0;
   z-index: 10;
 }
 

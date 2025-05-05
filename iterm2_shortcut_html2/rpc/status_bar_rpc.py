@@ -30,6 +30,9 @@ async def register(connection: Connection, system_storage_data: SystemStorageHel
             window_height = storage.window_height or 480
         except Exception:
             pass
+
+        print(window_width)
+        print(window_height)
         await component.async_open_popover(
             session_id,
             f'''

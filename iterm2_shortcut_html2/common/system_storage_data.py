@@ -32,5 +32,5 @@ class SystemStorageHelper:
         json_data = json.loads(val)
         ret = SystemConfig()
         ret.window_width = json_data.get("window_width", 950)
-        ret.window_height = json_data.get("window_width", 480)
+        ret.window_height = json_data.get("window_height", 480)
         return ret

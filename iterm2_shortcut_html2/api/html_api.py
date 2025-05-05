@@ -145,7 +145,7 @@ async def register(session_storage_data: SessionStorageData, storage_data: Stora
         subtitle = data['subtitle']
         buttons = data['buttons']
         return await send_html(json.dumps({
-            'status': await py_api.confirm(title=title, subtitle=subtitle, buttons=buttons)
+            'status': await py_api.confirm(title=title, subtitle=subtitle, buttons=buttons) == 1000
         }), request)
 
     async def iterm2_prompt_api(request):
@@ -154,7 +154,7 @@ async def register(session_storage_data: SessionStorageData, storage_data: Stora
         subtitle = data['subtitle']
         default_value = data['default_value']
         return await send_html(json.dumps({
-            'status': await py_api.prompt(title, subtitle, '', default_value)
+            'data': await py_api.prompt(title, subtitle, '', default_value)
         }), request)
 
     async def register_trigger_api(request):
