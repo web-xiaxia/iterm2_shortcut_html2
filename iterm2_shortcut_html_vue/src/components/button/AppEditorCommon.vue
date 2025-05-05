@@ -18,7 +18,11 @@ const colorSelectStyle = computed<CSSProperties>(() => {
     <div class="form-group half">
       <div class="form-label">变量联动</div>
       <div class="form-input">
-        <input v-model="props.buttonProps.button.linkage" autocapitalize="off" type="text"/>
+        <input v-model="props.buttonProps.button.linkage"
+               autocapitalize="off"
+               autocomplete="off"
+               spellcheck="false"
+               type="text"/>
       </div>
     </div>
     <div class="form-group half">

@@ -180,13 +180,23 @@ const handleDragLeave = (index: number) => {
   <!-- 编辑模态框 -->
   <div v-if="showEditModal && currentEditingIndex>=0 ">
     <Modal v-model:visible="showEditModal" title="编辑标签">
-      <input type="text" autocapitalize="off" v-model="props.tabs[currentEditingIndex].title" placeholder="输入标签名称"/>
+      <input type="text"
+             autocapitalize="off"
+             autocomplete="off"
+             spellcheck="false"
+             v-model="props.tabs[currentEditingIndex].title"
+             placeholder="输入标签名称"/>
     </Modal>
   </div>
 
   <!-- 新增标签模态框 -->
   <Modal v-model:visible="showAddModal" title="新增标签">
-    <input type="text" autocapitalize="off" v-model="newTabTitle" placeholder="输入标签名称"/>
+    <input type="text"
+           autocapitalize="off"
+           autocomplete="off"
+           spellcheck="false"
+           v-model="newTabTitle"
+           placeholder="输入标签名称"/>
     <div class="modal-actions">
       <button @click="showAddModal = false">取消</button>
       <button @click="confirmAddTab">确定</button>

@@ -67,7 +67,11 @@ function handleClick() {
       <div class="form-group">
         <div class="form-label">标题</div>
         <div class="form-input">
-          <input v-model="props.button.buttonInfo.title" autocapitalize="off" type="text"/>
+          <input v-model="props.button.buttonInfo.title"
+                 autocapitalize="off"
+                 autocomplete="off"
+                 spellcheck="false"
+                 type="text"/>
         </div>
       </div>
     </div>

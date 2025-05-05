@@ -165,7 +165,13 @@ const addVariableToEditing = () => {
           <div v-if="newEventType" class="monitor-section">
             <div class="section-title">{{ AppButtonVariableRefreshConfigMap.get(newEventType)?.title || '执行内容' }}</div>
 
-            <input type="text" autocapitalize="off" v-if="getInputTypeForEvent(newEventType) == 'input'" v-model="newEventValue">
+            <input type="text"
+                   autocapitalize="off"
+                   autocomplete="off"
+                   spellcheck="false"
+                   v-if="getInputTypeForEvent(newEventType) == 'input'"
+                   v-model="newEventValue"
+            />
             <CommonSelect
                 v-else-if="getInputTypeForEvent(newEventType) == 'variable'"
                 :modelValue="newEventValue"
@@ -176,7 +182,14 @@ const addVariableToEditing = () => {
                 height="2.2em"
                 @update:modelValue="(newVal:string)=>newEventValue=newVal"
             />
-            <textarea autocapitalize="off" style="width: 37.3em" v-else v-model="newEventValue" rows="7"></textarea>
+            <textarea v-else
+                      autocapitalize="off"
+                      autocomplete="off"
+                      spellcheck="false"
+                      style="width: 37.3em"
+                      v-model="newEventValue"
+                      rows="7"
+            ></textarea>
           </div>
           
           <div v-if="newEventType && newEventValue" class="monitor-section">
@@ -258,7 +271,13 @@ const addVariableToEditing = () => {
           
           <div class="monitor-section">
             <div class="section-title">执行内容：</div>
-            <input type="text" autocapitalize="off" v-if="getInputTypeForEvent(editingEvent.refreshType) == 'input'" v-model="editingEvent.refreshValue">
+            <input type="text"
+                   autocapitalize="off"
+                   autocomplete="off"
+                   spellcheck="false"
+                   v-if="getInputTypeForEvent(editingEvent.refreshType) == 'input'"
+                   v-model="editingEvent.refreshValue"
+            />
             <CommonSelect
                 v-else-if="getInputTypeForEvent(editingEvent.refreshType) == 'variable'"
                 :modelValue="editingEvent.refreshValue"
@@ -269,7 +288,14 @@ const addVariableToEditing = () => {
                 height="2.2em"
                 @update:modelValue="(newVal:string)=>{if(editingEvent){editingEvent.refreshValue=newVal}}"
             />
-            <textarea autocapitalize="off" style="width: 37.3em" v-else v-model="editingEvent.refreshValue" rows="7"></textarea>
+            <textarea v-else
+                      autocapitalize="off"
+                      autocomplete="off"
+                      spellcheck="false"
+                      style="width: 37.3em"
+                      v-model="editingEvent.refreshValue"
+                      rows="7"
+            ></textarea>
           </div>
           
           <div class="monitor-section">

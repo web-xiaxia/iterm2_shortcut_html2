@@ -65,6 +65,8 @@ const handleVariableChange = (key: string, event: Event) => {
         <input
             type="text"
             autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             v-model="newVarKey"
             placeholder="变量名称"
             class="config-input"
@@ -72,6 +74,8 @@ const handleVariableChange = (key: string, event: Event) => {
         <input
             type="text"
             autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             v-model="newVarValue"
             placeholder="变量值"
             class="config-input"
@@ -109,6 +113,8 @@ const handleVariableChange = (key: string, event: Event) => {
           <input
               type="text"
               autocapitalize="off"
+              autocomplete="off"
+              spellcheck="false"
               :value="variable.values && variable.values.length > 0 ? variable.values[variable.values.length - 1] : ''"
               @change="(e) => handleVariableChange(key, e)"
           />

@@ -94,12 +94,16 @@ const handleRun = (value: string) => {
         <input
             type="text"
             autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             v-model="newConfigKey"
             placeholder="配置名称"
             class="config-input"
         />
         <textarea
             autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             v-model="newConfigValue"
             placeholder="配置值"
             class="config-input"
@@ -135,6 +139,8 @@ const handleRun = (value: string) => {
         <div class="config-value">
           <textarea
               autocapitalize="off"
+              autocomplete="off"
+              spellcheck="false"
               :value="value"
               @change="(e) => handleConfigChange(key, e)"
               rows="2"

@@ -74,6 +74,8 @@ onUnmounted(() => {
         </div>
         <textarea
             autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             v-if="props.appStatus.fullScreenInputTypeTextarea"
             ref="fullScreenTextarea"
             v-model="props.appSessionStatus.fullScreenInputValue"
@@ -84,6 +86,8 @@ onUnmounted(() => {
         <input v-else ref="fullScreenInput"
                type="text"
                autocapitalize="off"
+               autocomplete="off"
+               spellcheck="false"
                v-model="props.appSessionStatus.fullScreenInputValue"
                class="center-input"
                placeholder="请输入内容"

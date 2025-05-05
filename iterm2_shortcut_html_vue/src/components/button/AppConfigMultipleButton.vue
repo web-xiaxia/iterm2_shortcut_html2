@@ -274,7 +274,13 @@ function handleClick(v: AppButtonTypeConfigMultipleButtonExecuteInfo) {
       <div class="form-group">
         <div class="form-label">配置</div>
         <div class="form-input" style="">
-          <textarea autocapitalize="off" style="width: 37.3em" v-model="props.button.buttonInfo.configValue" rows="7"></textarea>
+          <textarea autocapitalize="off"
+                    autocomplete="off"
+                    spellcheck="false"
+                    style="width: 37.3em"
+                    v-model="props.button.buttonInfo.configValue"
+                    rows="7"
+          ></textarea>
         </div>
       </div>
     </div>

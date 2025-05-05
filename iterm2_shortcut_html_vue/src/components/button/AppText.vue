@@ -45,7 +45,12 @@ function handleClick() {
       <div class="form-group">
         <div class="form-label">文本内容</div>
         <div class="form-input">
-          <input v-model="props.button.buttonInfo.text" autocapitalize="off" type="text"/>
+          <input v-model="props.button.buttonInfo.text"
+                 autocapitalize="off"
+                 autocomplete="off"
+                 spellcheck="false"
+                 type="text"
+          />
         </div>
       </div>
     </div>

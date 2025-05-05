@@ -52,6 +52,8 @@ function handleClick() {
            :style="buttonStyle"
            :type="props.button.buttonInfo.showType =='number'?'number':'text'"
            autocapitalize="off"
+           autocomplete="off"
+           spellcheck="false"
            v-model="variableInfoValue"
     />
   </div>

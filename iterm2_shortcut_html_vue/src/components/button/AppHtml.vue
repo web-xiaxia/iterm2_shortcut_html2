@@ -42,7 +42,13 @@ function handleClick() {
       <div class="form-group" style="width: 42.3em;">
         <div class="form-label">Html内容</div>
         <div class="form-input">
-          <textarea autocapitalize="off" style="width: 100%" v-model="props.button.buttonInfo.html" rows="5"></textarea>
+          <textarea autocapitalize="off"
+                    autocomplete="off"
+                    spellcheck="false"
+                    style="width: 100%"
+                    v-model="props.button.buttonInfo.html"
+                    rows="5"
+          ></textarea>
         </div>
       </div>
     </div>

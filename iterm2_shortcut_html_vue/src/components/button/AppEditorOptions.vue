@@ -47,6 +47,8 @@ function moveOption(index: number, direction: number) {
             v-model="newOption"
             type="text"
             autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             placeholder="输入新选项"
             @keyup.enter="addOption"
             class="option-add-input"
@@ -71,6 +73,8 @@ function moveOption(index: number, direction: number) {
         <input
             type="text"
             autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             class="option-input"
             :value="option"
             @input="(e:Event) => updateOptionValue(index, (e.target as HTMLInputElement).value)"
