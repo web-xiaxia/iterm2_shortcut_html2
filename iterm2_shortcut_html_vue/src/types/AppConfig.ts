@@ -99,7 +99,7 @@ export interface AppExecute {
     executePy: (text: string) => string
     executePyWithConfig: (name: string, ...args: any[]) => string
     executeShell: (text: string) => string
-    executeShellWithConfig: (name: string, ...args: any[]) => string
+    executeShellWithConfig: (name: string) => string
     sendHttp: (req: HttpRequest) => HttpResponse | any
 }
 

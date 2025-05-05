@@ -135,12 +135,12 @@ export function newAppExecuteContext(appSessionStatus: ComputedRef<AppSessionSta
                 return executePy(jsText, ...args)
             },
             executeShell: executeShell,
-            executeShellWithConfig: (name: string, ...args: any[]): string => {
+            executeShellWithConfig: (name: string): string => {
                 const jsText = executeVariable.value.shell[name]
                 if (!jsText || jsText.length == 0) {
                     return ""
                 }
-                return executeShell(jsText, ...args)
+                return executeShell(jsText)
             },
         },
         keyboard: keyboardInfo.value,

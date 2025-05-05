@@ -91,8 +91,8 @@ async def register(session_storage_data: SessionStorageData, storage_data: Stora
     async def exec_py_api(request):
         data = await request.json()
         py_text = data['py']
-        agrs = data['agrs']
-        result = await exec_api.code_exec(py_text, agrs)
+        params = list(data['params'])
+        result = await exec_api.code_exec(py_text, params)
         return await send_html(json.dumps({
             'status': True,
             'result': result,

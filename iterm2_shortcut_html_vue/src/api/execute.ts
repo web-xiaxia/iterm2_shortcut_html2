@@ -18,12 +18,12 @@ export function executePy(code: string, ...args: any[]): string {
         method: "POST",
         data: {
             "py": code,
-            "args": args,
+            "params": args,
         },
     }).data as string
 }
 
-export function executeShell(code: string, ...args: any[]): string {
+export function executeShell(code: string): string {
     return commonSendHttp({
         url: "/api/exec_shell",
         method: "POST",
