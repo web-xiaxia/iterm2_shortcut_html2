@@ -4,6 +4,7 @@ import CommonSelect from "@/components/common/CommonSelect.vue";
 import {computed} from "vue";
 import {AppButtonTypeButtonTypeList, AppButtonTypeButtonTypeMap} from "@/components/AppButtonTypeButtonTypeConfig.ts";
 import {ButtonEditorButtonTypeProps} from "@/types/AppConfig.ts";
+import type {AppButtonInfoTypeRefreshInfo} from "@/types/AppButton.ts";
 
 const props = defineProps<ButtonEditorButtonTypeProps>();
 
@@ -28,6 +29,11 @@ const getInputTitleByType = computed<string>(() => {
   if (!config) return "内容"
   return config.title
 })
+
+const handleRefresh = () => {
+  const buttonInfo = props.buttonProps.button.buttonInfo
+  buttonTypeTitleMap.get(buttonInfo.type)?.send(props.buttonProps.executeContext, buttonInfo.value)
+}
 </script>
 
 <template>
@@ -47,7 +53,8 @@ const getInputTitleByType = computed<string>(() => {
   <div class="form-row">
     <div class="form-group">
       <div class="form-label">{{ getInputTitleByType }}</div>
-      <div class="form-input" style="">
+      <div class="form-input" style="display: flex;flex-direction: column">
+        <button @click="handleRefresh" style="width: 10em;">run</button>
         <input v-if="getInputTypeByType=='input'" v-model="props.buttonProps.button.buttonInfo.value">
         <CommonSelect
             v-else-if="getInputTypeByType=='variable'"
