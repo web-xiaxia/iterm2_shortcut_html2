@@ -92,27 +92,26 @@ const handleConfigChange = (key: string, event: Event) => {
       </div>
     </div>
 
-    <!-- 筛选配置 -->
-    <div class="filter-container">
-      <div class="filter-label">筛选：</div>
-      <div class="filter-options">
-        <label class="filter-option">
-          <input type="radio" v-model="configFilter" value="all"/>
-          <span>全部</span>
-        </label>
-        <label class="filter-option">
-          <input type="radio" v-model="configFilter" value="used"/>
-          <span>使用中</span>
-        </label>
-        <label class="filter-option">
-          <input type="radio" v-model="configFilter" value="unused"/>
-          <span>未使用</span>
-        </label>
-      </div>
-    </div>
-
     <!-- 配置列表 -->
     <div class="config-list">
+      <!-- 筛选配置 -->
+      <div class="filter-container">
+        <div class="filter-label">筛选：</div>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input type="radio" v-model="configFilter" value="all"/>
+            <span>全部</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" v-model="configFilter" value="used"/>
+            <span>使用中</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" v-model="configFilter" value="unused"/>
+            <span>未使用</span>
+          </label>
+        </div>
+      </div>
       <div v-for="[key, value] in getFilteredConfig()" :key="key" class="config-item">
         <div class="config-key">{{ key }}</div>
         <div class="config-value">

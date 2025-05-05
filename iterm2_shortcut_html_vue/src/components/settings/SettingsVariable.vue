@@ -79,26 +79,26 @@ const handleVariableChange = (key: string, event: Event) => {
         <button @click="addNewVariable" class="add-btn">添加</button>
       </div>
     </div>
-    <!-- 筛选变量 -->
-    <div class="filter-container">
-      <div class="filter-label">筛选：</div>
-      <div class="filter-options">
-        <label class="filter-option">
-          <input type="radio" v-model="variableFilter" value="all"/>
-          <span>全部</span>
-        </label>
-        <label class="filter-option">
-          <input type="radio" v-model="variableFilter" value="used"/>
-          <span>使用中</span>
-        </label>
-        <label class="filter-option">
-          <input type="radio" v-model="variableFilter" value="unused"/>
-          <span>未使用</span>
-        </label>
-      </div>
-    </div>
     <!-- 变量列表 -->
     <div class="config-list">
+      <!-- 筛选变量 -->
+      <div class="filter-container">
+        <div class="filter-label">筛选：</div>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input type="radio" v-model="variableFilter" value="all"/>
+            <span>全部</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" v-model="variableFilter" value="used"/>
+            <span>使用中</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" v-model="variableFilter" value="unused"/>
+            <span>未使用</span>
+          </label>
+        </div>
+      </div>
       <div v-for="[key, variable] in Object.entries(props.appConfig.variable || {})" :key="key" 
           v-show="variableFilter === 'all' || 
                 (variableFilter === 'used' && props.usedVariableSet.has(key)) || 

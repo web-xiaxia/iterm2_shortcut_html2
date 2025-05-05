@@ -277,12 +277,12 @@ watch(showSettingsModal, (newValue) => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: auto;
 }
 
 :deep(.config-list) {
-  margin-top: 8px;
   flex: 1;
-  overflow: auto;
+  min-height: 100%;
 }
 
 :deep(.config-item) {
@@ -357,9 +357,12 @@ watch(showSettingsModal, (newValue) => {
   display: flex;
   align-items: center;
   margin-top: 10px;
-  background-color: rgba(60, 60, 60, 0.3);
+  margin-bottom: 10px;
+  background-color: rgba(60, 60, 60, 1);
   padding: 10px;
   border-radius: 4px;
+  position: sticky;
+  top: 0;
 }
 
 :deep(.filter-label) {
@@ -605,7 +608,6 @@ watch(showSettingsModal, (newValue) => {
 :deep(.form-row) {
   display: flex;
   gap: 10px;
-  margin-bottom: 10px;
   align-items: center;
 }
 
