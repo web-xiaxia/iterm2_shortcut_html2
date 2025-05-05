@@ -22,8 +22,8 @@ const appVariableSelectOptions = computed<string[]>(() => {
             :options="appVariableSelectOptions"
             :hideAdd="true"
             :hideRemove="true"
-            width="14.8em"
-            height="2.2em"
+            width="17.3em"
+            height="2.4em"
             @update:modelValue="(newVal:string)=>props.buttonProps.button.buttonInfo.variableName=newVal"
         />
       </div>
