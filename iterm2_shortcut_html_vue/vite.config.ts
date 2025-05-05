@@ -26,7 +26,17 @@ export default defineConfig({
         minify: 'terser',
         sourcemap: true,
         outDir: "../iterm2_shortcut_html2/html",
-        emptyOutDir: true
+        emptyOutDir: true,
+        rollupOptions: {
+            output: {
+                //拆分太大的包配置
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        return id.split('node_modules/')[1].split('/')[0].toString(); // 以模块名命名
+                    }
+                }
+            }
+        }
     },
     optimizeDeps: {
         esbuildOptions: {

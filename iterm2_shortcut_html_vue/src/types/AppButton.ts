@@ -175,7 +175,7 @@ export interface AppButtonTypeButton extends AppButtonTypeButtonExecute {
 
 }
 
-export interface AppButtonTypeMultipleButton extends AppButtonTypeButtonExecute, AppButtonInfoTypeVariableInfo {
+export interface AppButtonTypeMultipleButton extends AppButtonTypeButtonExecute, AppButtonInfoTypeVariableInfo, AppButtonInfoTypeRefreshInfo {
     width: number
 }
 

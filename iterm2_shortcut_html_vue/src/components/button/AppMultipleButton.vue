@@ -9,6 +9,8 @@ import {handleMouseenterEditWidth, handleMouseoutEditWidth} from "@/types/Common
 import {AppButtonTypeButtonTypeList, AppButtonTypeButtonTypeMap} from "../AppButtonTypeButtonTypeConfig.ts";
 import CommonSelect from "../common/CommonSelect.vue";
 import AppEditorVariable from "./AppEditorVariable.vue";
+import AppEditorVariableRefresh from "@/components/button/AppEditorVariableRefresh.vue";
+import type {ButtonEditorRefreshProps} from "@/types/AppConfig.ts";
 
 const props = defineProps<ButtonProps<AppButtonTypeMultipleButton>>();
 const editorCommonProp = computed<ButtonEditorCommonProps>(() => ({
@@ -17,7 +19,9 @@ const editorCommonProp = computed<ButtonEditorCommonProps>(() => ({
 const editorVariableProp = computed<ButtonEditorVariableProps>(() => ({
   buttonProps: props,
 }))
-
+const editorRefreshProp = computed<ButtonEditorRefreshProps>(() => ({
+  buttonProps: props,
+}))
 const variableInfo = GetAppVariableRef(props.button.buttonInfo, props.executeContext.executeVariable.variable)
 
 const buttonStyle = computed<CSSProperties>(() => {
@@ -96,6 +100,7 @@ function handleClick(v: string) {
   >
     <AppEditorCommon v-bind="editorCommonProp"/>
     <AppEditorVariable v-bind="editorVariableProp"/>
+    <AppEditorVariableRefresh v-bind="editorRefreshProp"/>
     <div class="form-row">
       <div class="form-group">
         <div class="form-label">按钮类型</div>
