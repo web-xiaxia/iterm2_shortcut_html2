@@ -113,6 +113,7 @@ watch(() => appSessionStatus.value.editWidth, (newVal) => {
 <template>
   <AppSettingsEdit
       :appConfig="appConfig as any"
+      :executeContext="appExecuteContext"
       :appStatus="appStatus"
       :appSessionStatus="appSessionStatus"
   />

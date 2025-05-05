@@ -4,7 +4,6 @@ import CommonSelect from "@/components/common/CommonSelect.vue";
 import {computed} from "vue";
 import {AppButtonTypeButtonTypeList, AppButtonTypeButtonTypeMap} from "@/components/AppButtonTypeButtonTypeConfig.ts";
 import {ButtonEditorButtonTypeProps} from "@/types/AppConfig.ts";
-import type {AppButtonInfoTypeRefreshInfo} from "@/types/AppButton.ts";
 
 const props = defineProps<ButtonEditorButtonTypeProps>();
 

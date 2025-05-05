@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {ref} from 'vue';
-import type {AppConfig} from "@/types/AppConfig.ts";
+import {computed, ref} from 'vue';
+import type {AppConfig, AppExecuteContext} from "@/types/AppConfig.ts";
 import type {AppKvStrStore} from "@/types/AppButton.ts";
+import {AppButtonTypeButtonTypeMap} from "@/components/AppButtonTypeButtonTypeConfig.ts";
 
 const props = defineProps<{
   appConfig: AppConfig,
+  executeContext: AppExecuteContext,
   configType: 'js' | 'py' | 'shell' | 'event',
   usedSet: Set<string>,
   title: string,
@@ -67,6 +69,21 @@ const handleConfigChange = (key: string, event: Event) => {
   const target = event.target as HTMLTextAreaElement;
   updateConfig(key, target.value);
 };
+
+const buttonTypeTitleMap = AppButtonTypeButtonTypeMap;
+
+const showRun = computed(() => {
+  return props.configType == "js" || props.configType == "py" || props.configType == "shell";
+})
+
+const handleAddRun = () => {
+  buttonTypeTitleMap.get(props.configType)?.send(props.executeContext, newConfigValue.value)
+}
+
+const handleRun = (value: string) => {
+  buttonTypeTitleMap.get(props.configType)?.send(props.executeContext, value)
+}
+
 </script>
 
 <template>
@@ -88,6 +105,7 @@ const handleConfigChange = (key: string, event: Event) => {
             class="config-input"
             rows="2"
         ></textarea>
+        <button v-if="showRun" @click="handleAddRun" class="add-btn">run</button>
         <button @click="addNewConfig" class="add-btn">添加</button>
       </div>
     </div>
@@ -123,6 +141,7 @@ const handleConfigChange = (key: string, event: Event) => {
           ></textarea>
         </div>
         <div class="config-actions">
+          <button v-if="showRun" @click="handleRun(value)" class="add-btn">run</button>
           <button @click="deleteConfig(key)" :disabled="props.usedSet.has(key)" class="delete-btn">删除</button>
         </div>
       </div>

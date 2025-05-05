@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, ref, watch, watchEffect} from 'vue';
-import type {AppConfig, AppSessionStatus, AppStatus} from "../types/AppConfig";
+import type {AppConfig, AppExecuteContext, AppSessionStatus, AppStatus} from "../types/AppConfig";
 import Modal from './common/CommonModal.vue';
 import type {AppButtonInfoTypeRefreshInfo, AppButtonInfoTypeVariableInfo, AppButtonTypeButton} from "../types/AppButton";
 
@@ -13,6 +13,7 @@ import SettingsSystemConfig from "@/components/settings/SettingsSystemConfig.vue
 
 const props = defineProps<{
   appConfig: AppConfig,
+  executeContext:AppExecuteContext,
   appStatus: AppStatus,
   appSessionStatus: AppSessionStatus,
 }>()
@@ -140,6 +141,7 @@ watch(showSettingsModal, (newValue) => {
         <div v-else-if="currentTabIndex === 2" class="tab-pane">
           <SettingsCodeConfig
               :appConfig="appConfig"
+              :executeContext="executeContext"
               configType="js"
               :usedSet="usedJsSet"
               title="JavaScript"
@@ -150,6 +152,7 @@ watch(showSettingsModal, (newValue) => {
         <div v-else-if="currentTabIndex === 3" class="tab-pane">
           <SettingsCodeConfig
               :appConfig="appConfig"
+              :executeContext="executeContext"
               configType="py"
               :usedSet="usedPySet"
               title="Python"
@@ -160,6 +163,7 @@ watch(showSettingsModal, (newValue) => {
         <div v-else-if="currentTabIndex === 4" class="tab-pane">
           <SettingsCodeConfig
               :appConfig="appConfig"
+              :executeContext="executeContext"
               configType="shell"
               :usedSet="usedShellSet"
               title="Shell"
@@ -170,6 +174,7 @@ watch(showSettingsModal, (newValue) => {
         <div v-else-if="currentTabIndex === 5" class="tab-pane">
           <SettingsCodeConfig
               :appConfig="appConfig"
+              :executeContext="executeContext"
               configType="event"
               :usedSet="usedEventSet"
               title="事件"
