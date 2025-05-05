@@ -282,7 +282,6 @@ watch(showSettingsModal, (newValue) => {
 
 :deep(.config-list) {
   flex: 1;
-  min-height: 100%;
 }
 
 :deep(.config-item) {
