@@ -262,6 +262,9 @@ function handleClick(v: AppButtonTypeConfigMultipleButtonExecuteInfo) {
         <div class="form-label">
           <button @click="showConfigTypeDescription=!showConfigTypeDescription">{{ showConfigTypeDescription ? "关闭" : "打开" }}</button>
         </div>
+        <div class="config-type-description" @click="showConfigTypeDescription=!showConfigTypeDescription" v-if="!showConfigTypeDescription" >
+          点击打开说明
+        </div>
         <div class="config-type-description" v-if="showConfigTypeDescription" v-html="configTypeMap.get(props.button.buttonInfo.configType)?.description">
         </div>
       </div>
