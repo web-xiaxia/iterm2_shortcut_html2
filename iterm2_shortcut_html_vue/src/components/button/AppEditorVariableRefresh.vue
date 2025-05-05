@@ -3,6 +3,7 @@ import type {ButtonEditorRefreshProps} from "@/types/AppConfig.ts";
 import {AppButtonVariableRefreshConfigList, AppButtonVariableRefreshConfigMap} from "../AppButtonVariableRefreshConfig";
 import {computed, ref} from "vue";
 import CommonSelect from "../common/CommonSelect.vue";
+import type {AppButtonInfoTypeRefreshInfo} from "@/types/AppButton.ts";
 
 const props = defineProps<ButtonEditorRefreshProps>();
 const buttonTypeList = AppButtonVariableRefreshConfigList
@@ -49,6 +50,17 @@ const addVariable = () => {
 const removeVariable = (index: number) => {
   props.buttonProps.button.buttonInfo.refreshOfVariables.splice(index, 1)
 }
+
+
+const refreshConfigMap = AppButtonVariableRefreshConfigMap
+
+const handleRefresh = () => {
+  const typeVariableInfo = props.buttonProps.button.buttonInfo as AppButtonInfoTypeRefreshInfo
+  if (!typeVariableInfo.refreshType || typeVariableInfo.refreshType.length == 0) {
+    return false
+  }
+  refreshConfigMap.get(typeVariableInfo.refreshType)?.refresh(props.buttonProps.executeContext, typeVariableInfo.refreshValue)
+}
 </script>
 
 <template>
@@ -78,7 +90,8 @@ const removeVariable = (index: number) => {
   <div class="form-row" v-if="refreshTypeSelected">
     <div class="form-group">
       <div class="form-label">{{ getInputTitleByRefreshType }}</div>
-      <div class="form-input" style="">
+      <div class="form-input" style="display: flex;flex-direction: column">
+        <button @click="handleRefresh" style="width: 10em;">run</button>
         <input v-if="getInputTypeByRefreshType == 'input'" v-model="props.buttonProps.button.buttonInfo.refreshValue">
         <CommonSelect
             v-else-if="getInputTypeByRefreshType == 'variable'"
