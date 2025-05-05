@@ -51,6 +51,7 @@ function handleClick() {
            :readonly="props.appSessionStatus.editWidth"
            :style="buttonStyle"
            :type="props.button.buttonInfo.showType =='number'?'number':'text'"
+           autocapitalize="off"
            v-model="variableInfoValue"
     />
   </div>

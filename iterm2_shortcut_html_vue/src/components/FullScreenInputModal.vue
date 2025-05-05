@@ -82,6 +82,8 @@ onUnmounted(() => {
             rows="8"
         ></textarea>
         <input v-else ref="fullScreenInput"
+               type="text"
+               autocapitalize="off"
                v-model="props.appSessionStatus.fullScreenInputValue"
                class="center-input"
                placeholder="请输入内容"

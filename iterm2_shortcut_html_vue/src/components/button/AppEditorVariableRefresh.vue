@@ -92,7 +92,7 @@ const handleRefresh = () => {
       <div class="form-label">{{ getInputTitleByRefreshType }}</div>
       <div class="form-input" style="display: flex;flex-direction: column">
         <button @click="handleRefresh" style="width: 10em;">run</button>
-        <input v-if="getInputTypeByRefreshType == 'input'" v-model="props.buttonProps.button.buttonInfo.refreshValue">
+        <input type="text" autocapitalize="off" v-if="getInputTypeByRefreshType == 'input'" v-model="props.buttonProps.button.buttonInfo.refreshValue">
         <CommonSelect
             v-else-if="getInputTypeByRefreshType == 'variable'"
             :modelValue="props.buttonProps.button.buttonInfo.refreshValue"

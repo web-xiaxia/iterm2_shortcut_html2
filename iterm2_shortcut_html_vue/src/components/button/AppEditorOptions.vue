@@ -45,6 +45,8 @@ function moveOption(index: number, direction: number) {
       <div class="option-input-wrapper">
         <input
             v-model="newOption"
+            type="text"
+            autocapitalize="off"
             placeholder="输入新选项"
             @keyup.enter="addOption"
             class="option-add-input"
@@ -67,6 +69,8 @@ function moveOption(index: number, direction: number) {
       >
         <div class="option-number">{{ index + 1 }}</div>
         <input
+            type="text"
+            autocapitalize="off"
             class="option-input"
             :value="option"
             @input="(e:Event) => updateOptionValue(index, (e.target as HTMLInputElement).value)"

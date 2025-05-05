@@ -165,7 +165,7 @@ const addVariableToEditing = () => {
           <div v-if="newEventType" class="monitor-section">
             <div class="section-title">{{ AppButtonVariableRefreshConfigMap.get(newEventType)?.title || '执行内容' }}</div>
 
-            <input v-if="getInputTypeForEvent(newEventType) == 'input'" v-model="newEventValue">
+            <input type="text" autocapitalize="off" v-if="getInputTypeForEvent(newEventType) == 'input'" v-model="newEventValue">
             <CommonSelect
                 v-else-if="getInputTypeForEvent(newEventType) == 'variable'"
                 :modelValue="newEventValue"
@@ -258,7 +258,7 @@ const addVariableToEditing = () => {
           
           <div class="monitor-section">
             <div class="section-title">执行内容：</div>
-            <input v-if="getInputTypeForEvent(editingEvent.refreshType) == 'input'" v-model="editingEvent.refreshValue">
+            <input type="text" autocapitalize="off" v-if="getInputTypeForEvent(editingEvent.refreshType) == 'input'" v-model="editingEvent.refreshValue">
             <CommonSelect
                 v-else-if="getInputTypeForEvent(editingEvent.refreshType) == 'variable'"
                 :modelValue="editingEvent.refreshValue"
