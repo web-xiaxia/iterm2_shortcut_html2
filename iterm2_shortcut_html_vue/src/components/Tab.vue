@@ -290,6 +290,7 @@ const handleDragLeave = (index: number) => {
   border-bottom: 1px solid rgb(38, 37, 37);
   z-index: 21;
   background: rgb(38, 37, 37);
+  box-shadow: 0 -4px 0 0 #1b1919;
 }
 
 .tab-select .tab-controls {
@@ -378,7 +379,6 @@ const handleDragLeave = (index: number) => {
 
 .tab-select .tab-item.draggable {
   cursor: move;
-  position: relative;
 }
 
 /* 拖拽相关样式 */
