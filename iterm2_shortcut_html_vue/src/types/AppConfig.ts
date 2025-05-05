@@ -1,4 +1,4 @@
-import {AppButtonEditConfig, AppButtonInfo, AppButtonInfoType, AppButtonInfoTypeRefreshInfo, AppButtonInfoTypeVariableInfo, AppButtonInfoTypeWidthEdit, AppKvStrStore, AppVariableEventStore, AppVariableStore} from "./AppButton.ts";
+import {AppButtonEditConfig, AppButtonInfo, AppButtonInfoType, AppButtonInfoTypeRefreshInfo, AppButtonInfoTypeVariableInfo, AppButtonInfoTypeWidthEdit, AppButtonTypeButtonExecute, AppKvStrStore, AppVariableEventStore, AppVariableStore} from "./AppButton.ts";
 import {HttpRequest, HttpResponse} from "@/api/common.ts";
 
 export interface AppButtonTypeButtonTypeInfo {
@@ -55,6 +55,10 @@ export interface ButtonEditorVariableProps {
 
 export interface ButtonEditorRefreshProps {
     buttonProps: ButtonProps<AppButtonInfoTypeRefreshInfo>
+}
+
+export interface ButtonEditorButtonTypeProps {
+    buttonProps: ButtonProps<AppButtonTypeButtonExecute>
 }
 
 
