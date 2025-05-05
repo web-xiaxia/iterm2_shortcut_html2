@@ -71,12 +71,9 @@ const handleConfigChange = (key: string, event: Event) => {
 
 <template>
   <div class="config-container">
-    <h3>{{ title }}配置</h3>
-
-    <!-- 添加新配置 -->
     <div class="add-config-form">
-      <h4>添加新配置</h4>
       <div class="form-row">
+        <div>添加新配置</div>
         <input
             type="text"
             autocapitalize="off"

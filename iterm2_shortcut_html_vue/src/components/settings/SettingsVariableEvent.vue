@@ -142,9 +142,6 @@ const addVariableToEditing = () => {
 
 <template>
   <div class="config-container">
-    <h3>变量监听配置</h3>
-
-    <!-- 变量监听列表 -->
     <div class="config-list">
       <!-- 添加新变量监听 (使用与列表相同的卡片式布局) -->
       <div class="monitor-item add-monitor-item">

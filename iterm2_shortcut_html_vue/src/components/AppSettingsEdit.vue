@@ -606,6 +606,7 @@ watch(showSettingsModal, (newValue) => {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
+  align-items: center;
 }
 
 :deep(.form-group) {

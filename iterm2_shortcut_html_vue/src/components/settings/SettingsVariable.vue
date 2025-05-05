@@ -59,12 +59,9 @@ const handleVariableChange = (key: string, event: Event) => {
 
 <template>
   <div class="config-container">
-    <h3>变量管理</h3>
-
-    <!-- 添加新变量 -->
     <div class="add-config-form">
-      <h4>添加新变量</h4>
       <div class="form-row">
+        <div>添加新变量</div>
         <input
             type="text"
             autocapitalize="off"
