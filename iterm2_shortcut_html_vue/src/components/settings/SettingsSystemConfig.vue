@@ -21,7 +21,7 @@ watch(systemConfig, (newVal) => {
   <div class="form">
     <div class="form-row">
       <div class="form-group">
-        <div class="form-label">宽度22</div>
+        <div class="form-label">宽度</div>
         <div class="form-input">
           <input type="number" v-model="systemConfig.window_width">
         </div>
