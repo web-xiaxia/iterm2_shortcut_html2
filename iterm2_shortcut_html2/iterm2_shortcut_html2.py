@@ -26,7 +26,7 @@ async def main(connection: Connection):
     osascript_home = os.path.join(main_home, 'osascript')
 
     # 存储信息
-    storage_data: StorageHelper = StorageHelper(storage_config_home)
+    storage_data: StorageHelper = StorageHelper(storage_config_home,True)
     system_storage_data: StorageHelper = SystemStorageHelper(storage_config_home)
     session_storage_data: SessionStorageData = SessionStorageData(app)
     #

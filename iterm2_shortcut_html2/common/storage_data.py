@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 from typing import Dict, List
@@ -41,6 +41,27 @@ class StorageHelper:
             fp.write(data)
         if self.config_bak:
             shutil.copy(self.config_path, os.path.join(self.config_home, f"""bak/{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.json"""))
+            await self.delete_files_older_than_15_days(os.path.join(self.config_home, "bak"))
+
+    async def delete_files_older_than_15_days(self, dir_path: str):
+        # 获取当前时间
+        now = datetime.now()
+        # 计算15天前的日期
+        threshold_date = now - timedelta(days=15)
+
+        # 遍历目录下的所有文件和目录
+        for root, dirs, files in os.walk(dir_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # 获取文件的修改时间
+                file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
+                # 如果文件修改时间早于15天前的日期，则删除文件
+                if file_mtime < threshold_date:
+                    try:
+                        os.remove(file_path)
+                        print(f"Deleted: {file_path}")
+                    except Exception as e:
+                        print(f"Failed to delete {file_path}. Reason: {e}")
 
     async def load_py(self) -> Dict[str, str]:
         fp = await self.read()
