@@ -281,6 +281,7 @@ onUnmounted(() => {
 .toolbelt-body-content {
   width: fit-content;
   min-width: 50vw;
+  max-width: 90vw;
 }
 
 /* 移除不再需要的展开按钮样式 */
