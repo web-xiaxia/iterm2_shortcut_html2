@@ -94,7 +94,7 @@ export interface AppExecuteKeyInfo {
 export interface AppExecute {
     sendText: (text: string, ...args: any[]) => void
     sendTextWithVariable: (name: string, ...args: any[]) => void
-    executeJs: (text: string) => any
+    executeJs: (text: string, ...args: any[]) => any
     executeJsWithConfig: (name: string, ...args: any[]) => any
     executePy: (text: string) => string
     executePyWithConfig: (name: string, ...args: any[]) => string

@@ -145,7 +145,7 @@ export function newAppExecuteContext(appSessionStatus: ComputedRef<AppSessionSta
         },
         keyboard: keyboardInfo.value,
     }
-    executeContextBase.exec.executeJsWithConfig = (code: string, ...args: any[]): any => {
+    executeContextBase.exec.executeJs = (code: string, ...args: any[]): any => {
         console.log(`jsContext 执行js`, code, args)
         // 可以在这里注入自定义变量和函数
         const injectedEnvironment = {
@@ -158,9 +158,8 @@ export function newAppExecuteContext(appSessionStatus: ComputedRef<AppSessionSta
         if (!jsText || jsText.length == 0) {
             return undefined
         }
-        return jsContext.exec.executeJsWithConfig(jsText, ...args)
+        return jsContext.exec.executeJs(jsText, ...args)
     }
-
 
     const jsContext = <AppExecuteJsContext>{
         ...executeContextBase
