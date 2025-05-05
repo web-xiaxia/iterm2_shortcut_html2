@@ -206,8 +206,6 @@ watch(showSettingsModal, (newValue) => {
 .tabs-header {
   display: flex;
   background-color: rgb(28, 25, 25);
-  scrollbar-width: none;
-  scrollbar-color: transparent transparent;
   white-space: nowrap;
   position: relative;
   border-radius: 0.3em 0.3em 0 0;
@@ -225,6 +223,8 @@ watch(showSettingsModal, (newValue) => {
   padding: 0.3em 0 0;
   display: flex;
   overflow-x: auto;
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
   margin: 0 2em;
   position: relative;
 }
