@@ -16,7 +16,7 @@ const appVariableSelectOptions = computed<string[]>(() => {
     <div class="form-group">
       <div class="form-label">变量名</div>
       <div class="form-input" style="display: flex">
-        <!--        <input v-model="props.buttonProps.button.buttonInfo.variableName" type="text"/>-->
+        <!--        <input v-model="props.buttonProps.button.buttonInfo.variableName" autocapitalize="off" type="text"/>-->
         <CommonSelect
             :modelValue="props.buttonProps.button.buttonInfo.variableName"
             :options="appVariableSelectOptions"

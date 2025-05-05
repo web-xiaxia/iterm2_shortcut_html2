@@ -212,6 +212,7 @@ const selectInputStyle = computed<CSSProperties>(() => {
           ref="inputRef"
           v-model="searchText"
           type="text"
+          autocapitalize="off"
           class="select-input"
           :style="selectInputStyle"
           @keydown.enter="handleEnterKey"

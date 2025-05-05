@@ -79,6 +79,7 @@ const handleConfigChange = (key: string, event: Event) => {
       <div class="form-row">
         <input
             type="text"
+            autocapitalize="off"
             v-model="newConfigKey"
             placeholder="配置名称"
             class="config-input"
