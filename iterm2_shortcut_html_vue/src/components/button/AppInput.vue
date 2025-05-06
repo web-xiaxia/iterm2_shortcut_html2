@@ -21,6 +21,17 @@ const editorRefreshProp = computed<ButtonEditorRefreshProps>(() => ({
 }))
 const variableInfo = GetAppVariableRef(props.button.buttonInfo, props.executeContext.executeVariable.variable)
 const variableInfoValue = variableInfo.value.value
+const variableInfoNumberValue = computed({
+  get: () => {
+    if (!variableInfoValue.value) {
+      return ""
+    }
+    return parseFloat(variableInfoValue.value)
+  },
+  set: (val: number) => {
+    variableInfoValue.value = "" + val
+  }
+})
 const buttonStyle = computed<CSSProperties>(() => {
   return {
     borderColor: props.button.color,
@@ -45,12 +56,25 @@ function handleClick() {
 
 <template>
   <div class="input-box handle-click" @click="handleClick">
-    <input :class="{'edit-width-model':props.appSessionStatus.editWidth}"
+    <input v-if="props.button.buttonInfo.showType =='number'"
+        :class="{'edit-width-model':props.appSessionStatus.editWidth}"
            @mouseenter="handleMouseenterEditWidth($event,props)"
            @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
            :readonly="props.appSessionStatus.editWidth"
            :style="buttonStyle"
-           :type="props.button.buttonInfo.showType =='number'?'number':'text'"
+           type="number"
+           autocapitalize="off"
+           autocomplete="off"
+           spellcheck="false"
+           v-model="variableInfoNumberValue"
+    />
+    <input v-else
+           :class="{'edit-width-model':props.appSessionStatus.editWidth}"
+           @mouseenter="handleMouseenterEditWidth($event,props)"
+           @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
+           :readonly="props.appSessionStatus.editWidth"
+           :style="buttonStyle"
+           type="text"
            autocapitalize="off"
            autocomplete="off"
            spellcheck="false"
