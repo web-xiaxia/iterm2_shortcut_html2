@@ -11,8 +11,21 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
+*::-webkit-scrollbar {
+    display: none; /* Chrome Safari */
+}
+
+* {
+    -webkit-text-size-adjust: none;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /* Firefox */
+    -webkit-box-sizing: border-box; /* Safari */
+}
 a {
     font-weight: 500;
     color: #646cff;
