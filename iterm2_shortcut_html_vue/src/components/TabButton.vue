@@ -198,6 +198,7 @@ const handleTips=(v:string)=>{
 <style scoped>
 .button-box {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin: 0 0.3em 0 0;
 }
