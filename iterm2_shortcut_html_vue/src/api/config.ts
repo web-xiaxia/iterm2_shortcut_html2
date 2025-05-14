@@ -7,7 +7,7 @@ export function getConfig(): AppConfig {
         url: "/api/storage",
         method: "GET",
         data: {},
-    }).data as AppConfig
+    }).data as AppConfig ||{}
 }
 
 export function saveConfig(conf: AppConfig) {

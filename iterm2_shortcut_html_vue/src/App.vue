@@ -14,6 +14,7 @@ import KeyModifiersDisplay from "./components/KeyModifiersDisplay.vue"
 import MoveGroupModal from "./components/MoveGroupModal.vue"
 import {appVariableHistoryFunc, appVariablesChange, appVariablesRefreshFunc} from '@/AppVariablesRefresh'
 import {debounce} from "lodash";
+import ElementDemo from "./components/ElementDemo.vue";
 
 // 配置信息
 const appConfig = ref<AppConfig>(getAppConfig())
@@ -120,6 +121,10 @@ watch(() => appSessionStatus.value.editWidth, (newVal) => {
   <div :class="appModeClass">
     <AppWidthEdit :appSessionStatus="appSessionStatus" v-if="appSessionStatus.editWidth"/>
     <Tab :tabs="appConfig.tabs" :appStatus="appStatus" :appSessionStatus="appSessionStatus"/>
+    
+    <!-- Element Plus Demo 组件 -->
+    <ElementDemo v-if="appSessionStatus.appMode === 'settings'" />
+    
     <div style="font-size: 14px;max-width: 100vw;">
       <TabButtonGroup
           v-if="appConfig.tabs.filter((v)=>!v.hide).length>0"

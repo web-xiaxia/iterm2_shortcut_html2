@@ -1,0 +1,16 @@
+/* Element Plus 黑色主题 */
+@import 'element-plus/theme-chalk/dark/css-vars.css';
+
+/* 自定义主题颜色 */
+:root {
+  /* 根据需要自定义颜色变量 */
+  --el-color-primary: #409eff;
+}
+
+/* 默认启用暗黑模式 */
+html {
+  background-color: var(--el-bg-color);
+  color: var(--el-text-color-primary);
+}
+
+/* 可以添加其他自定义样式 */ 

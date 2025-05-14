@@ -34,8 +34,7 @@ const variableInfoNumberValue = computed({
 })
 const buttonStyle = computed<CSSProperties>(() => {
   return {
-    borderColor: props.button.color,
-    color: props.button.color,
+    '--el-input-border-color': props.button.color,
     width: props.button.buttonInfo.width > 0 ? props.button.buttonInfo.width + "em" : undefined,
   }
 });
@@ -56,29 +55,29 @@ function handleClick() {
 
 <template>
   <div class="input-box handle-click" @click="handleClick">
-    <input v-if="props.button.buttonInfo.showType =='number'"
+    <el-input v-if="props.button.buttonInfo.showType =='number'"
         :class="{'edit-width-model':props.appSessionStatus.editWidth}"
-           @mouseenter="handleMouseenterEditWidth($event,props)"
-           @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
-           :readonly="props.appSessionStatus.editWidth"
-           :style="buttonStyle"
-           type="number"
-           autocapitalize="off"
-           autocomplete="off"
-           spellcheck="false"
-           v-model="variableInfoNumberValue"
+        @mouseenter="handleMouseenterEditWidth($event,props)"
+        @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
+        :readonly="props.appSessionStatus.editWidth"
+        :style="buttonStyle"
+        type="number"
+        autocapitalize="off"
+        autocomplete="off"
+        spellcheck="false"
+        v-model="variableInfoNumberValue"
     />
-    <input v-else
-           :class="{'edit-width-model':props.appSessionStatus.editWidth}"
-           @mouseenter="handleMouseenterEditWidth($event,props)"
-           @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
-           :readonly="props.appSessionStatus.editWidth"
-           :style="buttonStyle"
-           type="text"
-           autocapitalize="off"
-           autocomplete="off"
-           spellcheck="false"
-           v-model="variableInfoValue"
+    <el-input v-else
+        :class="{'edit-width-model':props.appSessionStatus.editWidth}"
+        @mouseenter="handleMouseenterEditWidth($event,props)"
+        @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
+        :readonly="props.appSessionStatus.editWidth"
+        :style="buttonStyle"
+        type="text"
+        autocapitalize="off"
+        autocomplete="off"
+        spellcheck="false"
+        v-model="variableInfoValue"
     />
   </div>
 
@@ -91,10 +90,10 @@ function handleClick() {
       <div class="form-group">
         <div class="form-label">类型</div>
         <div class="form-input" style="display: flex">
-          <select v-model="props.button.buttonInfo.showType">
-            <option value="">文本</option>
-            <option value="number">数字</option>
-          </select>
+          <el-select v-model="props.button.buttonInfo.showType">
+            <el-option value="" label="文本" />
+            <el-option value="number" label="数字" />
+          </el-select>
         </div>
       </div>
     </div>

@@ -206,3 +206,98 @@ select{
     background: rgb(38, 37, 37) url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAbCAYAAABr/T8RAAADVklEQVRIS8VWPUsjYRBO4keM3wkiBCVmUXEvRDCFhUEQTyv9B9FOu7PTznSnXezOzpR33dnlCpUTQdKInKDED4Q3oLhqBE+Q3cQYPZ4XJ7zZ2+gai7yw2SzMzDPzPDOza7WU6VjLhGspPzBjrCaVSo1lMhk3WLBaren3sGGz2bRsNuu02WwFvrlcrgZxamtrWX9//y+KyStOJBJuxljk6uoqlE6n4cgvs6eiooLbPzw8cBc8I4Hn52dLLpfj97q6unRbW9vy6OjoHC8MP5ubm/NnZ2cLqqpyQzjhenp6MoUNUATHRQnDF/9fGOBxHA7H366uri/BYPAHB47FYiuKokw9Pj5yAwR4odsUMBnBj4BQgMgcYtvtdkt3d/fc0NDQEgfe3t6eSiaTX1VVdcMYRmIQsRqj6sQqiXaqmOgGjsvlOpRleaKvr+9PXsi1tbWIoiiz0AnAcCSt8J+eiRGRSmJHlIloJ19UK0lSeHh4eDGvsdhg19fXoUwmU5RqvZZULe5ELzUWgVdXV1taW1ujPp9vRpIkPi0Frbu/v//p5ORk5fb2NkhBcMfRN5xRHxhJUllZCYp/y7I86fP5lIJxEjsoHo+HMFr39/d8nkEVZa6nnvqA6Bf1ByBOfX096+joCKOTRRzDYV1fX184Pz+f1zSN60yViMAiE6SxvmK73Z72er1hdLF+PAyBGWPNBwcHy5eXlyEKJlKrB9CPEEnjdruj4+Pj00YzWXQ9iXobzTfRKs6qKElTU1Pc7/dPyrLM3gUM452dnbHT09Nvd3d3EulJwVElEqIORi9UVVVxWRobGw97enqmA4FAvNgGenMhb2xsRC4uLmaxTmkFUjMRMI0SgBsaGg7b29uXBgcHo6+tvTeBoffR0RGWy1Q2m82vQbHbKRGHw2HxeDz5JfEhYDiT3jc3N0HxxYGRoUZDtS0tLau9vb0TtCQ+DIwAu7u7nxOJxE9VVZsJnPRFAk6nM97Z2TmDPfwaYNEF8prT1tbWbDKZXNA0rYZem5hnl8vFvF7v3MDAwKoZ0P9WphmnWCz2HfscVaO5QLHH41miF7yZGCUB4xPp+Pg4kkqlJqAvvipGRkbCZgFLoloMvre3F8CzWU1Nrcz3Zl+K/ZtzXEpQMz5lA/4H9YwNOouX1S4AAAAASUVORK5CYII=') no-repeat scroll 98% center;
     background-size: 9px 12px;
 }
+
+/* Element Plus 组件样式定制 */
+.el-input__wrapper {
+    background-color: transparent !important;
+    box-shadow: 0 0 0 1px var(--el-input-border-color, #FFFFFF) dashed !important;
+    border-radius: 3px !important;
+    padding: 0 6px !important;
+}
+
+.el-input__inner {
+    color: var(--el-select-input-color, #FFFFFF) !important;
+    font-size: 0.85rem !important;
+    transition: border-color 0.3s, box-shadow 0.3s !important;
+}
+
+.el-input__wrapper:hover {
+    box-shadow: 0 0 0 1px var(--el-input-border-color, #FFFFFF) dashed !important;
+}
+
+.el-input__wrapper.is-focus {
+    box-shadow: 0 0 0 1px var(--el-input-border-color, #FFFFFF) dashed !important;
+}
+
+/* Element Plus Select 相关样式 */
+.el-select-wrapper {
+    display: inline-block;
+}
+
+.el-select {
+    width: 10em;
+}
+
+.el-select .el-input__wrapper {
+    background-color: transparent !important;
+}
+
+.el-select .el-input .el-select__caret {
+    background-color: transparent !important;
+    color: var(--el-select-input-color, #FFFFFF) !important;
+}
+
+.el-select .el-select__tags {
+    padding: 0 !important;
+}
+
+/* 下拉菜单样式 */
+.el-select-dropdown,
+.el-popper.is-light {
+    background-color: #1a1a1a !important;
+    border: 1px solid #444 !important;
+    color: #e0e0e0 !important;
+}
+
+.el-select-dropdown__item {
+    color: #e0e0e0 !important;
+}
+
+.el-select-dropdown__item.hover, 
+.el-select-dropdown__item:hover {
+    background-color: #2c2c2c !important;
+}
+
+.el-select-dropdown__item.selected {
+    background-color: #303030 !important;
+    color: #fff !important;
+}
+
+/* 自定义组件样式 */
+.option-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.select-header-action {
+    padding: 5px 12px;
+    color: #1890ff;
+    font-style: italic;
+    cursor: pointer;
+}
+
+.select-header-action:hover {
+    background-color: #2c2c2c;
+}
+
+/* 编辑模式样式 */
+.edit-width-model .el-input__wrapper {
+    background-color: #626262 !important;
+    cursor: pointer !important;
+}
+
+.edit-width-model .el-input__wrapper:hover {
+    background-color: #1a80ba !important;
+}
