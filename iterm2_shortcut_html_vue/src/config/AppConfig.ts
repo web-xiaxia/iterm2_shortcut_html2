@@ -1,5 +1,4 @@
 import {AppConfig, AppStatus, AppVariableHistoryStore} from "../types/AppConfig";
-import type {AppButtonTypeButton, AppButtonTypeCheckbox, AppButtonTypeInput, AppButtonTypeRadio, AppButtonTypeSelect} from "../types/AppButton.ts";
 import {getConfig, saveConfig} from "@/api/config.ts";
 
 
@@ -44,6 +43,11 @@ export function getAppConfig(): AppConfig {
         config.js = {}
         config.py = {}
         config.event = {}
+    }
+    if (config.exec_config == undefined) {
+        config.exec_config = {
+            shell: "",
+        }
     }
     return config
 }

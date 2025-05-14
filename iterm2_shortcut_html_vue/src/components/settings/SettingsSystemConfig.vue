@@ -33,6 +33,14 @@ watch(systemConfig, (newVal) => {
         </div>
       </div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">shell pre</div>
+        <div class="form-input" style="flex: 1">
+          <textarea v-model="systemConfig.shell" style="width: 37.4em" rows="6"></textarea>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -42,5 +50,6 @@ watch(systemConfig, (newVal) => {
 }
 .form{
   display: flex;
+  flex-direction: column;
 }
 </style>

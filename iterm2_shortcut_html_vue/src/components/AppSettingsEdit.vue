@@ -10,10 +10,11 @@ import SettingsVariableEvent from './settings/SettingsVariableEvent.vue';
 import SettingsCodeConfig from './settings/SettingsCodeConfig.vue';
 import SettingsTrigger from './settings/SettingsTrigger.vue';
 import SettingsSystemConfig from "@/components/settings/SettingsSystemConfig.vue";
+import SettingsExecConfig from "@/components/settings/SettingsExecConfig.vue";
 
 const props = defineProps<{
   appConfig: AppConfig,
-  executeContext:AppExecuteContext,
+  executeContext: AppExecuteContext,
   appStatus: AppStatus,
   appSessionStatus: AppSessionStatus,
 }>()
@@ -83,7 +84,7 @@ const editSettings = computed<boolean>({
 })
 
 // 固定的标签数组
-const settingTabs = ref(['变量', '变量监听', 'js', 'py', 'shell', '事件', '触发', '系统配置']);
+const settingTabs = ref(['变量', '变量监听', 'js', 'py', 'shell', '事件', '触发', '运行配置', '系统配置']);
 // 当前选中的标签索引
 const currentTabIndex = ref(0);
 
@@ -186,10 +187,15 @@ watch(showSettingsModal, (newValue) => {
           <SettingsTrigger :appConfig="appConfig"/>
         </div>
 
-        <!-- 系统配置 -->
+        <!-- 运行配置 -->
         <div v-else-if="currentTabIndex === 7" class="tab-pane">
+          <SettingsExecConfig :appConfig="appConfig"/>
+        </div>
+        <!-- 系统配置 -->
+        <div v-else-if="currentTabIndex === 8" class="tab-pane">
           <SettingsSystemConfig/>
         </div>
+
       </div>
     </div>
   </Modal>

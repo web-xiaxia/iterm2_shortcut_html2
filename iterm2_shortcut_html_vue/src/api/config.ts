@@ -7,7 +7,7 @@ export function getConfig(): AppConfig {
         url: "/api/storage",
         method: "GET",
         data: {},
-    }).data as AppConfig
+    }).data as AppConfig || {}
 }
 
 export function saveConfig(conf: AppConfig) {
@@ -21,11 +21,13 @@ export function saveConfig(conf: AppConfig) {
 export interface SettingsSystemConfig {
     window_width: number
     window_height: number
+    shell: string
 }
 export function getInitSettingsSystemConfig(){
     return {
         window_height: 480,
-        window_width: 950
+        window_width: 950,
+        shell:"",
     }
 }
 

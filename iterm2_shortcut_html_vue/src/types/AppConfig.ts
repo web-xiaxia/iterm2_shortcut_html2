@@ -130,7 +130,9 @@ export interface AppExecuteVariableTool {
     setOptions: (key: string, value: string[]) => void
 }
 
-
+export interface AppExecuteConfig{
+    shell: string
+}
 export interface AppExecuteVariable {
     variable: AppVariableStore
     variable_event: AppVariableEventStore[]
@@ -138,6 +140,7 @@ export interface AppExecuteVariable {
     js: AppKvStrStore
     py: AppKvStrStore
     event: AppKvStrStore
+    exec_config: AppExecuteConfig
 }
 
 
