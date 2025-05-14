@@ -65,7 +65,7 @@ function handleClick(v: string) {
 </script>
 
 <template>
-  <div @click="handleClickSettings" class="handle-click">
+  <div @click="handleClickSettings" class="button-box handle-click">
     <button v-for="v in variableInfo.variable.value.options" :class="{'edit-width-model':props.appSessionStatus.editWidth}"
             @mouseenter="handleMouseenterEditWidth($event,props)"
             @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
@@ -96,4 +96,8 @@ function handleClick(v: string) {
 </template>
 
 <style scoped>
+.button-box{
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>

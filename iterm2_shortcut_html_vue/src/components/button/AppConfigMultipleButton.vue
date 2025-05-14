@@ -230,7 +230,7 @@ function handleClick(v: AppButtonTypeConfigMultipleButtonExecuteInfo) {
 </script>
 
 <template>
-  <div @click="handleClickSettings" class="handle-click">
+  <div @click="handleClickSettings" class="button-box handle-click">
     <button v-for="v in buttonList" :class="{'edit-width-model':props.appSessionStatus.editWidth}"
             @mouseenter="handleMouseenterEditWidth($event,props)"
             @mouseout="handleMouseoutEditWidth(props.appSessionStatus)"
@@ -289,6 +289,10 @@ function handleClick(v: AppButtonTypeConfigMultipleButtonExecuteInfo) {
 </template>
 
 <style scoped>
+.button-box{
+  display: flex;
+  flex-wrap: wrap;
+}
 .config-type-description:deep(.description-title)   {
   color: #5dbd44;
 }

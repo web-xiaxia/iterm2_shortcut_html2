@@ -89,6 +89,7 @@ function handleLabelClick(e: MouseEvent) {
 <style scoped>
 .button-box {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
