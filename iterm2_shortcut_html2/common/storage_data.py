@@ -67,6 +67,10 @@ class StorageHelper:
         fp = await self.read()
         return json.loads(fp).get("py")
 
+    async def get_shell_pre(self) -> str:
+        fp = await self.read()
+        return json.loads(fp).get("exec_config", {}).get("shell", "")
+
     async def get_custom_trigger(self) -> Dict[str, Dict[str, object]]:
         return {}
 

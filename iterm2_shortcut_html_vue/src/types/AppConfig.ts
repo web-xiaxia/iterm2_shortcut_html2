@@ -130,9 +130,10 @@ export interface AppExecuteVariableTool {
     setOptions: (key: string, value: string[]) => void
 }
 
-export interface AppExecuteConfig{
+export interface AppExecuteConfig {
     shell: string
 }
+
 export interface AppExecuteVariable {
     variable: AppVariableStore
     variable_event: AppVariableEventStore[]
