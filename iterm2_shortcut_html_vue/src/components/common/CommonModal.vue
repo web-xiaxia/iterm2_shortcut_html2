@@ -57,6 +57,7 @@ function closeModal() {
   pointer-events: auto;
   display: flex;
   flex-direction: column;
+  font-size: 12px;
 }
 
 /* 防止模态框背景透明部分透传鼠标事件 */
